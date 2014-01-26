@@ -1,0 +1,10 @@
+#ifndef G_DISTANCE_SENSOR_COMMANDS_H
+#define G_DISTANCE_SENSOR_COMMANDS_H
+
+static const int COMMAND_ID_RANGER_READ_DISTANCE	= 0x01;
+static const int COMMAND_ID_RANGER_READ_SERIES		= 0x02;
+static const int COMMAND_ID_RANGER_END_SERIES		= 0x03;
+
+static const int COMMAND_ID_RANGER_NO_COMMAND       = 999;
+
+#endif
