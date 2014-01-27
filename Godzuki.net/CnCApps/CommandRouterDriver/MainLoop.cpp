@@ -11,22 +11,24 @@ extern unsigned long millis();
 #include <chrono>
 #include <thread>
 
-#include "CommandRouter.h"
-CommandRouter myRouter;
-
 #include "SimpleObject.h"
+gCommandRouter myRouter;
+gCommandRouter *pRouter=0;
 SimpleObject myObject;
 
 long startTimer;
 
 void setup() {
+	pRouter = &myRouter;
 	myRouter.setup();
 	myObject.setup(7, &myRouter);  // actually includes an intended 1000 ms repeated request to "do something else"...
 	startTimer = millis();
 }
 
-int loop() {
 using namespace std;
+int loop() {
+	int DEVICE_ID = -1;
+	int instanceID = 1;
 
 	char buffer[128];
 
@@ -36,10 +38,14 @@ using namespace std;
 		switch (buffer[0] )
 		{
 		case '1':
-			myRouter.RouteCommand( SimpleObject::DEVICE_ID, 7, SimpleObject::COMMAND_ID_DO_SOMETHING, 100 );
+			ROUTE_COMMAND(SIMPLE_OBJECT_DEVICE_ID,7,SimpleObject::COMMAND_ID_DO_SOMETHING,100);
+			//pRouter->RouteCommand( gCommandObject(DEVICE_ID, instanceID, X, Y, Z, A, 0, 0 ) )
+			//gCommandObject( int srcdev, int srcinst, int dev, int inst, int cmd, int param, long paySize, void *payData );
+			//myRouter.RouteCommand( SimpleObject::DEVICE_ID, 7, SimpleObject::COMMAND_ID_DO_SOMETHING, 100 );
 			break;
 		case'2':
-			myRouter.RouteCommand( SimpleObject::DEVICE_ID, 7, -1, 500 );
+			ROUTE_COMMAND(SIMPLE_OBJECT_DEVICE_ID,7,-1,500);
+			//myRouter.RouteCommand( SimpleObject::DEVICE_ID, 7, -1, 500 );
 			break;
 		case's':
 			myObject.setup( 7, &myRouter );

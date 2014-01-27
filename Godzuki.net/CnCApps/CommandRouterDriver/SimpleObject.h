@@ -1,8 +1,8 @@
 #ifndef SIMPLE_OBJECT_H
 #define SIMPLE_OBJECT_H
 
-#include "RoutingDeviceIDs.h"
-#include "CommandRouter.h"
+#include "../../RobotSketches/godzuki/gRoutingDeviceIDs.h"
+#include "../../RobotSketches/godzuki/gCommandRouter.h"
 
 class SimpleObject {
 public:
@@ -12,15 +12,15 @@ public:
   static const int COMMAND_ID_DO_SOMETHING_ELSE  = 0x02;
 
   SimpleObject();
-  void setup(int thisID, CommandRouter *router);
-  void teardown(CommandRouter *router);
+  void setup(int thisID, gCommandRouter *router);
+  void teardown(gCommandRouter *router);
 
 
 private:
   int instanceID;
 
-  void setupCommandListener( CommandRouter &router );
-  void teardownCommandListener( CommandRouter &router );
+  void setupCommandListener( gCommandRouter &router );
+  void teardownCommandListener( gCommandRouter &router );
 
   CMD_METHOD_DEFINE(processCommand); // catchall method...
 

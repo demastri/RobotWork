@@ -24,12 +24,6 @@
     <ClInclude Include="targetver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CommandRouter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="RoutingDeviceIDs.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="SimpleObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -41,13 +35,16 @@
     <ClCompile Include="CommandRouterDriver.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CommandRouter.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="SimpleObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MainLoop.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\RobotSketches\godzuki\gCommandRouter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\RobotSketches\godzuki\gCommandObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -1,6 +1,6 @@
-#include "stdafx.h"
+#include <Arduino.h>
 #include "CommandRouter.h"
-extern unsigned long millis();
+
 struct RouteTableList {
 public:
   RouteTableList( int _deviceID, int _instanceID, void *_objRef, int _cmdID, cmdHandler _thisHandler, long timerVal ) {
@@ -56,7 +56,7 @@ void CommandRouter::AddCommandHandler( int deviceID, int instanceID, void *objRe
   RouteTableList *nextID = new RouteTableList( deviceID, instanceID, objRef, cmdID, thisHandler, timer );
   nextID->nextEntry = listBase;
   if( listBase != 0 )
-	listBase->prevEntry = nextID;
+	  listBase->prevEntry = nextID;
   listBase = nextID;
 }
 
@@ -112,14 +112,13 @@ void CommandRouter::ScanCommands() {
       RouteCommand( curEntry->deviceID, curEntry->instanceID, curEntry->cmdID, now );
       curEntry->nextTrigger += curEntry->reTriggerInMills;
     }
-	curEntry = curEntry->nextEntry;
   }
 }
 
 void CommandRouter::RouteCommand( int _deviceID, int _instanceID, int cmdID, long cmdParameter ) {
   RouteTableList *curEntry = listBase;
   RouteTableList *defEntry = 0;
-  bool hadHandler = false;
+  boolean hadHandler = false;
   
   while( curEntry != 0 ) {
     if( _deviceID == curEntry->deviceID && _instanceID == curEntry->instanceID && cmdID == curEntry->cmdID ) {
@@ -134,6 +133,6 @@ void CommandRouter::RouteCommand( int _deviceID, int _instanceID, int cmdID, lon
   if( defEntry && !hadHandler )
     defEntry->thisHandler( defEntry->objRef, cmdID, cmdParameter );
   if( !defEntry && !hadHandler )
-    printf( "I had nowhere to send this command...\n" );
+    Serial.println( "I had nowhere to send this command..." );
 }
 
