@@ -90,6 +90,9 @@
     <ClCompile Include="..\..\RobotSketches\godzuki\gCommandRouter.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="..\..\RobotSketches\godzuki\gComms.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="CommandRouterDriver.cpp" />
     <ClCompile Include="MainLoop.cpp" />
     <ClCompile Include="SimpleObject.cpp" />

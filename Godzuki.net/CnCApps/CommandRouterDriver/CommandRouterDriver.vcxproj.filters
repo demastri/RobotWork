@@ -47,5 +47,8 @@
     <ClCompile Include="..\..\RobotSketches\godzuki\gCommandObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\RobotSketches\godzuki\gComms.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

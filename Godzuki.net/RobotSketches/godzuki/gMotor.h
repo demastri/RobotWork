@@ -1,7 +1,6 @@
-#include <Adafruit_MotorShield.h>
-
 #ifndef G_MOTOR_H
 #define G_MOTOR_H
+#include <Adafruit_MotorShield.h>
 
 class gMotor {
 public:

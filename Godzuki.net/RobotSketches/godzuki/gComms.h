@@ -8,9 +8,9 @@
 class gComms {
 public:
 	gComms();
-	boolean writeToRadio;
-	void setup(boolean defaultToRadio, int baudRate);
-	void setup(boolean defaultToRadio);
+	bool writeToRadio;
+	void setup(bool defaultToRadio, int baudRate);
+	void setup(bool defaultToRadio);
 	void setup();
 
 	void processCommand(int newCommand, int cmdParam );  

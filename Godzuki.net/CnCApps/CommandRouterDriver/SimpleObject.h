@@ -3,6 +3,7 @@
 
 #include "../../RobotSketches/godzuki/gRoutingDeviceIDs.h"
 #include "../../RobotSketches/godzuki/gCommandRouter.h"
+#include "../../RobotSketches/godzuki/gComms.h"
 
 class SimpleObject {
 public:

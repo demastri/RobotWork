@@ -4,24 +4,10 @@
 
 #include "gCommandObject.h"
 
-#ifndef WIN32
 #include "gComms.h"
 extern gComms gMonitor;
-#endif
-
-#ifdef WIN32
-#include <stdio.h>
-using namespace std;
 
 extern unsigned long millis();
-class winComms {
-public:
-	void println( char *s ) { printf( "%s\n", s ); }
-	void print( char *s ) { printf( "%s", s  ); }
-	void print( int i ) { printf( "%d", i ); }
-};
-static winComms gMonitor;
-#endif
 
 gCommandObject::gCommandObject( int srcdev, int srcinst, int dev, int inst, int cmd, int param, long paySize, void *payData ) {
 	Init( srcdev, srcinst, dev, inst, cmd, param, paySize, payData );

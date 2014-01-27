@@ -4,24 +4,9 @@
 
 #include "gCommandRouter.h"
 
-#ifndef WIN32
 #include "gComms.h"
 extern gComms gMonitor;
-#endif
-
-#ifdef WIN32
-#include <stdio.h>
-using namespace std;
-
 extern unsigned long millis();
-class winComms {
-public:
-	void println( char *s ) { printf( "%s\n", s ); }
-	void print( char *s ) { printf( "%s", s  ); }
-	void print( int i ) { printf( "%d", i ); }
-};
-static winComms gMonitor;
-#endif
 
 static int devicesNOTtoMonitor[] = {HEARTBEAT_DEVICE_ID, -1};
 static int devicesNOTtoRoute[] = {-1, SERVO_DEVICE_ID, -1};

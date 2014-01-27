@@ -1,4 +1,11 @@
+#ifndef WIN32
 #include <Arduino.h>
+#endif
+
+#ifdef WIN32
+#include <stdio.h>
+using namespace std;
+#endif
 
 #include "gServoCommands.h"
 #include "gComms.h"
@@ -8,9 +15,9 @@ const int MAX_SETUP_WAIT_TIME = 2000;
 
 gComms::gComms() {
 }
-void gComms::setup(boolean defaultToRadio, int baudRate) {
+void gComms::setup(bool defaultToRadio, int baudRate) {
 	writeToRadio = defaultToRadio;
-
+#ifndef WIN32
 	int curSetupWaitTime = 0;
 	Serial1.begin(baudRate);             //Set serial baud rate to 9600
 	while (!Serial1 && curSetupWaitTime < MAX_SETUP_WAIT_TIME) {
@@ -39,9 +46,10 @@ void gComms::setup(boolean defaultToRadio, int baudRate) {
 		else
 			Serial1.println("USB dead!!");
 	}
+#endif
 }
 
-void gComms::setup(boolean defaultToRadio) {
+void gComms::setup(bool defaultToRadio) {
 	setup( defaultToRadio, 9600 );
 }
 void gComms::setup() {
@@ -86,22 +94,38 @@ void gComms::println( int i ) {
 		printlnToUSB( intToStr(i) );
 }
 void gComms::printToRadio( char *s ) {
+#ifdef WIN32
+	printf("%s", s);
+#else
 	Serial1.print(s);
+#endif
 }
 
 void gComms::printlnToRadio( char *s ) {
+#ifdef WIN32
+	printf("%s\n", s);
+#else
 	Serial1.println(s);
+#endif
 }
 
 void gComms::printToUSB( char *s ) {
-	Serial.print(s);
+#ifdef WIN32
+	printf("%s", s);
+#else
+	Serial.println(s);
+#endif
 }
 
 void gComms::printlnToUSB( char *s ) {
+#ifdef WIN32
+	printf("%s\n", s);
+#else
 	Serial.println(s);
+#endif
 }
 char *gComms::intToStr( int i ) {
-	boolean isNeg = (i<0);
+	bool isNeg = (i<0);
 	int nextChar=0;
 	if( isNeg )
 		i = -i;

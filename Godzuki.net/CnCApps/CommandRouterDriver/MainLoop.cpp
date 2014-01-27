@@ -12,6 +12,7 @@ extern unsigned long millis();
 #include <thread>
 
 #include "SimpleObject.h"
+gComms gMonitor;
 gCommandRouter myRouter;
 gCommandRouter *pRouter=0;
 SimpleObject myObject;
@@ -23,6 +24,8 @@ void setup() {
 	myRouter.setup();
 	myObject.setup(7, &myRouter);  // actually includes an intended 1000 ms repeated request to "do something else"...
 	startTimer = millis();
+	printf( "1 - Route Something Cmd, 2 - Route N/A cmd, s - setup obj, x - teardown obj, q - quit:" );
+
 }
 
 using namespace std;
@@ -59,6 +62,7 @@ int loop() {
 		default:
 			break;
 		}
+		printf( "1 - Route Something Cmd, 2 - Route N/A cmd, s - setup obj, x - teardown obj, q - quit:" );
 	}
 
 
