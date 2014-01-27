@@ -1,4 +1,5 @@
 #ifndef G_COMMAND_OBJECT_H
+#define G_COMMAND_OBJECT_H
 
 class gCommandObject {
 	// RouteCommand becomes -- 
@@ -75,6 +76,8 @@ public:
 	int targetInstanceID;
 	int commandID;
 	int parameter;
+
+	void print();
 private:
 	void Init( int srcdev, int srcinst, int dev, int inst, int cmd, int param, long paySize, void *payData );
 

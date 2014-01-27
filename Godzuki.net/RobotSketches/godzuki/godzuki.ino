@@ -68,5 +68,4 @@ void loop() {
 
 	// handle maintenance stuff
 	ROUTE_COMMAND( HEARTBEAT_DEVICE_ID, 1, COMMAND_ID_HBSTATUS_LOOP_FINALLY, -1 );
-	delay( 50 );
 }

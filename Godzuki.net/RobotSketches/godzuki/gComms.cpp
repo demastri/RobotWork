@@ -3,23 +3,44 @@
 #include "gServoCommands.h"
 #include "gComms.h"
 
-const long USB_BAUD_RATE = 57600;
-const int MAX_SETUP_WAIT_TIME = 1000;
+const long USB_BAUD_RATE = 9600;
+const int MAX_SETUP_WAIT_TIME = 2000;
 
 gComms::gComms() {
 }
 void gComms::setup(boolean defaultToRadio, int baudRate) {
 	writeToRadio = defaultToRadio;
-	Serial1.begin(baudRate);             //Set serial baud rate to 9600
 
-	Serial.begin(57600);
 	int curSetupWaitTime = 0;
+	Serial1.begin(baudRate);             //Set serial baud rate to 9600
+	while (!Serial1 && curSetupWaitTime < MAX_SETUP_WAIT_TIME) {
+		delay(20); // Wait untilSerial is ready - Leonardo
+		curSetupWaitTime += 20;
+	}
+
+	curSetupWaitTime = 0;
+	Serial.begin(115200);
 	while (!Serial && curSetupWaitTime < MAX_SETUP_WAIT_TIME) {
 		delay(20); // Wait untilSerial is ready - Leonardo
 		curSetupWaitTime += 20;
 	}
-	Serial.println("Godzuki alive and well...");
+
+	if( Serial ) {
+		Serial.println("Godzuki alive and well...");
+		if( Serial1 )
+			Serial.println("radio available as well");
+		else
+			Serial.println("radio dead!!");
+	}
+	if( Serial1 ) {
+		Serial1.println("Godzuki alive and well...");
+		if( Serial )
+			Serial1.println("USb available as well");
+		else
+			Serial1.println("USB dead!!");
+	}
 }
+
 void gComms::setup(boolean defaultToRadio) {
 	setup( defaultToRadio, 9600 );
 }

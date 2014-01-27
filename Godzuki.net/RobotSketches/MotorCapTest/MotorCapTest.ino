@@ -19,12 +19,12 @@ Adafruit_MotorShield AFMS = Adafruit_MotorShield();
 // Adafruit_MotorShield AFMS = Adafruit_MotorShield(0x61); 
 
 // Select which 'port' M1, M2, M3 or M4. In this case, M1
-Adafruit_DCMotor *myMotorA = AFMS.getMotor(4);
+Adafruit_DCMotor *myMotorA = AFMS.getMotor(1);
 // You can also make another motor on port M2
 //Adafruit_DCMotor *myOtherMotor = AFMS.getMotor(2);
-Adafruit_DCMotor *myMotorB = AFMS.getMotor(3);
+Adafruit_DCMotor *myMotorB = AFMS.getMotor(2);
 Adafruit_DCMotor *runMotor = 0;
-bool testMotorA = false;
+bool testMotorA = true;
 
 int MAX_SPEED_A = 200;
 int MAX_SPEED_B = 200;
@@ -66,7 +66,7 @@ void loop() {
 	else
 		runMotor = myMotorB;
 	int MAX_SPEED = (testMotorA ? MAX_SPEED_A : MAX_SPEED_B);
-	testMotorA = !!testMotorA;
+	testMotorA = !testMotorA;
 
 	uint8_t i;
 

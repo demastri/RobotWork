@@ -21,12 +21,14 @@ void gMotorControl::setup(int thisID, gCommandRouter *router ) {
 	if( router != 0 )
 		setupCommandListener( *router );
 	
-	currentSpeed = 0;
+	currentSpeed = 0;	
 	gMotor::AFMS.begin();
+
 	(myMotors[0] = new gMotor())->setup(1);
 	(myMotors[1] = new gMotor())->setup(2);
 	(myMotors[2] = new gMotor())->setup(3);
 	(myMotors[3] = new gMotor())->setup(4);
+
 }
 void gMotorControl::setupCommandListener( gCommandRouter &router ) {
 	CMD_METHOD_REGISTER_DEFAULT(gMotorControl, processCommand);

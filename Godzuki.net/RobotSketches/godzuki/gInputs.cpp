@@ -30,8 +30,8 @@ gInputs::gInputs() {
 
 void gInputs::setup(int thisID, gCommandRouter *router ) {
 	instanceID = thisID;
-//	if( router != 0 )
-//		setupCommandListener( *router );
+	//	if( router != 0 )
+	//		setupCommandListener( *router );
 	pRouter = router;
 }
 
@@ -52,7 +52,8 @@ int gInputs::ReadCommand(int &param) {
 			param = 0;
 			while (Serial.available()) {
 				kbdKey = Serial.read();
-				param = 10 * (param) + (kbdKey - '0');
+				if( '0' <= kbdKey && kbdKey <= '9' )
+					param = 10 * (param) + (kbdKey - '0');
 			}
 			ROUTE_COMMAND( MOTOR_CONTROL_DEVICE_ID, 1, COMMAND_ID_MOTORCONTROL_SET_SPEED, param );
 			return ROUTER_NO_COMMAND;
@@ -97,7 +98,8 @@ int gInputs::ReadCommand(int &param) {
 			param = 0;
 			while (Serial.available()) {
 				kbdKey = Serial.read();
-				param = 10 * (param) + (kbdKey - '0');
+				if( '0' <= kbdKey && kbdKey <= '9' )
+					param = 10 * (param) + (kbdKey - '0');
 			}
 			ROUTE_COMMAND( SERVO_DEVICE_ID, 1, COMMAND_ID_SERVO_SET_POSITION, param );
 			return ROUTER_NO_COMMAND;
@@ -122,9 +124,12 @@ int gInputs::ReadCommand(int &param) {
 			return ROUTER_NO_COMMAND;
 		case ':':
 			param = 0;
+			delay(5);
 			while (Serial1.available()) {
 				kbdKey = Serial1.read();
-				param = 10 * (param) + (kbdKey - '0');
+				if( '0' <= kbdKey && kbdKey <= '9' )
+					param = 10 * (param) + (kbdKey - '0');
+				delay(5);
 			}
 			ROUTE_COMMAND( MOTOR_CONTROL_DEVICE_ID, 1, COMMAND_ID_MOTORCONTROL_SET_SPEED, param );
 			return ROUTER_NO_COMMAND;
@@ -167,9 +172,12 @@ int gInputs::ReadCommand(int &param) {
 			return ROUTER_NO_COMMAND;
 		case 'g':
 			param = 0;
-			while (Serial1.available()) {
+			delay(5);
+				while (Serial1.available()) {
 				kbdKey = Serial1.read();
-				param = 10 * (param) + (kbdKey - '0');
+				if( '0' <= kbdKey && kbdKey <= '9' )
+					param = 10 * (param) + (kbdKey - '0');
+				delay(5);
 			}
 			ROUTE_COMMAND( SERVO_DEVICE_ID, 1, COMMAND_ID_SERVO_SET_POSITION, param );
 			return ROUTER_NO_COMMAND;
@@ -203,7 +211,7 @@ int gInputs::ReadCommand(int &param) {
 	}
 	if (key == returnKey)
 		return ROUTER_NO_COMMAND;
-	if( key != -1 )
+	if( 0 <= key && key <= 4 )
 		ROUTE_COMMAND( gButtonMappingDevs[key], gButtonMappingIDs[key], gButtonMappingCmds[key], -1 );
 	returnKey = key;
 	return ROUTER_NO_COMMAND;

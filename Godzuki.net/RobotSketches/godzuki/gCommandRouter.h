@@ -3,8 +3,7 @@
 
 #include "gRoutingDeviceIDs.h"
 #include "gCommandObject.h"
-
-typedef void cmdHandler( void *objRef, int commandID, int parameter );
+#include "gRouteTableList.h"
 
 #define CMD_METHOD_DEFINE(M)                static void M##Proxy(void *thisObj, int commandID, int paramID ); void M##Actually( int commandID, int paramID )
 #define CMD_METHOD_IMPLEMENT(C,M)           void C::M##Proxy(void *thisObj, int commandID, int paramID ) { ((C *)thisObj)->M##Actually( commandID, paramID); } void C::M##Actually(int commandID, int paramID )
@@ -23,16 +22,19 @@ static const int ROUTER_NO_COMMAND       = 999;
 
 class gCommandRouter {
 public:
-  gCommandRouter();
-  void setup();
-  void AddCommandHandler( int deviceID, int instanceID, void *objRef, cmdHandler thisHandler );  // default backstop
-  void AddCommandHandler( int deviceID, int instanceID, void *objRef, int cmdID, cmdHandler thisHandler, long timer );
+	gCommandRouter();
+	void setup();
+	void AddCommandHandler( int deviceID, int instanceID, void *objRef, cmdHandler thisHandler );  // default backstop
+	void AddCommandHandler( int deviceID, int instanceID, void *objRef, int cmdID, cmdHandler thisHandler, long timer );
 
-  void RemoveCommandHandler( int deviceID, int instanceID );  // default backstop
-  void RemoveCommandHandler( int deviceID, int instanceID, int cmdID, long timer );
-  
-  void ScanCommands();
-  gCommandObject *RouteCommand( gCommandObject objData );
+	void RemoveCommandHandler( int deviceID, int instanceID );  // default backstop
+	void RemoveCommandHandler( int deviceID, int instanceID, int cmdID, long timer );
+
+	void ScanCommands();
+	gCommandObject *RouteCommand( gCommandObject objData );
+
+private:
+	static RouteTableList *listBase;
 };
 
 #endif

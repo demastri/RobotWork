@@ -60,6 +60,9 @@
     <ClInclude Include="gMotorControlCommands.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="gRouteTableList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="gComms.cpp">

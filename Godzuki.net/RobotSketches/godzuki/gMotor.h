@@ -25,10 +25,10 @@ public:
 	void go();
 	void stop();
 
-private:
 	Adafruit_DCMotor *myMotor;
-        int potentialDir;
-        int potentialSpeed;
+private:
+	int potentialDir;
+	int potentialSpeed;
 };
 
 #endif

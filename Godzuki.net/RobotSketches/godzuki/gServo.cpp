@@ -29,8 +29,8 @@ void gServo::setup( int pin, int thisID, gCommandRouter *router ) {
 
 }
 void gServo::setupCommandListener( gCommandRouter &router ) {
-	CMD_METHOD_REGISTER_DEFAULT(gServo, processCommand);
-	CMD_METHOD_REGISTER_TIMER(gServo, COMMAND_ID_CONTINUE_SWEEP, continueSweep, 20);
+	//CMD_METHOD_REGISTER_DEFAULT(gServo, processCommand);
+	//CMD_METHOD_REGISTER_TIMER(gServo, COMMAND_ID_CONTINUE_SWEEP, continueSweep, 20);
 }
 
 
@@ -109,7 +109,7 @@ CMD_METHOD_IMPLEMENT(gServo,processCommand) {
 			currentCommand = COMMAND_ID_SERVO_NO_COMMAND;
 			break;
 		case COMMAND_ID_SERVO_READ_POSITION:
-			gMonitor.print("current motor position: ");    // do NOT update current_command...
+			gMonitor.print("current servo position: ");    // do NOT update current_command...
 			gMonitor.println(pos);                // let it keep doing whatever it was doing...
 			break;
 		default:

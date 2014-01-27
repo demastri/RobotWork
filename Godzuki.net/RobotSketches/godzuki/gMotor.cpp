@@ -34,6 +34,5 @@ void gMotor::go() {
 }
 
 void gMotor::stop() {
-	myMotor->setSpeed(0);
 	myMotor->run(RELEASE);
 }

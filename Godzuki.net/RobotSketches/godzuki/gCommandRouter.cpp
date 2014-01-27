@@ -4,42 +4,10 @@
 #include "gComms.h"
 extern gComms gMonitor;
 
-struct RouteTableList {
-public:
-	RouteTableList( int _deviceID, int _instanceID, void *_objRef, int _cmdID, cmdHandler _thisHandler, long timerVal ) {
-		deviceID = _deviceID;
-		instanceID = _instanceID;
-		objRef = _objRef;
-		cmdID = _cmdID;
-		thisHandler = _thisHandler;
-		reTriggerInMills = timerVal;
-		nextTrigger = (timerVal > 0 ? millis() + timerVal : -1);
-		nextEntry = prevEntry = 0;
-	};
-	RouteTableList( int _deviceID, int _instanceID, void *_objRef, cmdHandler _thisHandler ) {
-		deviceID = _deviceID;
-		instanceID = _instanceID;
-		objRef = _objRef;
-		cmdID = -1;
-		thisHandler = _thisHandler;
-		nextEntry = prevEntry = 0;
-		reTriggerInMills = -1;
-		nextTrigger = -1;
-	};
+static int devicesNOTtoMonitor[] = {HEARTBEAT_DEVICE_ID, -1};
+static int devicesNOTtoRoute[] = {-1, SERVO_DEVICE_ID, -1};
 
-	RouteTableList *nextEntry;
-	RouteTableList *prevEntry;
-
-	int deviceID;
-	int instanceID;
-	void *objRef;
-	int cmdID;
-	cmdHandler *thisHandler;
-	long reTriggerInMills;
-	long nextTrigger;
-};
-
-RouteTableList *listBase = 0;
+RouteTableList *gCommandRouter::listBase = 0;
 
 gCommandRouter::gCommandRouter() {
 }
@@ -56,7 +24,7 @@ void gCommandRouter::AddCommandHandler( int deviceID, int instanceID, void *objR
 }
 
 void gCommandRouter::AddCommandHandler( int deviceID, int instanceID, void *objRef, int cmdID, cmdHandler thisHandler, long timer ) {
-	RouteTableList *nextID = new RouteTableList( deviceID, instanceID, objRef, cmdID, thisHandler, timer );
+	RouteTableList *nextID = new RouteTableList( deviceID, instanceID, objRef, cmdID, thisHandler, timer, millis() );
 	nextID->nextEntry = listBase;
 	if( listBase != 0 )
 		listBase->prevEntry = nextID;
@@ -109,7 +77,6 @@ void gCommandRouter::RemoveCommandHandler( int deviceID, int instanceID, int cmd
 
 void gCommandRouter::ScanCommands() {
 	RouteTableList *curEntry = listBase;
-	RouteTableList *defEntry = 0;
 
 	long now = millis();
 	while( curEntry != 0 ) {
@@ -127,13 +94,29 @@ gCommandObject *gCommandRouter::RouteCommand( gCommandObject objData ) {
 	int _instanceID = objData.targetInstanceID;
 	int cmdID = objData.commandID;
 	long cmdParameter = objData.parameter;
-	
+
+	bool monitorMe = true;
+
+	for( int *pi=devicesNOTtoMonitor; *pi>=0; pi++ )
+		if( _deviceID == *pi )
+			monitorMe = false;
+
+	for( int *pi=devicesNOTtoRoute; *pi>=0; pi++ )
+		if( _deviceID == *pi ) {
+			objData.print();
+			return 0;
+		}
+
 	RouteTableList *curEntry = listBase;
 	RouteTableList *defEntry = 0;
 	boolean hadHandler = false;
 
 	while( curEntry != 0 ) {
 		if( _deviceID == curEntry->deviceID && _instanceID == curEntry->instanceID && cmdID == curEntry->cmdID ) {
+			if( monitorMe ) {
+				gMonitor.println( "Cmd (about to be) handled explicitly" );
+				objData.print();
+			}
 			curEntry->thisHandler( curEntry->objRef, cmdID, cmdParameter );
 			hadHandler = true;    
 		}
@@ -142,10 +125,17 @@ gCommandObject *gCommandRouter::RouteCommand( gCommandObject objData ) {
 		}
 		curEntry = curEntry->nextEntry;
 	}
-	if( defEntry && !hadHandler )
+	if( defEntry && !hadHandler ) {
+		if( monitorMe ) {
+			gMonitor.println( "Cmd (about to be) handled by default" );
+			objData.print();
+		}
 		defEntry->thisHandler( defEntry->objRef, cmdID, cmdParameter );
-	if( !defEntry && !hadHandler )
+	}
+	if( !defEntry && !hadHandler ) {
 		gMonitor.println( "I had nowhere to send this command..." );
+		objData.print();
+	}
 	return 0;
 }
 

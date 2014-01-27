@@ -14,6 +14,10 @@ namespace ZukiConsole
             bool done = false;
             char c;
             DateTime shutTime = DateTime.MinValue;
+
+            gz.PostCommand("f\n");
+
+            
             while (!done)
             {
                 bool newCmd = false;
@@ -43,11 +47,11 @@ namespace ZukiConsole
                 if (roughCmds.IndexOf(c) >= 0)
                 {
                     if( c == 'L' )
-                        gz.PostCommand("g90\n");
+                        gz.PostCommand("g90");
                     else if (c == 'R')
-                        gz.PostCommand("g135\n");
+                        gz.PostCommand("g135");
                     else
-                        gz.PostCommand(c + "100\n");
+                        gz.PostCommand(c + "100");
                     newCmd = true;
                 }
                 if (newCmd)
