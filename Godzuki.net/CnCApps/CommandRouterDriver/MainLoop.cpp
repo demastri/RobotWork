@@ -15,17 +15,18 @@ extern unsigned long millis();
 gComms gMonitor;
 gCommandRouter myRouter;
 gCommandRouter *pRouter=0;
-SimpleObject myObject;
+SimpleObject *pMyObject;
 
 long startTimer;
+char *prompt = " 1 - Route Something Cmd\n 2 - Route N/A cmd\n d - dump handler tree\n s - setup obj\n x - teardown timer handler\n X - teardown obj\n q - quit\nCommand:";
 
 void setup() {
 	pRouter = &myRouter;
 	myRouter.setup();
-	myObject.setup(7, &myRouter);  // actually includes an intended 1000 ms repeated request to "do something else"...
+	pMyObject = new SimpleObject();
+	pMyObject->setup(7, &myRouter);  // actually includes an intended 1000 ms repeated request to "do something else"...
 	startTimer = millis();
-	printf( "1 - Route Something Cmd, 2 - Route N/A cmd, s - setup obj, x - teardown obj, q - quit:" );
-
+	printf( prompt );
 }
 
 using namespace std;
@@ -41,28 +42,48 @@ int loop() {
 		switch (buffer[0] )
 		{
 		case '1':
+			printf( "Routing do something cmd\n" );
 			ROUTE_COMMAND(SIMPLE_OBJECT_DEVICE_ID,7,SimpleObject::COMMAND_ID_DO_SOMETHING,100);
 			//pRouter->RouteCommand( gCommandObject(DEVICE_ID, instanceID, X, Y, Z, A, 0, 0 ) )
 			//gCommandObject( int srcdev, int srcinst, int dev, int inst, int cmd, int param, long paySize, void *payData );
 			//myRouter.RouteCommand( SimpleObject::DEVICE_ID, 7, SimpleObject::COMMAND_ID_DO_SOMETHING, 100 );
 			break;
 		case'2':
-			ROUTE_COMMAND(SIMPLE_OBJECT_DEVICE_ID,7,-1,500);
+			printf( "Routing unknown cmd\n" );
+			ROUTE_COMMAND(SIMPLE_OBJECT_DEVICE_ID,7,247,500);
+			//myRouter.RouteCommand( SimpleObject::DEVICE_ID, 7, -1, 500 );
+			break;
+		case'd':
+			printf( "Dumping handler tree\n" );
+			myRouter.DumpHandlerTree();
 			//myRouter.RouteCommand( SimpleObject::DEVICE_ID, 7, -1, 500 );
 			break;
 		case's':
-			myObject.setup( 7, &myRouter );
+			if( pMyObject == 0 ) {
+				printf( "Setup object\n" );
+				pMyObject = new SimpleObject();
+				pMyObject->setup(7, &myRouter);  // actually includes an intended 1000 ms repeated request to "do something else"...
+			}
+			else
+				printf( "Object already setup...\n" );
 			break;
 		case'x':
-			//if( millis() - startTimer > 30000 )
-			myObject.teardown( &myRouter );
+			printf( "Teardown object timer\n" );
+			pMyObject->teardownTimer( &myRouter );
+			break;
+		case'X':
+			printf( "Teardown all handlers\n" );
+			delete pMyObject;
+			pMyObject = 0;
 			break;
 		case'q':
+			printf( "Quit app...\n" );
 			return 1;	// not arduino compatible
 		default:
+			printf( "Don't know what you meant...\n" );
 			break;
 		}
-		printf( "1 - Route Something Cmd, 2 - Route N/A cmd, s - setup obj, x - teardown obj, q - quit:" );
+		printf( prompt );
 	}
 
 

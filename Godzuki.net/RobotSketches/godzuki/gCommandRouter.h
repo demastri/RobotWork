@@ -16,7 +16,9 @@
 #define CMD_METHOD_DEREGISTER_TIMER(X,T)    router.RemoveCommandHandler( DEVICE_ID, instanceID, X, T )
 #define CMD_METHOD_DEREGISTER_DEFAULT()     router.RemoveCommandHandler( DEVICE_ID, instanceID )
 
-#define ROUTE_COMMAND(X,Y,Z,A)				pRouter->RouteCommand( gCommandObject(DEVICE_ID, instanceID, X, Y, Z, A, 0, 0 ) )
+#define CMD_METHOD_DEREGISTER_ALL()			pRouter->RemoveAllCommandHandlers( DEVICE_ID, instanceID )
+
+#define ROUTE_COMMAND(X,Y,Z,A)				pRouter->RouteCommand( new gCommandObject(DEVICE_ID, instanceID, X, Y, Z, A, 0, 0 ) )
 
 static const int ROUTER_NO_COMMAND       = 999;
 
@@ -27,14 +29,25 @@ public:
 	void AddCommandHandler( int deviceID, int instanceID, void *objRef, cmdHandler thisHandler );  // default backstop
 	void AddCommandHandler( int deviceID, int instanceID, void *objRef, int cmdID, cmdHandler thisHandler, long timer );
 
+	void RemoveAllCommandHandlers( int deviceID, int instanceID );  // catchall backstop
 	void RemoveCommandHandler( int deviceID, int instanceID );  // default backstop
 	void RemoveCommandHandler( int deviceID, int instanceID, int cmdID, long timer );
 
 	void ScanCommands();
-	gCommandObject *RouteCommand( gCommandObject objData );
+	gCommandObject *RouteCommand( gCommandObject *objData );
+	
+	void DumpHandlerTree();
+
+	void HandleTimedCommands();
+	void ExecuteCommandQueue();
 
 private:
+	RouteTableList *FindRouteTable( gCommandObject *commandObj );
+	void QueueCommand( gCommandObject *objData );
+	void DequeueCommand( gCommandObject *objData );
+
 	static RouteTableList *listBase;
+	gCommandObject *commandList;
 };
 
 #endif

@@ -58,7 +58,7 @@ void gComms::setup() {
 void gComms::processCommand(int newCommand, int cmdParam ) {
 	switch( newCommand ) {
 	case FOLLOW_SERIAL: 
-		writeToRadio = cmdParam;   // 1 = radio, 0 = usb
+		writeToRadio = (cmdParam == 1);   // 1 = radio, 0 = usb
 		print( "Switching to follow monitor on " );
 		println( (char *)(writeToRadio ? "radio" : "USB") );
 		break;

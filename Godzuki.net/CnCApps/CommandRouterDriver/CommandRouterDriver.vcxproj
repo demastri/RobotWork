@@ -79,6 +79,12 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\RobotSketches\godzuki\gCommandObject.h" />
+    <ClInclude Include="..\..\RobotSketches\godzuki\gCommandRouter.h" />
+    <ClInclude Include="..\..\RobotSketches\godzuki\gComms.h" />
+    <ClInclude Include="..\..\RobotSketches\godzuki\gRouteTableList.h" />
+    <ClInclude Include="..\..\RobotSketches\godzuki\gRoutingDeviceIDs.h" />
+    <ClInclude Include="..\..\RobotSketches\godzuki\gServoCommands.h" />
     <ClInclude Include="SimpleObject.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />

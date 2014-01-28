@@ -45,7 +45,7 @@ void gCommandObject::print() {
 	gMonitor.print( commandID );
 	gMonitor.print("> - <");
 	gMonitor.print( parameter );
-	gMonitor.print("> - ");
+	gMonitor.println(">");
 #if 0 
 	if( cmdHandler == 0 )
 		gMonitor.println("had some kind of handler...");

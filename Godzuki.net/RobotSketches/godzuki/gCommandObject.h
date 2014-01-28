@@ -77,6 +77,9 @@ public:
 	int commandID;
 	int parameter;
 
+	gCommandObject *nextEntry;
+	gCommandObject *prevEntry;
+
 	void print();
 private:
 	void Init( int srcdev, int srcinst, int dev, int inst, int cmd, int param, long paySize, void *payData );

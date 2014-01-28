@@ -3,6 +3,9 @@
 
 typedef void cmdHandler( void *objRef, int commandID, int parameter );
 
+#include "gComms.h"
+extern gComms gMonitor;
+
 struct RouteTableList {
 public:
 	RouteTableList( int _deviceID, int _instanceID, void *_objRef, int _cmdID, cmdHandler _thisHandler, long timerVal, unsigned long now ) {
@@ -36,6 +39,19 @@ public:
 	cmdHandler *thisHandler;
 	long reTriggerInMills;
 	long nextTrigger;
+
+	void print() {
+		gMonitor.print("Dumping cmd handler object... <");
+		gMonitor.print( deviceID );
+		gMonitor.print("> - <");
+		gMonitor.print( instanceID );
+		gMonitor.print("> - <");
+		gMonitor.print( cmdID );
+		gMonitor.print("> - <");
+		gMonitor.print( reTriggerInMills );
+		gMonitor.println(">");
+
+	}
 };
 
 #endif
