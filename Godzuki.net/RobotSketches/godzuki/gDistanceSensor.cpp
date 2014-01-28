@@ -63,8 +63,8 @@ void gDistanceSensor::setContinuousTiming(int gap ) {
 	readTimeGap = gap;
 }
 CMD_METHOD_IMPLEMENT( gDistanceSensor, processCommand ) {
-	if( commandID != currentCommand ) {
-		switch( commandID ) {
+	if(cmdObj->commandID != currentCommand ) {
+		switch( cmdObj->commandID ) {
 		case COMMAND_ID_RANGER_READ_DISTANCE: 
 			gMonitor.print("Get distance reading:");
 			currentCommand = COMMAND_ID_RANGER_READ_DISTANCE;

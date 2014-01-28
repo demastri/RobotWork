@@ -15,6 +15,7 @@ const int MAX_SETUP_WAIT_TIME = 2000;
 
 gComms::gComms() {
 }
+
 void gComms::setup(bool defaultToRadio, int baudRate) {
 	writeToRadio = defaultToRadio;
 #ifndef WIN32
@@ -47,6 +48,10 @@ void gComms::setup(bool defaultToRadio, int baudRate) {
 			Serial1.println("USB dead!!");
 	}
 #endif
+}
+
+void gComms::BroadcastCommand( gCommandObject *cmdObj ) {
+	// this will be where all the magic happens :)
 }
 
 void gComms::setup(bool defaultToRadio) {

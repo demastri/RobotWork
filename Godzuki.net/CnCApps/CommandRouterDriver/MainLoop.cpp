@@ -11,14 +11,23 @@ extern unsigned long millis();
 #include <chrono>
 #include <thread>
 
-#include "SimpleObject.h"
+#include "../../RobotSketches/godzuki/gComms.h"
 gComms gMonitor;
+
+#include "SimpleObject.h"
 gCommandRouter myRouter;
 gCommandRouter *pRouter=0;
 SimpleObject *pMyObject;
 
 long startTimer;
 char *prompt = " 1 - Route Something Cmd\n 2 - Route N/A cmd\n d - dump handler tree\n s - setup obj\n x - teardown timer handler\n X - teardown obj\n q - quit\nCommand:";
+
+extern int DEFAULT_DEVICE_ID = TEST_COMMAND_ROUTER_APP_DEVICE_ID;
+extern int DEFAULT_INSTANCE_ID = 1;
+
+void receiveCommands( void *objRef, gCommandObject *cmdObj ) {
+	printf( "\nReceived a command response...\nexpecting a string got\n status <%d>\n size <%d>\n data <%s>\n", (int)cmdObj->rtnStatus, (int)cmdObj->payloadSize, (char *)cmdObj->payloadData);
+}
 
 void setup() {
 	pRouter = &myRouter;
@@ -27,12 +36,16 @@ void setup() {
 	pMyObject->setup(7, &myRouter);  // actually includes an intended 1000 ms repeated request to "do something else"...
 	startTimer = millis();
 	printf( prompt );
+
+	myRouter.AddCommandHandler( DEFAULT_DEVICE_ID, DEFAULT_INSTANCE_ID, 0, receiveCommands );  // default backstop
 }
+
+
 
 using namespace std;
 int loop() {
-	int DEVICE_ID = -1;
-	int instanceID = 1;
+	int DEVICE_ID = DEFAULT_DEVICE_ID;
+	int instanceID = DEFAULT_INSTANCE_ID;
 
 	char buffer[128];
 

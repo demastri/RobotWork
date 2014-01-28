@@ -40,7 +40,7 @@ gMotorControl::~gMotorControl() {
 }
 
 CMD_METHOD_IMPLEMENT(gMotorControl,processCommand) {
-	switch( commandID ) {
+	switch( cmdObj->commandID ) {
 	case COMMAND_ID_MOTORCONTROL_SET_SPEED_FAST:
 		gMonitor.println("  motor controller - Setting fast speed");
 		setSpeeds(150);
@@ -51,9 +51,9 @@ CMD_METHOD_IMPLEMENT(gMotorControl,processCommand) {
 		break;
 	case COMMAND_ID_MOTORCONTROL_SET_SPEED:
 		gMonitor.print("  motor controller - setting speed ");
-		gMonitor.print(paramID);
+		gMonitor.print(cmdObj->parameter);
 		gMonitor.println("");
-		setSpeeds(paramID);
+		setSpeeds(cmdObj->parameter);
 		break;
 	case COMMAND_ID_MOTORCONTROL_SET_SPEED_BUMP:
 		currentSpeed += 50;

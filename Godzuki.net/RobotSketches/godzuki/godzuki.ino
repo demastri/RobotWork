@@ -35,6 +35,8 @@ gComms gMonitor;
 #include "gMotorControl.h"
 gMotorControl gMotors;
 
+extern int DEFAULT_DEVICE_ID = GODZUKI_SENSOR_PLATFORM_DEVICE_ID;
+extern int DEFAULT_INSTANCE_ID = 1;
 
 ////////////////////
 void setup() { 

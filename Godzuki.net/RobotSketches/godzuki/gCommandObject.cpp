@@ -34,13 +34,39 @@ void gCommandObject::Init( int srcdev, int srcinst, int dev, int inst, int cmd, 
 	parameter = param;
 	payloadSize = paySize;
 	payloadData = payData;
+	isReply = false;
+
+	nextEntry = prevEntry = 0;
 }
+gCommandObject::gCommandObject( gCommandObject *rhs ) {
+	sourceDeviceID = rhs->sourceDeviceID;
+	sourceInstanceID = rhs->sourceInstanceID;
+	targetDeviceID = rhs->targetDeviceID;
+	targetInstanceID = rhs->targetInstanceID;
+	commandID = rhs->commandID;
+	parameter = rhs->parameter;
+	payloadSize = rhs->payloadSize;
+	payloadData = rhs->payloadData;
+	isReply = rhs->isReply;
+
+	nextEntry = prevEntry = 0;
+}
+gCommandObject *gCommandObject::InitReply( unsigned char status, long paySize, void *payData ) { 
+	gCommandObject *outObj = new gCommandObject(this);
+
+	outObj->rtnStatus = status; 
+	outObj->payloadSize = paySize; 
+	outObj->payloadData = payData; 
+	outObj->isReply = true; 
+	return outObj;
+}
+
 
 void gCommandObject::print() {
 	gMonitor.print("Dumping cmd object... <");
-	gMonitor.print( targetDeviceID );
+	gMonitor.print( isReply ? sourceDeviceID : targetDeviceID );
 	gMonitor.print("> - <");
-	gMonitor.print( targetInstanceID);
+	gMonitor.print( isReply ? sourceInstanceID : targetInstanceID);
 	gMonitor.print("> - <");
 	gMonitor.print( commandID );
 	gMonitor.print("> - <");

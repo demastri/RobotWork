@@ -1,9 +1,10 @@
 #ifndef G_COMMS_H
 #define G_COMMS_H
 
-// NOTE - by default gInputs sets up the USB Serial port
-// 1 - don't do it here as well
-// 2 - be sure to setup gInputs first!!
+#include "gCommandObject.h"
+
+// NOTE - gComms now sets up both the USB Serial port and the radio
+// be sure to set this up first!!
 
 class gComms {
 public:
@@ -12,6 +13,8 @@ public:
 	void setup(bool defaultToRadio, int baudRate);
 	void setup(bool defaultToRadio);
 	void setup();
+
+	void BroadcastCommand( gCommandObject *cmdObj );
 
 	void processCommand(int newCommand, int cmdParam );  
 	void print( char *s );

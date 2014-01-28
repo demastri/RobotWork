@@ -39,6 +39,9 @@ int gInputs::ReadCommand(int &param) {
 	if (Serial.available()) {
 		int kbdKey = Serial.read();
 		switch (kbdKey) {
+		case 'h':
+			pRouter->DumpHandlerTree();
+			return ROUTER_NO_COMMAND;
 		case '>':
 			ROUTE_COMMAND( MOTOR_CONTROL_DEVICE_ID, 1, COMMAND_ID_MOTORCONTROL_SET_SPEED_FAST, -1 );
 			return ROUTER_NO_COMMAND;
@@ -113,6 +116,9 @@ int gInputs::ReadCommand(int &param) {
 	if (Serial1.available()) {
 		int kbdKey = Serial1.read();
 		switch (kbdKey) {
+		case 'h':
+			pRouter->DumpHandlerTree();
+			return ROUTER_NO_COMMAND;
 		case '>':
 			ROUTE_COMMAND( MOTOR_CONTROL_DEVICE_ID, 1, COMMAND_ID_MOTORCONTROL_SET_SPEED_FAST, -1 );
 			return ROUTER_NO_COMMAND;

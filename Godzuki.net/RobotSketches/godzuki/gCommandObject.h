@@ -71,25 +71,30 @@ public:
 	gCommandObject( int srcdev, int srcinst, int dev, int inst, int cmd );
 	gCommandObject( int dev, int inst, int cmd, int param );
 	gCommandObject( int dev, int inst, int cmd );
+	gCommandObject( gCommandObject *rhs);
 
 	int targetDeviceID;
 	int targetInstanceID;
 	int commandID;
 	int parameter;
 
-	gCommandObject *nextEntry;
-	gCommandObject *prevEntry;
-
-	void print();
-private:
-	void Init( int srcdev, int srcinst, int dev, int inst, int cmd, int param, long paySize, void *payData );
-
 	int sourceDeviceID;
 	int sourceInstanceID;
 	bool isReply;
 
+	gCommandObject *nextEntry;
+	gCommandObject *prevEntry;
+
+	gCommandObject *InitReply( unsigned char status, long paySize, void *payData );
+	void print();
+
+	unsigned char rtnStatus;
 	long payloadSize;
 	void *payloadData;
+
+private:
+	void Init( int srcdev, int srcinst, int dev, int inst, int cmd, int param, long paySize, void *payData );
+
 
 	//virtual char *Serialize();
 };

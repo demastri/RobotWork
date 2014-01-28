@@ -1,10 +1,7 @@
 #ifndef ROUTE_TABLE_LIST_H
 #define ROUTE_TABLE_LIST_H
 
-typedef void cmdHandler( void *objRef, int commandID, int parameter );
-
-#include "gComms.h"
-extern gComms gMonitor;
+typedef void cmdHandler( void *objRef, gCommandObject *cmdObj );
 
 struct RouteTableList {
 public:
@@ -40,18 +37,6 @@ public:
 	long reTriggerInMills;
 	long nextTrigger;
 
-	void print() {
-		gMonitor.print("Dumping cmd handler object... <");
-		gMonitor.print( deviceID );
-		gMonitor.print("> - <");
-		gMonitor.print( instanceID );
-		gMonitor.print("> - <");
-		gMonitor.print( cmdID );
-		gMonitor.print("> - <");
-		gMonitor.print( reTriggerInMills );
-		gMonitor.println(">");
-
-	}
 };
 
 #endif

@@ -45,14 +45,14 @@ CMD_METHOD_IMPLEMENT(gHBStatus,loopFinally) {
 
 void gHBStatus::checkHeartbeat() {
 	if( millis() - last_heartbeat_on >= 0 && millis() - last_heartbeat_on <= HEARTBEAT_WIDTH ) {  // should still be on...
-		setStatusActually(-1,-1);
+		setStatusActually(0);
 	}
 	if( millis() - last_heartbeat_on > HEARTBEAT_WIDTH ) {
 		if( printHeartbeatStatus ) {
 			gMonitor.print("turning off at: ");
 			gMonitor.println(millis());
 		}
-		clearStatusActually(-1,-1);
+		clearStatusActually(0);
 	}
 	if( millis() - last_heartbeat_on > HEARTBEAT_FREQUENCY ) {
 		if( printHeartbeatStatus ) {
@@ -60,7 +60,7 @@ void gHBStatus::checkHeartbeat() {
 			gMonitor.println(millis());
 		}
 		last_heartbeat_on = millis();
-		setStatusActually(-1,-1);
+		setStatusActually(0);
 	}
 }
 

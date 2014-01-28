@@ -29,10 +29,9 @@ void gServo::setup( int pin, int thisID, gCommandRouter *router ) {
 
 }
 void gServo::setupCommandListener( gCommandRouter &router ) {
-	//CMD_METHOD_REGISTER_DEFAULT(gServo, processCommand);
-	//CMD_METHOD_REGISTER_TIMER(gServo, COMMAND_ID_CONTINUE_SWEEP, continueSweep, 20);
+	CMD_METHOD_REGISTER_DEFAULT(gServo, processCommand);
+	CMD_METHOD_REGISTER_TIMER(gServo, COMMAND_ID_CONTINUE_SWEEP, continueSweep, 50);
 }
-
 
 void gServo::startSweep() {
 	moveTo( SWEEP_BOTTOM );
@@ -80,8 +79,8 @@ void gServo::center() {
 }
 
 CMD_METHOD_IMPLEMENT(gServo,processCommand) {
-	if( commandID != currentCommand ) {
-		switch( commandID ) {
+	if( cmdObj->commandID != currentCommand ) {
+		switch( cmdObj->commandID ) {
 		case COMMAND_ID_SERVO_CENTER: 
 			gMonitor.println("Going to center");
 			center();
@@ -90,12 +89,12 @@ CMD_METHOD_IMPLEMENT(gServo,processCommand) {
 		case COMMAND_ID_SERVO_SWEEP_ONCE:
 			gMonitor.println("Sweeping once");
 			startSweep();
-			currentCommand = commandID;
+			currentCommand = cmdObj->commandID;
 			break;
 		case COMMAND_ID_SERVO_SWEEP_CONTINUOUS:
 			gMonitor.println("Sweeping continuously");
 			startSweep();
-			currentCommand = commandID;
+			currentCommand = cmdObj->commandID;
 			break;
 		case COMMAND_ID_SERVO_SWEEP_STOP:
 			gMonitor.println("Stopping sweep");
@@ -104,8 +103,8 @@ CMD_METHOD_IMPLEMENT(gServo,processCommand) {
 			break;
 		case COMMAND_ID_SERVO_SET_POSITION:
 			gMonitor.print("Setting position to ");
-			gMonitor.println(paramID);
-			moveTo( paramID );
+			gMonitor.println(cmdObj->parameter);
+			moveTo(cmdObj->parameter);
 			currentCommand = COMMAND_ID_SERVO_NO_COMMAND;
 			break;
 		case COMMAND_ID_SERVO_READ_POSITION:
