@@ -7,7 +7,6 @@
 using namespace std;
 #endif
 
-#include "gServoCommands.h"
 #include "gComms.h"
 
 const long USB_BAUD_RATE = 9600;

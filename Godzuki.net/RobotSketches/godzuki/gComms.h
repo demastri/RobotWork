@@ -1,6 +1,8 @@
 #ifndef G_COMMS_H
 #define G_COMMS_H
 
+const int FOLLOW_SERIAL    = 900; // no button - 'f'
+
 #include "gCommandObject.h"
 
 // NOTE - gComms now sets up both the USB Serial port and the radio

@@ -42,9 +42,6 @@
     <ClInclude Include="..\..\RobotSketches\godzuki\gRoutingDeviceIDs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\RobotSketches\godzuki\gServoCommands.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
