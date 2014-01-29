@@ -72,6 +72,7 @@ public:
 	gCommandObject( int dev, int inst, int cmd, int param );
 	gCommandObject( int dev, int inst, int cmd );
 	gCommandObject( gCommandObject *rhs);
+	gCommandObject();
 
 	int targetDeviceID;
 	int targetInstanceID;
@@ -81,6 +82,7 @@ public:
 	int sourceDeviceID;
 	int sourceInstanceID;
 	bool isReply;
+	bool isLocal;
 
 	gCommandObject *nextEntry;
 	gCommandObject *prevEntry;
@@ -92,9 +94,12 @@ public:
 	long payloadSize;
 	void *payloadData;
 
+	char *ToCommandString();
+
 private:
 	void Init( int srcdev, int srcinst, int dev, int inst, int cmd, int param, long paySize, void *payData );
-
+	void PlaceInStrBfr( char *s, char *ss, int size, int loc );
+	void PlaceInStrBfr( char *s, int data, int size, int loc );
 
 	//virtual char *Serialize();
 };

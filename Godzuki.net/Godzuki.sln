@@ -8,6 +8,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Godzuki", "CnCApps\Godzuki\Godzuki.csproj", "{5109BF44-6E6D-4C04-863E-62D8951FFAC6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZukiConsole", "CnCApps\ZukiConsole\ZukiConsole.csproj", "{0CD6DB4F-13B0-452E-8588-029B36BB2C21}"
+	ProjectSection(ProjectDependencies) = postProject
+		{597B7C81-F1F1-4952-BD9B-0D2F3206CB4C} = {597B7C81-F1F1-4952-BD9B-0D2F3206CB4C}
+	EndProjectSection
 EndProject
 Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "ZukiWeb", "CnCApps\ZukiWeb\", "{FBA82318-FFF8-44CB-A232-B28F26CFE45E}"
 	ProjectSection(WebsiteProperties) = preProject

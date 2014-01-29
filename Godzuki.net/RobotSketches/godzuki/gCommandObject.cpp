@@ -4,6 +4,7 @@
 
 #include "gCommandObject.h"
 #include "gComms.h"
+
 #ifdef WIN32
 using namespace ZukiProxy;
 #endif
@@ -27,6 +28,10 @@ gCommandObject::gCommandObject( int dev, int inst, int cmd ) {
 	Init( -1, -1, dev, inst, cmd, -1, 0, 0 );
 }
 
+gCommandObject::gCommandObject() {
+	Init( -1, -1, -1, -1, -1, -1, 0, 0 );
+}
+
 void gCommandObject::Init( int srcdev, int srcinst, int dev, int inst, int cmd, int param, long paySize, void *payData ) {
 	sourceDeviceID = srcdev;
 	sourceInstanceID = srcinst;
@@ -37,6 +42,7 @@ void gCommandObject::Init( int srcdev, int srcinst, int dev, int inst, int cmd, 
 	payloadSize = paySize;
 	payloadData = payData;
 	isReply = false;
+	isLocal = true;
 
 	nextEntry = prevEntry = 0;
 }
@@ -61,6 +67,40 @@ gCommandObject *gCommandObject::InitReply( unsigned char status, long paySize, v
 	outObj->payloadData = payData; 
 	outObj->isReply = true; 
 	return outObj;
+}
+char cmdStrBfr[50];
+char *gCommandObject::ToCommandString() {
+	//   !ssiimmxxyyzzzzzz#  - look in the evernote blog, but it's pretty self evident...
+
+	PlaceInStrBfr( cmdStrBfr, "!",              1,  0 );
+	PlaceInStrBfr( cmdStrBfr, sourceDeviceID,   2,  1 );
+	PlaceInStrBfr( cmdStrBfr, sourceInstanceID, 2,  3 );
+	PlaceInStrBfr( cmdStrBfr, targetDeviceID,   2,  5 );
+	PlaceInStrBfr( cmdStrBfr, targetInstanceID, 2,  7 );
+	PlaceInStrBfr( cmdStrBfr, commandID,        2,  9 );
+	PlaceInStrBfr( cmdStrBfr, parameter,        6, 11 );
+	PlaceInStrBfr( cmdStrBfr, "#",              1, 17 );
+	PlaceInStrBfr( cmdStrBfr, "\0",             1, 18 );
+
+	return cmdStrBfr;
+}
+void gCommandObject::PlaceInStrBfr( char *s, char *ss, int size, int loc ) {
+	for( int i=0; i<size; i++ )
+		*(s+loc+i) = ss[i];
+}
+
+void gCommandObject::PlaceInStrBfr( char *s, int data, int size, int loc ) {
+	if( data < 0 ) {
+		PlaceInStrBfr( s, "-", 1, loc++ );
+		size--;
+		data = -data;
+	}
+
+	char *myBfr = gComms::intToStr( data );
+	int thisStrlen = gComms::strlen( myBfr );
+	for( int i=0; i<size-thisStrlen; i++ )
+		PlaceInStrBfr( s, "0", 1, loc+i );
+	PlaceInStrBfr( s, myBfr, thisStrlen, loc+size-thisStrlen );
 }
 
 

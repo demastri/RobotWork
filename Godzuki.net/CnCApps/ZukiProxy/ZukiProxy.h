@@ -9,7 +9,7 @@ using namespace System;
 
 namespace ZukiProxy {
 
-	public delegate void ResponseHandler();
+	public delegate void ResponseHandler(int cmd, int status, int size, String^ data);
 
 	void receiveCommands( void *objRef, gCommandObject *cmdObj );
 

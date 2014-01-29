@@ -113,9 +113,29 @@ int gInputs::ReadCommand(int &param) {
 			break;
 		}
 	}
+	char serialCmd[20];
+	int cmdSize = 0;
+
 	if (Serial1.available()) {
 		int kbdKey = Serial1.read();
 		switch (kbdKey) {
+		case '!':
+			serialCmd[cmdSize++] = (char)kbdKey;
+			delay(5);
+			while (Serial1.available()) {
+				kbdKey = Serial1.read();
+				serialCmd[cmdSize++] = (char)kbdKey;
+				delay(5);
+				if( kbdKey == '#' )
+					break;
+			}
+			serialCmd[cmdSize++] = '\0';
+			Serial1.print( "Remote Command String..." );
+			Serial1.println( serialCmd );
+			if( kbdKey == '#' ) {
+				pRouter->RouteCommand( gComms::UnpackCommandString(serialCmd) );
+			}
+			break;
 		case 'h':
 			pRouter->DumpHandlerTree();
 			return ROUTER_NO_COMMAND;

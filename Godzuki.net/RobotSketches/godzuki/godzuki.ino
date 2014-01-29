@@ -30,7 +30,7 @@ unsigned long lastDistanceTime=0;
 
 ///////  communications control definitions
 #include "gComms.h"
-gComms gMonitor;
+extern gComms gMonitor;
 
 #include "gMotorControl.h"
 gMotorControl gMotors;
@@ -51,7 +51,6 @@ void setup() {
 	gMotors.setup(1, &myRouter);
 	myInputs.setup(1, &myRouter);
 	//myDistanceSensor.setup(1, &myRouter, 5, 6, 500);
-
 } 
 
 void loop() {

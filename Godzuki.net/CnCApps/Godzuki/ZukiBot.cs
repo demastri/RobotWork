@@ -85,7 +85,7 @@ namespace Godzuki
             {
                 r.localBfr += indata;
                 // if some part of this signifies the end of the command, parse out everything else and add to list
-                int cmdLoc = r.localBfr.IndexOf( "\n" );
+                int cmdLoc = r.localBfr.IndexOfAny( new char[]{'#', '\n'} );
                 if( cmdLoc >= 0 ) {
                     string outStr = r.localBfr.Substring(0, cmdLoc+1);
                     if( cmdLoc+1 == r.localBfr.Length )

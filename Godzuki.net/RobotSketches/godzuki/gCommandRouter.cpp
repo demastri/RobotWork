@@ -136,10 +136,19 @@ void gCommandRouter::ExecuteCommandQueue() {
 		if( pHandler != 0 ) {
 			pHandler->thisHandler( pHandler->objRef, commandList );
 		} else {
-			gMonitor.BroadcastCommand( commandList );
-			gMonitor.println( "I had nowhere to send this command..." );
-			// ### broadcast over network for remote handler
-			commandList->print();
+			// broadcast over network for remote handler
+			if( commandList->isLocal ) {
+#ifdef WIN32
+				char *cmdStr = commandList->ToCommandString();
+				commandList->commandID = GLOBAL_COMMAND_BROADCAST;
+				commandList->isReply = true;
+				RouteReply( commandList, GLOBAL_COMMAND_STATUS_OK, gComms::strlen( cmdStr ), (void *)cmdStr );
+#else
+				gMonitor.BroadcastCommand( commandList );
+				//gMonitor.println( "I had nowhere to send this command..." );
+				//commandList->print();
+#endif
+			}
 		}
 		DequeueCommand( &commandList, commandList );
 	}
@@ -180,13 +189,13 @@ RouteTableList *gCommandRouter::FindRouteTable( gCommandObject *commandObj ) {
 		if( !commandObj->isReply && commandObj->targetDeviceID == curEntry->deviceID && commandObj->targetInstanceID == curEntry->instanceID && commandObj->commandID == curEntry->cmdID ) {
 			return curEntry;
 		}
-		if( !commandObj->isReply && commandObj->targetDeviceID == curEntry->deviceID && commandObj->targetInstanceID == curEntry->instanceID ) {
+		if( !commandObj->isReply && commandObj->targetDeviceID == curEntry->deviceID && commandObj->targetInstanceID == curEntry->instanceID && curEntry->cmdID == -1 ) {
 			defEntry = curEntry;
 		}
 		if( commandObj->isReply && commandObj->sourceDeviceID == curEntry->deviceID && commandObj->sourceInstanceID == curEntry->instanceID && commandObj->commandID == curEntry->cmdID ) {
 			return curEntry;
 		}
-		if( commandObj->isReply && commandObj->sourceDeviceID == curEntry->deviceID && commandObj->sourceInstanceID == curEntry->instanceID ) {
+		if( commandObj->isReply && commandObj->sourceDeviceID == curEntry->deviceID && commandObj->sourceInstanceID == curEntry->instanceID && curEntry->cmdID == -1 ) {
 			defEntry = curEntry;
 		}
 		curEntry = curEntry->nextEntry;

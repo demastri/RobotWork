@@ -9,9 +9,9 @@ using namespace std;
 using namespace ZukiProxy;
 #endif
 
-
 const long USB_BAUD_RATE = 9600;
 const int MAX_SETUP_WAIT_TIME = 2000;
+char gComms::refString[20];
 
 gComms::gComms() {
 }
@@ -52,7 +52,33 @@ void gComms::setup(bool defaultToRadio, int baudRate) {
 
 void gComms::BroadcastCommand( gCommandObject *cmdObj ) {
 	// this will be where all the magic happens :)
+	char *cmdString = cmdObj->ToCommandString();
+
+	print( "Eventually going out to the radio - <" );
+	print( cmdString );
+	println( ">" );
+
+	print( cmdString );
 }
+
+gCommandObject *gComms::UnpackCommandString( char *s ) {
+	gCommandObject *cmdObj =  new gCommandObject();
+	cmdObj->sourceDeviceID		= (s[1]-'0')*10 + (s[2]-'0');
+	cmdObj->sourceInstanceID	= (s[3]-'0')*10 + (s[4]-'0');
+	cmdObj->targetDeviceID		= (s[5]-'0')*10 + (s[6]-'0');
+	cmdObj->targetInstanceID	= (s[7]-'0')*10 + (s[8]-'0');
+	cmdObj->commandID			= (s[9]-'0')*10 + (s[10]-'0');
+	cmdObj->parameter			= (s[12]-'0')*10000 + (s[13]-'0')*1000 +(s[14]-'0')*100 + (s[15]-'0')*10 +(s[16]-'0');
+	if( s[11] == '-' )
+		cmdObj->parameter = -cmdObj->parameter;
+	else
+		cmdObj->parameter += (s[11]-'0')*100000;
+	cmdObj->isLocal = false;
+
+	return cmdObj;
+}
+
+
 
 void gComms::setup(bool defaultToRadio) {
 	setup( defaultToRadio, 9600 );
