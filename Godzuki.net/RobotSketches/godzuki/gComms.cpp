@@ -2,12 +2,13 @@
 #include <Arduino.h>
 #endif
 
+#include "gComms.h"
 #ifdef WIN32
 #include <stdio.h>
 using namespace std;
+using namespace ZukiProxy;
 #endif
 
-#include "gComms.h"
 
 const long USB_BAUD_RATE = 9600;
 const int MAX_SETUP_WAIT_TIME = 2000;

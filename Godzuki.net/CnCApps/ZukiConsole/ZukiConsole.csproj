@@ -52,6 +52,10 @@
       <Project>{5109bf44-6e6d-4c04-863e-62d8951ffac6}</Project>
       <Name>Godzuki %28CnCApps\Godzuki%29</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ZukiProxy\ZukiProxy.vcxproj">
+      <Project>{597b7c81-f1f1-4952-bd9b-0d2f3206cb4c}</Project>
+      <Name>ZukiProxy</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

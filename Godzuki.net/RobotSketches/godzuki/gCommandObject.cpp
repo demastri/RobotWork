@@ -3,9 +3,11 @@
 #endif
 
 #include "gCommandObject.h"
-
 #include "gComms.h"
-extern gComms gMonitor;
+#ifdef WIN32
+using namespace ZukiProxy;
+#endif
+gComms gMonitor;
 
 extern unsigned long millis();
 

@@ -35,11 +35,14 @@ gComms gMonitor;
 #include "gMotorControl.h"
 gMotorControl gMotors;
 
-extern int DEFAULT_DEVICE_ID = GODZUKI_SENSOR_PLATFORM_DEVICE_ID;
-extern int DEFAULT_INSTANCE_ID = 1;
+extern int DEFAULT_DEVICE_ID;
+extern int DEFAULT_INSTANCE_ID;
 
 ////////////////////
 void setup() { 
+	DEFAULT_DEVICE_ID = GODZUKI_SENSOR_PLATFORM_DEVICE_ID;
+	DEFAULT_INSTANCE_ID = 1;
+
 	myRouter.setup();
 
 	gMonitor.setup(true);

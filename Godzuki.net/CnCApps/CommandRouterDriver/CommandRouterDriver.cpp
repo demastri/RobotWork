@@ -7,13 +7,6 @@
 extern void setup();
 extern int loop();
 
-extern unsigned long millis();
-
-extern unsigned long millis() {
-
-	return GetTickCount();
-}
-
 int _tmain(int argc, _TCHAR* argv[])
 {
 	setup();

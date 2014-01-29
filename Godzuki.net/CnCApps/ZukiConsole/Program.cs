@@ -8,6 +8,10 @@ namespace ZukiConsole
 {
     class Program
     {
+        static void receiveResponses() {
+            System.Console.WriteLine("\nIn Handler\n");
+        }
+
         static void Main(string[] args)
         {
             Godzuki.ZukiBot gz = new Godzuki.ZukiBot();
@@ -15,8 +19,11 @@ namespace ZukiConsole
             char c;
             DateTime shutTime = DateTime.MinValue;
 
-            gz.PostCommand("f\n");
+            ZukiProxy.SensorBot.HelloWorld();
+            ZukiProxy.SensorBot.setup();
+            ZukiProxy.SensorBot.setClientHandler(Program.receiveResponses);
 
+            gz.PostCommand("f\n");
             
             while (!done)
             {
@@ -33,6 +40,10 @@ namespace ZukiConsole
                         System.Console.WriteLine("\nExiting - shutting down zukibot");
                         gz.ShutDown();
                         shutTime = DateTime.Now;
+                        break;
+                    case 'r':
+                        System.Console.WriteLine("\nrouting some kind of command...");
+                        ZukiProxy.SensorBot.routeCommand(1);
                         break;
                     default:
                         while(gz.hasData)
@@ -59,6 +70,8 @@ namespace ZukiConsole
                 TimeSpan waitTime = DateTime.Now - shutTime;
                 if (shutTime != DateTime.MinValue && waitTime.Seconds >= 2)
                     done = true;
+
+                ZukiProxy.SensorBot.loop();
             }
         }
         static char readCommand()

@@ -2,17 +2,21 @@
 #include <Arduino.h>
 #endif
 
+
 #include "gCommandRouter.h"
 
 #include "gComms.h"
+#ifdef WIN32
+using namespace ZukiProxy;
+#endif
 extern gComms gMonitor;
 extern unsigned long millis();
 
 static int devicesNOTtoMonitor[] = {HEARTBEAT_DEVICE_ID, -1};
 static int devicesNOTtoRoute[] = {-1, SERVO_DEVICE_ID, -1};
 
-extern int DEFAULT_DEVICE_ID;
-extern int DEFAULT_INSTANCE_ID;
+extern int DEFAULT_DEVICE_ID = -1;
+extern int DEFAULT_INSTANCE_ID = -1;
 
 
 RouteTableList *gCommandRouter::listBase = 0;

@@ -9,10 +9,9 @@ extern unsigned long millis();
 #include <iostream>
 
 #include <chrono>
-#include <thread>
 
 #include "../../RobotSketches/godzuki/gComms.h"
-gComms gMonitor;
+extern ZukiProxy::gComms gMonitor;
 
 #include "SimpleObject.h"
 gCommandRouter myRouter;
@@ -22,14 +21,17 @@ SimpleObject *pMyObject;
 long startTimer;
 char *prompt = " 1 - Route Something Cmd\n 2 - Route N/A cmd\n d - dump handler tree\n s - setup obj\n x - teardown timer handler\n X - teardown obj\n q - quit\nCommand:";
 
-extern int DEFAULT_DEVICE_ID = TEST_COMMAND_ROUTER_APP_DEVICE_ID;
-extern int DEFAULT_INSTANCE_ID = 1;
+extern int DEFAULT_DEVICE_ID;
+extern int DEFAULT_INSTANCE_ID;
 
 void receiveCommands( void *objRef, gCommandObject *cmdObj ) {
 	printf( "\nReceived a command response...\nexpecting a string got\n status <%d>\n size <%d>\n data <%s>\n", (int)cmdObj->rtnStatus, (int)cmdObj->payloadSize, (char *)cmdObj->payloadData);
 }
 
 void setup() {
+	DEFAULT_DEVICE_ID = TEST_COMMAND_ROUTER_APP_DEVICE_ID;
+	DEFAULT_INSTANCE_ID = 1;
+
 	pRouter = &myRouter;
 	myRouter.setup();
 	pMyObject = new SimpleObject();
@@ -102,8 +104,8 @@ int loop() {
 
 	myRouter.ScanCommands();
 
-	std::chrono::milliseconds dura( 50 );
-	std::this_thread::sleep_for( dura );
+	//std::chrono::milliseconds dura( 50 );
+	//std::this_thread::sleep_for( dura );
 
 	return 0;
 }

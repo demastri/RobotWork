@@ -8,7 +8,13 @@ const int FOLLOW_SERIAL    = 900; // no button - 'f'
 // NOTE - gComms now sets up both the USB Serial port and the radio
 // be sure to set this up first!!
 
-class gComms {
+#ifdef WIN32
+namespace ZukiProxy
+{
+#endif
+
+
+public class gComms {
 public:
 	gComms();
 	bool writeToRadio;
@@ -32,5 +38,9 @@ private:
 	char *intToStr( int i );
 	char refString[20];
 };
+
+#ifdef WIN32
+}
+#endif
 
 #endif
