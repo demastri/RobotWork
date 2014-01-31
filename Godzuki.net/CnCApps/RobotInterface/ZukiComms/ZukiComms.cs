@@ -10,11 +10,14 @@ namespace Godzuki
     public class ZukiComms
     {
         public static List<ZukiComms> portMaps = new List<ZukiComms>();
+        public static string[] GetPortNames() { return SerialPort.GetPortNames(); }
+        
         SerialPort serial;
 
         public bool hasData { get { return curData != null && curData.Count > 0; } }
         public List<string> curData;
         private string localBfr;
+
 
         public ZukiComms()
         {
@@ -24,10 +27,10 @@ namespace Godzuki
             curData.Add("ZukiBot local object alive and well\n");
         }
 
-        public void SelectPort( string portName ) {
-            SelectPort(portName, 9600, Parity.None, StopBits.One, 8, Handshake.None);
+        public bool SelectPort( string portName ) {
+            return SelectPort(portName, 9600, Parity.None, StopBits.One, 8, Handshake.None);
         }
-        public void SelectPort(string portName, int baud, Parity parity, StopBits sb, int bits, Handshake hs)
+        public bool SelectPort(string portName, int baud, Parity parity, StopBits sb, int bits, Handshake hs)
         {
             ShutDown();
             curData.Add("ZukiBot - opening serial port\n");
@@ -39,10 +42,19 @@ namespace Godzuki
             serial.DataBits = bits;
             serial.Handshake = hs;
 
-            serial.DataReceived += new SerialDataReceivedEventHandler(DataReceivedHandler);
+            try
+            {
+                serial.DataReceived += new SerialDataReceivedEventHandler(DataReceivedHandler);
 
-            serial.Open();
-            portMaps.Add(this);
+                serial.Open();
+                portMaps.Add(this);
+                return serial.IsOpen;
+            }
+            catch
+            {
+                ShutDown();
+                return false;
+            }
         }
         public void ShutDown()
         {
@@ -58,8 +70,10 @@ namespace Godzuki
 
         public void PostCommand(string cmdString)
         {
-            if( serial != null && serial.IsOpen )
+            if (serial != null && serial.IsOpen)
                 serial.Write(cmdString);
+            else
+                curData.Add("ZukiBot - could not post data - no port\n");
         }
 
         /// <summary>

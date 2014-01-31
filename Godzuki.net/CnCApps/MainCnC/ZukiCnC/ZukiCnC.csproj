@@ -77,6 +77,16 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\RobotInterface\ZukiComms\ZukiComms.csproj">
+      <Project>{21349356-8319-4f49-9c0f-f60f503efe4a}</Project>
+      <Name>ZukiComms</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Testing\ZukiConsole\ZukiConsole.csproj">
+      <Project>{ed8cbf81-df49-4db9-a152-a11ccae314db}</Project>
+      <Name>ZukiConsole</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

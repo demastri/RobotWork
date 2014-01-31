@@ -28,15 +28,35 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.sessionLog = new System.Windows.Forms.TextBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.availableInstances = new System.Windows.Forms.ComboBox();
+            this.RefreshPortData = new System.Windows.Forms.Button();
+            this.button12 = new System.Windows.Forms.Button();
+            this.goalList = new System.Windows.Forms.ComboBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.ConnectToRobotButton = new System.Windows.Forms.Button();
+            this.availablePorts = new System.Windows.Forms.ComboBox();
+            this.label2 = new System.Windows.Forms.Label();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.button11 = new System.Windows.Forms.Button();
+            this.button10 = new System.Windows.Forms.Button();
+            this.button9 = new System.Windows.Forms.Button();
+            this.button8 = new System.Windows.Forms.Button();
+            this.button7 = new System.Windows.Forms.Button();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.groupBox9 = new System.Windows.Forms.GroupBox();
+            this.textBox4 = new System.Windows.Forms.TextBox();
+            this.groupBox8 = new System.Windows.Forms.GroupBox();
+            this.button13 = new System.Windows.Forms.Button();
+            this.textBox3 = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
             this.trackBar1 = new System.Windows.Forms.TrackBar();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
-            this.button5 = new System.Windows.Forms.Button();
-            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.GetServoPositionButton = new System.Windows.Forms.Button();
+            this.CurrentServoPosition = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.button3 = new System.Windows.Forms.Button();
             this.button4 = new System.Windows.Forms.Button();
@@ -46,40 +66,24 @@
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
-            this.button6 = new System.Windows.Forms.Button();
-            this.button7 = new System.Windows.Forms.Button();
-            this.button8 = new System.Windows.Forms.Button();
-            this.button9 = new System.Windows.Forms.Button();
-            this.button10 = new System.Windows.Forms.Button();
-            this.button11 = new System.Windows.Forms.Button();
-            this.comboBox2 = new System.Windows.Forms.ComboBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.button12 = new System.Windows.Forms.Button();
-            this.groupBox8 = new System.Windows.Forms.GroupBox();
-            this.button13 = new System.Windows.Forms.Button();
-            this.textBox3 = new System.Windows.Forms.TextBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.groupBox9 = new System.Windows.Forms.GroupBox();
-            this.textBox4 = new System.Windows.Forms.TextBox();
+            this.MessageLoopTimer = new System.Windows.Forms.Timer(this.components);
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox4.SuspendLayout();
+            this.groupBox9.SuspendLayout();
+            this.groupBox8.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
             this.groupBox7.SuspendLayout();
             this.groupBox6.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.groupBox5.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
-            this.groupBox8.SuspendLayout();
-            this.groupBox9.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.textBox1);
+            this.groupBox1.Controls.Add(this.sessionLog);
             this.groupBox1.Location = new System.Drawing.Point(12, 362);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(270, 196);
@@ -87,23 +91,27 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Command Log";
             // 
-            // textBox1
+            // sessionLog
             // 
-            this.textBox1.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.textBox1.Location = new System.Drawing.Point(12, 19);
-            this.textBox1.Multiline = true;
-            this.textBox1.Name = "textBox1";
-            this.textBox1.ReadOnly = true;
-            this.textBox1.Size = new System.Drawing.Size(252, 171);
-            this.textBox1.TabIndex = 0;
+            this.sessionLog.AcceptsReturn = true;
+            this.sessionLog.AcceptsTab = true;
+            this.sessionLog.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.sessionLog.Location = new System.Drawing.Point(12, 19);
+            this.sessionLog.Multiline = true;
+            this.sessionLog.Name = "sessionLog";
+            this.sessionLog.ReadOnly = true;
+            this.sessionLog.Size = new System.Drawing.Size(252, 171);
+            this.sessionLog.TabIndex = 0;
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.availableInstances);
+            this.groupBox2.Controls.Add(this.RefreshPortData);
             this.groupBox2.Controls.Add(this.button12);
-            this.groupBox2.Controls.Add(this.comboBox2);
+            this.groupBox2.Controls.Add(this.goalList);
             this.groupBox2.Controls.Add(this.label3);
-            this.groupBox2.Controls.Add(this.button6);
-            this.groupBox2.Controls.Add(this.comboBox1);
+            this.groupBox2.Controls.Add(this.ConnectToRobotButton);
+            this.groupBox2.Controls.Add(this.availablePorts);
             this.groupBox2.Controls.Add(this.label2);
             this.groupBox2.Location = new System.Drawing.Point(288, 362);
             this.groupBox2.Name = "groupBox2";
@@ -111,6 +119,88 @@
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Connection";
+            // 
+            // availableInstances
+            // 
+            this.availableInstances.FormattingEnabled = true;
+            this.availableInstances.Items.AddRange(new object[] {
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10"});
+            this.availableInstances.Location = new System.Drawing.Point(159, 19);
+            this.availableInstances.Name = "availableInstances";
+            this.availableInstances.Size = new System.Drawing.Size(37, 21);
+            this.availableInstances.TabIndex = 14;
+            // 
+            // RefreshPortData
+            // 
+            this.RefreshPortData.Location = new System.Drawing.Point(202, 167);
+            this.RefreshPortData.Name = "RefreshPortData";
+            this.RefreshPortData.Size = new System.Drawing.Size(64, 23);
+            this.RefreshPortData.TabIndex = 13;
+            this.RefreshPortData.Text = "Refresh";
+            this.RefreshPortData.UseVisualStyleBackColor = true;
+            this.RefreshPortData.Click += new System.EventHandler(this.RefreshPortData_Click);
+            // 
+            // button12
+            // 
+            this.button12.Location = new System.Drawing.Point(208, 44);
+            this.button12.Name = "button12";
+            this.button12.Size = new System.Drawing.Size(64, 23);
+            this.button12.TabIndex = 12;
+            this.button12.Text = "Execute";
+            this.button12.UseVisualStyleBackColor = true;
+            // 
+            // goalList
+            // 
+            this.goalList.FormattingEnabled = true;
+            this.goalList.Location = new System.Drawing.Point(89, 46);
+            this.goalList.Name = "goalList";
+            this.goalList.Size = new System.Drawing.Size(113, 21);
+            this.goalList.TabIndex = 11;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(14, 49);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(69, 13);
+            this.label3.TabIndex = 10;
+            this.label3.Text = "Current Goal:";
+            // 
+            // ConnectToRobotButton
+            // 
+            this.ConnectToRobotButton.Location = new System.Drawing.Point(208, 17);
+            this.ConnectToRobotButton.Name = "ConnectToRobotButton";
+            this.ConnectToRobotButton.Size = new System.Drawing.Size(64, 23);
+            this.ConnectToRobotButton.TabIndex = 8;
+            this.ConnectToRobotButton.Text = "Connect";
+            this.ConnectToRobotButton.UseVisualStyleBackColor = true;
+            this.ConnectToRobotButton.Click += new System.EventHandler(this.ConnectToRobotButton_Click);
+            // 
+            // availablePorts
+            // 
+            this.availablePorts.FormattingEnabled = true;
+            this.availablePorts.Location = new System.Drawing.Point(89, 19);
+            this.availablePorts.Name = "availablePorts";
+            this.availablePorts.Size = new System.Drawing.Size(64, 21);
+            this.availablePorts.TabIndex = 9;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(14, 22);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(80, 13);
+            this.label2.TabIndex = 8;
+            this.label2.Text = "COM/Instance:";
             // 
             // groupBox3
             // 
@@ -125,6 +215,51 @@
             this.groupBox3.TabIndex = 2;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Motion Control";
+            // 
+            // button11
+            // 
+            this.button11.Location = new System.Drawing.Point(124, 119);
+            this.button11.Name = "button11";
+            this.button11.Size = new System.Drawing.Size(30, 23);
+            this.button11.TabIndex = 4;
+            this.button11.Text = "V";
+            this.button11.UseVisualStyleBackColor = true;
+            // 
+            // button10
+            // 
+            this.button10.Location = new System.Drawing.Point(88, 90);
+            this.button10.Name = "button10";
+            this.button10.Size = new System.Drawing.Size(30, 23);
+            this.button10.TabIndex = 3;
+            this.button10.Text = "<";
+            this.button10.UseVisualStyleBackColor = true;
+            // 
+            // button9
+            // 
+            this.button9.Location = new System.Drawing.Point(160, 90);
+            this.button9.Name = "button9";
+            this.button9.Size = new System.Drawing.Size(30, 23);
+            this.button9.TabIndex = 2;
+            this.button9.Text = ">";
+            this.button9.UseVisualStyleBackColor = true;
+            // 
+            // button8
+            // 
+            this.button8.Location = new System.Drawing.Point(124, 90);
+            this.button8.Name = "button8";
+            this.button8.Size = new System.Drawing.Size(30, 23);
+            this.button8.TabIndex = 1;
+            this.button8.Text = "X";
+            this.button8.UseVisualStyleBackColor = true;
+            // 
+            // button7
+            // 
+            this.button7.Location = new System.Drawing.Point(124, 61);
+            this.button7.Name = "button7";
+            this.button7.Size = new System.Drawing.Size(30, 23);
+            this.button7.TabIndex = 0;
+            this.button7.Text = "^";
+            this.button7.UseVisualStyleBackColor = true;
             // 
             // groupBox4
             // 
@@ -141,6 +276,64 @@
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Monitoring";
             // 
+            // groupBox9
+            // 
+            this.groupBox9.Controls.Add(this.textBox4);
+            this.groupBox9.Location = new System.Drawing.Point(284, 19);
+            this.groupBox9.Name = "groupBox9";
+            this.groupBox9.Size = new System.Drawing.Size(264, 112);
+            this.groupBox9.TabIndex = 9;
+            this.groupBox9.TabStop = false;
+            this.groupBox9.Text = "Attitude";
+            // 
+            // textBox4
+            // 
+            this.textBox4.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.textBox4.Location = new System.Drawing.Point(6, 19);
+            this.textBox4.Multiline = true;
+            this.textBox4.Name = "textBox4";
+            this.textBox4.ReadOnly = true;
+            this.textBox4.Size = new System.Drawing.Size(252, 87);
+            this.textBox4.TabIndex = 1;
+            // 
+            // groupBox8
+            // 
+            this.groupBox8.Controls.Add(this.button13);
+            this.groupBox8.Controls.Add(this.textBox3);
+            this.groupBox8.Controls.Add(this.label4);
+            this.groupBox8.Location = new System.Drawing.Point(284, 137);
+            this.groupBox8.Name = "groupBox8";
+            this.groupBox8.Size = new System.Drawing.Size(264, 49);
+            this.groupBox8.TabIndex = 8;
+            this.groupBox8.TabStop = false;
+            this.groupBox8.Text = "Ranging";
+            // 
+            // button13
+            // 
+            this.button13.Location = new System.Drawing.Point(141, 17);
+            this.button13.Name = "button13";
+            this.button13.Size = new System.Drawing.Size(47, 23);
+            this.button13.TabIndex = 7;
+            this.button13.Text = "Read";
+            this.button13.UseVisualStyleBackColor = true;
+            // 
+            // textBox3
+            // 
+            this.textBox3.Location = new System.Drawing.Point(96, 19);
+            this.textBox3.Name = "textBox3";
+            this.textBox3.ReadOnly = true;
+            this.textBox3.Size = new System.Drawing.Size(39, 20);
+            this.textBox3.TabIndex = 6;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(6, 22);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(87, 13);
+            this.label4.TabIndex = 5;
+            this.label4.Text = "Current Reading:";
+            // 
             // trackBar1
             // 
             this.trackBar1.Location = new System.Drawing.Point(6, 273);
@@ -150,8 +343,8 @@
             // 
             // groupBox7
             // 
-            this.groupBox7.Controls.Add(this.button5);
-            this.groupBox7.Controls.Add(this.textBox2);
+            this.groupBox7.Controls.Add(this.GetServoPositionButton);
+            this.groupBox7.Controls.Add(this.CurrentServoPosition);
             this.groupBox7.Controls.Add(this.label1);
             this.groupBox7.Controls.Add(this.button3);
             this.groupBox7.Controls.Add(this.button4);
@@ -162,22 +355,23 @@
             this.groupBox7.TabStop = false;
             this.groupBox7.Text = "Servo Control";
             // 
-            // button5
+            // GetServoPositionButton
             // 
-            this.button5.Location = new System.Drawing.Point(141, 17);
-            this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(47, 23);
-            this.button5.TabIndex = 7;
-            this.button5.Text = "Read";
-            this.button5.UseVisualStyleBackColor = true;
+            this.GetServoPositionButton.Location = new System.Drawing.Point(141, 17);
+            this.GetServoPositionButton.Name = "GetServoPositionButton";
+            this.GetServoPositionButton.Size = new System.Drawing.Size(47, 23);
+            this.GetServoPositionButton.TabIndex = 7;
+            this.GetServoPositionButton.Text = "Read";
+            this.GetServoPositionButton.UseVisualStyleBackColor = true;
+            this.GetServoPositionButton.Click += new System.EventHandler(this.GetServoPositionButton_Click);
             // 
-            // textBox2
+            // CurrentServoPosition
             // 
-            this.textBox2.Location = new System.Drawing.Point(96, 19);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.ReadOnly = true;
-            this.textBox2.Size = new System.Drawing.Size(39, 20);
-            this.textBox2.TabIndex = 6;
+            this.CurrentServoPosition.Location = new System.Drawing.Point(96, 19);
+            this.CurrentServoPosition.Name = "CurrentServoPosition";
+            this.CurrentServoPosition.ReadOnly = true;
+            this.CurrentServoPosition.Size = new System.Drawing.Size(39, 20);
+            this.CurrentServoPosition.TabIndex = 6;
             // 
             // label1
             // 
@@ -264,160 +458,10 @@
             this.pictureBox2.TabIndex = 3;
             this.pictureBox2.TabStop = false;
             // 
-            // label2
+            // MessageLoopTimer
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(14, 22);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(56, 13);
-            this.label2.TabIndex = 8;
-            this.label2.Text = "COM Port:";
-            // 
-            // comboBox1
-            // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(104, 19);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(64, 21);
-            this.comboBox1.TabIndex = 9;
-            // 
-            // button6
-            // 
-            this.button6.Location = new System.Drawing.Point(174, 17);
-            this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(64, 23);
-            this.button6.TabIndex = 8;
-            this.button6.Text = "Connect";
-            this.button6.UseVisualStyleBackColor = true;
-            // 
-            // button7
-            // 
-            this.button7.Location = new System.Drawing.Point(124, 61);
-            this.button7.Name = "button7";
-            this.button7.Size = new System.Drawing.Size(30, 23);
-            this.button7.TabIndex = 0;
-            this.button7.Text = "^";
-            this.button7.UseVisualStyleBackColor = true;
-            // 
-            // button8
-            // 
-            this.button8.Location = new System.Drawing.Point(124, 90);
-            this.button8.Name = "button8";
-            this.button8.Size = new System.Drawing.Size(30, 23);
-            this.button8.TabIndex = 1;
-            this.button8.Text = "X";
-            this.button8.UseVisualStyleBackColor = true;
-            // 
-            // button9
-            // 
-            this.button9.Location = new System.Drawing.Point(160, 90);
-            this.button9.Name = "button9";
-            this.button9.Size = new System.Drawing.Size(30, 23);
-            this.button9.TabIndex = 2;
-            this.button9.Text = ">";
-            this.button9.UseVisualStyleBackColor = true;
-            // 
-            // button10
-            // 
-            this.button10.Location = new System.Drawing.Point(88, 90);
-            this.button10.Name = "button10";
-            this.button10.Size = new System.Drawing.Size(30, 23);
-            this.button10.TabIndex = 3;
-            this.button10.Text = "<";
-            this.button10.UseVisualStyleBackColor = true;
-            // 
-            // button11
-            // 
-            this.button11.Location = new System.Drawing.Point(124, 119);
-            this.button11.Name = "button11";
-            this.button11.Size = new System.Drawing.Size(30, 23);
-            this.button11.TabIndex = 4;
-            this.button11.Text = "V";
-            this.button11.UseVisualStyleBackColor = true;
-            // 
-            // comboBox2
-            // 
-            this.comboBox2.FormattingEnabled = true;
-            this.comboBox2.Location = new System.Drawing.Point(104, 46);
-            this.comboBox2.Name = "comboBox2";
-            this.comboBox2.Size = new System.Drawing.Size(64, 21);
-            this.comboBox2.TabIndex = 11;
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(14, 49);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(69, 13);
-            this.label3.TabIndex = 10;
-            this.label3.Text = "Current Goal:";
-            // 
-            // button12
-            // 
-            this.button12.Location = new System.Drawing.Point(174, 44);
-            this.button12.Name = "button12";
-            this.button12.Size = new System.Drawing.Size(64, 23);
-            this.button12.TabIndex = 12;
-            this.button12.Text = "Execute";
-            this.button12.UseVisualStyleBackColor = true;
-            // 
-            // groupBox8
-            // 
-            this.groupBox8.Controls.Add(this.button13);
-            this.groupBox8.Controls.Add(this.textBox3);
-            this.groupBox8.Controls.Add(this.label4);
-            this.groupBox8.Location = new System.Drawing.Point(284, 137);
-            this.groupBox8.Name = "groupBox8";
-            this.groupBox8.Size = new System.Drawing.Size(264, 49);
-            this.groupBox8.TabIndex = 8;
-            this.groupBox8.TabStop = false;
-            this.groupBox8.Text = "Ranging";
-            // 
-            // button13
-            // 
-            this.button13.Location = new System.Drawing.Point(141, 17);
-            this.button13.Name = "button13";
-            this.button13.Size = new System.Drawing.Size(47, 23);
-            this.button13.TabIndex = 7;
-            this.button13.Text = "Read";
-            this.button13.UseVisualStyleBackColor = true;
-            // 
-            // textBox3
-            // 
-            this.textBox3.Location = new System.Drawing.Point(96, 19);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.ReadOnly = true;
-            this.textBox3.Size = new System.Drawing.Size(39, 20);
-            this.textBox3.TabIndex = 6;
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(6, 22);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(87, 13);
-            this.label4.TabIndex = 5;
-            this.label4.Text = "Current Reading:";
-            // 
-            // groupBox9
-            // 
-            this.groupBox9.Controls.Add(this.textBox4);
-            this.groupBox9.Location = new System.Drawing.Point(284, 19);
-            this.groupBox9.Name = "groupBox9";
-            this.groupBox9.Size = new System.Drawing.Size(264, 112);
-            this.groupBox9.TabIndex = 9;
-            this.groupBox9.TabStop = false;
-            this.groupBox9.Text = "Attitude";
-            // 
-            // textBox4
-            // 
-            this.textBox4.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.textBox4.Location = new System.Drawing.Point(6, 19);
-            this.textBox4.Multiline = true;
-            this.textBox4.Name = "textBox4";
-            this.textBox4.ReadOnly = true;
-            this.textBox4.Size = new System.Drawing.Size(252, 87);
-            this.textBox4.TabIndex = 1;
+            this.MessageLoopTimer.Interval = 250;
+            this.MessageLoopTimer.Tick += new System.EventHandler(this.MessageLoopTimer_Tick);
             // 
             // MainCnCForm
             // 
@@ -437,6 +481,10 @@
             this.groupBox3.ResumeLayout(false);
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
+            this.groupBox9.ResumeLayout(false);
+            this.groupBox9.PerformLayout();
+            this.groupBox8.ResumeLayout(false);
+            this.groupBox8.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
             this.groupBox7.ResumeLayout(false);
             this.groupBox7.PerformLayout();
@@ -444,10 +492,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.groupBox5.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
-            this.groupBox8.ResumeLayout(false);
-            this.groupBox8.PerformLayout();
-            this.groupBox9.ResumeLayout(false);
-            this.groupBox9.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -465,18 +509,18 @@
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.PictureBox pictureBox1;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox sessionLog;
         private System.Windows.Forms.PictureBox pictureBox2;
-        private System.Windows.Forms.Button button5;
-        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.Button GetServoPositionButton;
+        private System.Windows.Forms.TextBox CurrentServoPosition;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.Button button12;
-        private System.Windows.Forms.ComboBox comboBox2;
+        private System.Windows.Forms.ComboBox goalList;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Button button6;
-        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.Button ConnectToRobotButton;
+        private System.Windows.Forms.ComboBox availablePorts;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button button11;
         private System.Windows.Forms.Button button10;
@@ -489,6 +533,9 @@
         private System.Windows.Forms.Button button13;
         private System.Windows.Forms.TextBox textBox3;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Button RefreshPortData;
+        private System.Windows.Forms.ComboBox availableInstances;
+        private System.Windows.Forms.Timer MessageLoopTimer;
     }
 }
 
