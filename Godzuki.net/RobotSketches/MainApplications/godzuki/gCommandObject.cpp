@@ -83,7 +83,7 @@ uint8_t *gCommandObject::ToCommandString( size_t *t ) {
 		PlaceInStrBfr( cmdStrBfr, "#",              1, 17 );
 		PlaceInStrBfr( cmdStrBfr, "\0",             1, 18 );
 	} else { // &ssiimmxxyyccSSZZDDDDDDD# similar - repl param w/status, add size and data
-		*t = 17+payloadSize;
+		*t = 17+payloadSize+1;
 		PlaceInStrBfr( cmdStrBfr, "&",              1,  0 );
 		PlaceInStrBfr( cmdStrBfr, sourceDeviceID,   2,  1 );
 		PlaceInStrBfr( cmdStrBfr, sourceInstanceID, 2,  3 );
@@ -94,7 +94,7 @@ uint8_t *gCommandObject::ToCommandString( size_t *t ) {
 		PlaceInStrBfr( cmdStrBfr, payloadSize,      4, 13 );
 		PlaceInStrBfr( cmdStrBfr, (char *)payloadData, payloadSize, 17 );
 		PlaceInStrBfr( cmdStrBfr, "#",              1, 17+payloadSize );
-		PlaceInStrBfr( cmdStrBfr, "\0",             1, 18 );
+		PlaceInStrBfr( cmdStrBfr, "\0",             1, 17+payloadSize+1 );
 	}
 
 	return cmdStrBfr;

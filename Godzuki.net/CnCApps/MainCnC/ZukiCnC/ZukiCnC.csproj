@@ -82,9 +82,9 @@
       <Project>{21349356-8319-4f49-9c0f-f60f503efe4a}</Project>
       <Name>ZukiComms</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Testing\ZukiConsole\ZukiConsole.csproj">
-      <Project>{ed8cbf81-df49-4db9-a152-a11ccae314db}</Project>
-      <Name>ZukiConsole</Name>
+    <ProjectReference Include="..\..\RobotInterface\ZukiProxy\ZukiProxy.vcxproj">
+      <Project>{89876a62-1746-49b5-8dcd-8b56f2c3866f}</Project>
+      <Name>ZukiProxy</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Utilities\Knob\Knob.csproj">
       <Project>{7af94d1d-004e-4606-8946-59bbcd6dc58f}</Project>

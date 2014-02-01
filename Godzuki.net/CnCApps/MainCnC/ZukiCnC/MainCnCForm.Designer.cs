@@ -118,7 +118,7 @@
             this.groupBox2.Controls.Add(this.label2);
             this.groupBox2.Location = new System.Drawing.Point(288, 362);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(272, 196);
+            this.groupBox2.Size = new System.Drawing.Size(353, 196);
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Connection";
@@ -156,7 +156,7 @@
             // 
             this.button12.Location = new System.Drawing.Point(208, 44);
             this.button12.Name = "button12";
-            this.button12.Size = new System.Drawing.Size(64, 23);
+            this.button12.Size = new System.Drawing.Size(93, 23);
             this.button12.TabIndex = 12;
             this.button12.Text = "Execute";
             this.button12.UseVisualStyleBackColor = true;
@@ -182,7 +182,7 @@
             // 
             this.ConnectToRobotButton.Location = new System.Drawing.Point(208, 17);
             this.ConnectToRobotButton.Name = "ConnectToRobotButton";
-            this.ConnectToRobotButton.Size = new System.Drawing.Size(64, 23);
+            this.ConnectToRobotButton.Size = new System.Drawing.Size(93, 23);
             this.ConnectToRobotButton.TabIndex = 8;
             this.ConnectToRobotButton.Text = "Connect";
             this.ConnectToRobotButton.UseVisualStyleBackColor = true;
@@ -214,9 +214,9 @@
             this.groupBox3.Controls.Add(this.button9);
             this.groupBox3.Controls.Add(this.button8);
             this.groupBox3.Controls.Add(this.button7);
-            this.groupBox3.Location = new System.Drawing.Point(566, 362);
+            this.groupBox3.Location = new System.Drawing.Point(647, 362);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(270, 196);
+            this.groupBox3.Size = new System.Drawing.Size(189, 196);
             this.groupBox3.TabIndex = 2;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Motion Control";
@@ -224,7 +224,7 @@
             // knob1
             // 
             this.knob1.KnobColor = System.Drawing.Color.Black;
-            this.knob1.Location = new System.Drawing.Point(6, 128);
+            this.knob1.Location = new System.Drawing.Point(7, 133);
             this.knob1.MarkerColor = System.Drawing.Color.Black;
             this.knob1.MaxAngle = 180;
             this.knob1.Maximum = 80;
@@ -240,7 +240,7 @@
             // MotorSpeed
             // 
             this.MotorSpeed.KnobColor = System.Drawing.Color.Black;
-            this.MotorSpeed.Location = new System.Drawing.Point(201, 128);
+            this.MotorSpeed.Location = new System.Drawing.Point(122, 133);
             this.MotorSpeed.MarkerColor = System.Drawing.Color.Black;
             this.MotorSpeed.MaxAngle = 180;
             this.MotorSpeed.Maximum = 150;
@@ -256,7 +256,7 @@
             // 
             // button11
             // 
-            this.button11.Location = new System.Drawing.Point(124, 119);
+            this.button11.Location = new System.Drawing.Point(75, 124);
             this.button11.Name = "button11";
             this.button11.Size = new System.Drawing.Size(30, 23);
             this.button11.TabIndex = 4;
@@ -265,7 +265,7 @@
             // 
             // button10
             // 
-            this.button10.Location = new System.Drawing.Point(88, 90);
+            this.button10.Location = new System.Drawing.Point(39, 95);
             this.button10.Name = "button10";
             this.button10.Size = new System.Drawing.Size(30, 23);
             this.button10.TabIndex = 3;
@@ -274,7 +274,7 @@
             // 
             // button9
             // 
-            this.button9.Location = new System.Drawing.Point(160, 90);
+            this.button9.Location = new System.Drawing.Point(111, 95);
             this.button9.Name = "button9";
             this.button9.Size = new System.Drawing.Size(30, 23);
             this.button9.TabIndex = 2;
@@ -283,7 +283,7 @@
             // 
             // button8
             // 
-            this.button8.Location = new System.Drawing.Point(124, 90);
+            this.button8.Location = new System.Drawing.Point(75, 95);
             this.button8.Name = "button8";
             this.button8.Size = new System.Drawing.Size(30, 23);
             this.button8.TabIndex = 1;
@@ -292,7 +292,7 @@
             // 
             // button7
             // 
-            this.button7.Location = new System.Drawing.Point(124, 61);
+            this.button7.Location = new System.Drawing.Point(75, 66);
             this.button7.Name = "button7";
             this.button7.Size = new System.Drawing.Size(30, 23);
             this.button7.TabIndex = 0;

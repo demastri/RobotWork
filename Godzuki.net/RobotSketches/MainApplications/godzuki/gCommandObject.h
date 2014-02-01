@@ -98,11 +98,11 @@ public:
 	void *payloadData;
 
 	uint8_t *ToCommandString( size_t *t );
+	static void PlaceInStrBfr( uint8_t *s, char *ss, int size, int loc );
+	static void PlaceInStrBfr( uint8_t *s, int data, int size, int loc );
 
 private:
 	void Init( int srcdev, int srcinst, int dev, int inst, int cmd, int param, long paySize, void *payData );
-	void PlaceInStrBfr( uint8_t *s, char *ss, int size, int loc );
-	void PlaceInStrBfr( uint8_t *s, int data, int size, int loc );
 
 	//virtual char *Serialize();
 };

@@ -31,6 +31,7 @@ void gServo::setup( int pin, int thisID, gCommandRouter *router ) {
 void gServo::setupCommandListener( gCommandRouter &router ) {
 	CMD_METHOD_REGISTER_DEFAULT(gServo, processCommand);
 	CMD_METHOD_REGISTER_TIMER(gServo, COMMAND_ID_CONTINUE_SWEEP, continueSweep, 50);
+	pRouter = &router;
 }
 
 void gServo::startSweep() {
@@ -79,6 +80,8 @@ void gServo::center() {
 }
 
 CMD_METHOD_IMPLEMENT(gServo,processCommand) {
+	char *outBfr;
+
 	if( cmdObj->commandID != currentCommand ) {
 		switch( cmdObj->commandID ) {
 		case COMMAND_ID_SERVO_CENTER: 
@@ -105,11 +108,14 @@ CMD_METHOD_IMPLEMENT(gServo,processCommand) {
 			gMonitor.print("Setting position to ");
 			gMonitor.println(cmdObj->parameter);
 			moveTo(cmdObj->parameter);
+			ROUTE_REPLY( GLOBAL_COMMAND_STATUS_OK, 0, 0 );
 			currentCommand = COMMAND_ID_GLOBAL_NONE;
 			break;
 		case COMMAND_ID_SERVO_READ_POSITION:
 			gMonitor.print("current servo position: ");    // do NOT update current_command...
 			gMonitor.println(pos);                // let it keep doing whatever it was doing...
+			gCommandObject::PlaceInStrBfr( cmdBfr, pos, 3, 0 );
+			ROUTE_REPLY( GLOBAL_COMMAND_STATUS_OK, gComms::strlen( (char *)cmdBfr ), cmdBfr );
 			break;
 		default:
 			break;

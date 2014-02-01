@@ -11,8 +11,10 @@ public:
 	void setup(int thisID, gCommandRouter *router );
 	int ReadCommand( int &param );
 private:
-	int instanceID;
 	gCommandRouter *pRouter;
+	int instanceID;
+	void setupCommandListener( gCommandRouter &router );
+	CMD_METHOD_DEFINE(processCommand);
 
 	int adc_key_in;
 	int NUM_KEYS;

@@ -52,12 +52,39 @@ namespace Godzuki
 
         }
 
-        public static gCommandObject IncomingCommand(string s)
+        public static gCommandObject FromString(string s)
         {
             if (s.Length == 18 && s[0] == '!' && s[17] == '#')
             {
                 gCommandObject possCmd = new gCommandObject();
-                // ###
+                possCmd.sourceDeviceID      = Convert.ToInt16( s.Substring(1,2) );
+                possCmd.sourceInstanceID    = Convert.ToInt16( s.Substring(3,2) );
+                possCmd.targetDeviceID      = Convert.ToInt16( s.Substring(5,2) );
+                possCmd.targetInstanceID    = Convert.ToInt16( s.Substring(7,2) );
+                possCmd.commandID           = Convert.ToInt16( s.Substring(9,2) );
+                possCmd.rtnStatus = 0;
+                possCmd.parameter = Convert.ToInt16(s.Substring(11, 6));
+                possCmd.payloadSize = 0;
+                possCmd.payloadData = null;
+                possCmd.isReply = false;
+                possCmd.isLocal = false;
+            }
+            if (s.Length > 10 && s[0] == '&' )
+            {
+                gCommandObject possCmd = new gCommandObject();
+                possCmd.sourceDeviceID      = Convert.ToInt16(s.Substring(1, 2));
+                possCmd.sourceInstanceID    = Convert.ToInt16(s.Substring(3, 2));
+                possCmd.targetDeviceID      = Convert.ToInt16(s.Substring(5, 2));
+                possCmd.targetInstanceID    = Convert.ToInt16(s.Substring(7, 2));
+                possCmd.commandID           = Convert.ToInt16(s.Substring(9, 2));
+                possCmd.parameter = -1;
+                possCmd.rtnStatus           = Convert.ToUInt16(s.Substring(11, 2));
+                possCmd.payloadSize         = Convert.ToInt16(s.Substring(13, 4));
+                possCmd.payloadData         = s.Substring(17, (int)possCmd.payloadSize).ToCharArray();
+                possCmd.isReply = true;
+                possCmd.isLocal = false;
+                if (s.Substring(17 + (int)possCmd.payloadSize, 1) == "#")
+                    return possCmd;
             }
             return null;
         }

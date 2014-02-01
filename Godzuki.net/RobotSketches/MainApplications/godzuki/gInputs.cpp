@@ -12,9 +12,8 @@ const int gButtonMappingIDs[] =	 {1,							1,								1,							1,									1 };
 
 
 #include "gInputs.h"
-
 #include "gComms.h"
-
+extern gComms gMonitor;
 #include "gCommandRouter.h"
 
 static const unsigned int adc_key_val[5] = { 30, 150, 360, 535, 760 };
@@ -30,15 +29,48 @@ gInputs::gInputs() {
 
 void gInputs::setup(int thisID, gCommandRouter *router ) {
 	instanceID = thisID;
-	//	if( router != 0 )
-	//		setupCommandListener( *router );
+	if( router != 0 )
+		setupCommandListener( *router );
 	pRouter = router;
 }
 
+void gInputs::setupCommandListener( gCommandRouter &router ) {
+	CMD_METHOD_REGISTER_DEFAULT(gInputs, processCommand);
+	router.AddCommandHandler( GODZUKI_SENSOR_PLATFORM_DEVICE_ID, 1, this, -1,  (gInputs::processCommandProxy), -1 );
+	pRouter = &router;
+}
+CMD_METHOD_IMPLEMENT(gInputs,processCommand) {
+	switch( cmdObj->commandID ) {
+	case COMMAND_ID_GLOBAL_REQUEST_STATUS:
+		ROUTE_REPLY( GLOBAL_COMMAND_STATUS_OK, 0, 0 );
+		break;
+	}
+}
+
 int gInputs::ReadCommand(int &param) {
+	char serialCmd[20];
+	int cmdSize = 0;
 	if (Serial.available()) {
 		int kbdKey = Serial.read();
 		switch (kbdKey) {
+		case '!':
+			//gMonitor.processCommand( FOLLOW_SERIAL, 0 );
+			serialCmd[cmdSize++] = (char)kbdKey;
+			delay(5);
+			while (Serial1.available()) {
+				kbdKey = Serial1.read();
+				serialCmd[cmdSize++] = (char)kbdKey;
+				delay(5);
+				if( kbdKey == '#' )
+					break;
+			}
+			serialCmd[cmdSize++] = '\0';
+			Serial.print( "Remote Command String..." );
+			Serial.println( serialCmd );
+			if( kbdKey == '#' ) {
+				pRouter->RouteCommand( gComms::UnpackCommandString(serialCmd) );
+			}
+			break;
 		case 'h':
 			pRouter->DumpHandlerTree();
 			return ROUTER_NO_COMMAND;
@@ -113,13 +145,12 @@ int gInputs::ReadCommand(int &param) {
 			break;
 		}
 	}
-	char serialCmd[20];
-	int cmdSize = 0;
 
 	if (Serial1.available()) {
 		int kbdKey = Serial1.read();
 		switch (kbdKey) {
 		case '!':
+			//gMonitor.processCommand( FOLLOW_SERIAL, 1 );
 			serialCmd[cmdSize++] = (char)kbdKey;
 			delay(5);
 			while (Serial1.available()) {
@@ -199,7 +230,7 @@ int gInputs::ReadCommand(int &param) {
 		case 'g':
 			param = 0;
 			delay(5);
-				while (Serial1.available()) {
+			while (Serial1.available()) {
 				kbdKey = Serial1.read();
 				if( '0' <= kbdKey && kbdKey <= '9' )
 					param = 10 * (param) + (kbdKey - '0');

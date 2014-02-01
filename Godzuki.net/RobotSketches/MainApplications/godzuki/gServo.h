@@ -10,6 +10,8 @@ public:
 private:
 	static const int COMMAND_ID_CONTINUE_SWEEP		= 0x99;
 
+	char cmdBuffer[5];
+
 private:
 	int SWEEP_TOP;
 	int SWEEP_CENTER;
@@ -28,6 +30,7 @@ public:
 private:
 	Servo myBaseServo;  // create servo object to control a servo 
 
+	gCommandRouter *pRouter;
 	int instanceID;
 	void setupCommandListener( gCommandRouter &router );
 
@@ -38,6 +41,8 @@ private:
 	void stopSweep();
 	void center();
 	void moveTo( int newPos );
+	
+	uint8_t cmdBfr[10];
 };
 
 #endif

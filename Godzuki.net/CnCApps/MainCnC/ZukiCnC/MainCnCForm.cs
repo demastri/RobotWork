@@ -64,7 +64,7 @@ namespace ZukiCnC
             {
                 if (gz.SelectPort((string)availablePorts.SelectedItem))
                 {
-                    ConnectToRobotButton.Text = "Disconnect";
+                    ConnectToRobotButton.Text = "Connecting";
                     isConnected = true;
                     Godzuki.gCommandObject cmdObj = new Godzuki.gCommandObject(
                         Godzuki.ZukiCommands.CNC_APP_DEVICE_ID, 1,
@@ -82,6 +82,7 @@ namespace ZukiCnC
             }
             else
             {
+                ConnectToRobotButton.Text = "Connect";
                 gz.ShutDown();
                 isConnected = false;
             }
@@ -97,12 +98,69 @@ namespace ZukiCnC
             while (gz.hasData)
             {
                 // if cmd or response
-                Godzuki.gCommandObject cmdObj = Godzuki.gCommandObject.IncomingCommand(gz.curData[0]);
+                Godzuki.gCommandObject cmdObj = Godzuki.gCommandObject.FromString(gz.curData[0]);
                 if (cmdObj != null)
                 {
-                    // ###
-                    //  pair with open cmds
-                    //  take action based on content
+                    if (cmdObj.isReply)
+                    {
+                        DateTime thisKey = DateTime.MinValue;
+                        Godzuki.gCommandObject openCmd = null;
+                        foreach (DateTime dt in openCommands.Keys)
+                        {
+                            openCmd = openCommands[dt];
+                            if (openCmd.sourceDeviceID == cmdObj.sourceDeviceID &&
+                                openCmd.sourceInstanceID == cmdObj.sourceInstanceID &&
+                                openCmd.targetDeviceID == cmdObj.targetDeviceID &&
+                                openCmd.targetInstanceID == cmdObj.targetInstanceID &&
+                                openCmd.commandID == cmdObj.commandID)
+                            {
+                                thisKey = dt;
+                                break;  // ok, got it
+                            }
+                        }
+                        if (thisKey != DateTime.MinValue)
+                        {
+                            LogText("<< " + gz.curData[0]);
+                            openCommands.Remove(thisKey);
+                            if (cmdObj.rtnStatus != Godzuki.ZukiCommands.GLOBAL_COMMAND_STATUS_OK)
+                            {
+                                MessageBox.Show("Command " + openCmd.ToString() + " failed with status code <" + cmdObj.rtnStatus.ToString() + ">");
+                            }
+                            else
+                            {
+                                // ok - it's a "valid" command
+                                switch (cmdObj.targetDeviceID)
+                                {
+                                    case Godzuki.ZukiCommands.SERVO_DEVICE_ID:
+                                        switch (cmdObj.commandID)
+                                        {
+                                            case Godzuki.ZukiCommands.COMMAND_ID_SERVO_SET_POSITION:
+                                                LogText("ACK for Servo Set Position");  // issue read command
+                                                GetServoPositionButton_Click(null, null);
+                                                break;
+                                            case Godzuki.ZukiCommands.COMMAND_ID_SERVO_READ_POSITION:
+                                                CurrentServoPosition.Text = Convert.ToUInt16( new string( cmdObj.payloadData) ).ToString();
+                                                LogText("ACK for Servo Read Position");
+                                                break;
+                                        }
+                                        break;
+                                    case Godzuki.ZukiCommands.GODZUKI_SENSOR_PLATFORM_DEVICE_ID:
+                                        switch (cmdObj.commandID)
+                                        {
+                                            case Godzuki.ZukiCommands.COMMAND_ID_GLOBAL_REQUEST_STATUS:
+                                                LogText("ACK for Global Status");  // issue read command
+                                                ConnectToRobotButton.Text = "Connected";
+                                                break;
+                                        }
+                                        break;
+                                    default:
+                                        LogText("don't quite know how to handle this response");
+                                        break;
+                                }
+
+                            }
+                        }
+                    }
                 }
                 else
                 {
@@ -115,14 +173,11 @@ namespace ZukiCnC
             foreach( DateTime dt in openCommands.Keys ) 
                 if( DateTime.Now > dt )
                 {
-                    MessageBox.Show("Command Timeout: " + openCommands.ToString());
-                    deadKeys.Add(dt);
+                    string cmd = openCommands[dt].ToString();
+                    openCommands.Remove(dt);
+                    MessageBox.Show("Command Timeout: " + cmd);
+                    break;
                 }
-            while (deadKeys.Count > 0)
-            {
-                openCommands.Remove(deadKeys[0]);
-                deadKeys.RemoveAt(0);
-            }
         }
 
         private void GetServoPositionButton_Click(object sender, EventArgs e)
@@ -144,7 +199,7 @@ namespace ZukiCnC
         private void SetServoButton_Click(object sender, EventArgs e)
         {
             LogText("Setting Servo Position");
-            int outVal = ServoTargetPos.Value;
+            int outVal = ServoTargetPos.Minimum + ServoTargetPos.Maximum - ServoTargetPos.Value;
 
             // at some point the command will return a response 
             // that will cause the display to update...

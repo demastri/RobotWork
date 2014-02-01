@@ -42,7 +42,6 @@ namespace Godzuki
 		void printlnToRadio( char *s );
 		void printToUSB( char *s );
 		void printlnToUSB( char *s );
-
 	};
 
 #ifdef WIN32
