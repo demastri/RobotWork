@@ -22,7 +22,7 @@ void gDistanceSensor::setup(int thisID, gCommandRouter *router, int trigPin, int
 	digitalWrite(URTRIG,HIGH);                         // Set to HIGH
 
 	pinMode(URPWM, INPUT);                             // Sending Enable PWM mode command
-	currentCommand = COMMAND_ID_RANGER_NO_COMMAND;
+	currentCommand = COMMAND_ID_GLOBAL_NONE;
 
 	setContinuousTiming( timeGap );
 
@@ -75,7 +75,7 @@ CMD_METHOD_IMPLEMENT( gDistanceSensor, processCommand ) {
 			break;
 		case COMMAND_ID_RANGER_END_SERIES: 
 			gMonitor.println("Ending recurring distance readings");
-			currentCommand = COMMAND_ID_RANGER_NO_COMMAND;
+			currentCommand = COMMAND_ID_GLOBAL_NONE;
 			break;
 		default: 
 			break;
@@ -86,10 +86,10 @@ CMD_METHOD_IMPLEMENT( gDistanceSensor, processCommand ) {
 CMD_METHOD_IMPLEMENT( gDistanceSensor, continueReadings) {
 	int distance = -1;
 	switch( currentCommand ) {
-	case COMMAND_ID_RANGER_NO_COMMAND:
+	case COMMAND_ID_GLOBAL_NONE:
 		return;
 	case COMMAND_ID_RANGER_READ_DISTANCE:
-		currentCommand = COMMAND_ID_RANGER_NO_COMMAND;
+		currentCommand = COMMAND_ID_GLOBAL_NONE;
 		break;
 	}
 	distance = getDistance();

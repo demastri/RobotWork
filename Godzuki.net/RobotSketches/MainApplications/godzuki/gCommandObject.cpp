@@ -68,28 +68,43 @@ gCommandObject *gCommandObject::InitReply( unsigned char status, long paySize, v
 	outObj->isReply = true; 
 	return outObj;
 }
-char cmdStrBfr[50];
-char *gCommandObject::ToCommandString() {
+uint8_t cmdStrBfr[100];
+uint8_t *gCommandObject::ToCommandString( size_t *t ) {
 	//   !ssiimmxxyyzzzzzz#  - look in the evernote blog, but it's pretty self evident...
-
-	PlaceInStrBfr( cmdStrBfr, "!",              1,  0 );
-	PlaceInStrBfr( cmdStrBfr, sourceDeviceID,   2,  1 );
-	PlaceInStrBfr( cmdStrBfr, sourceInstanceID, 2,  3 );
-	PlaceInStrBfr( cmdStrBfr, targetDeviceID,   2,  5 );
-	PlaceInStrBfr( cmdStrBfr, targetInstanceID, 2,  7 );
-	PlaceInStrBfr( cmdStrBfr, commandID,        2,  9 );
-	PlaceInStrBfr( cmdStrBfr, parameter,        6, 11 );
-	PlaceInStrBfr( cmdStrBfr, "#",              1, 17 );
-	PlaceInStrBfr( cmdStrBfr, "\0",             1, 18 );
+	if( !isReply ) {
+		*t = 17;
+		PlaceInStrBfr( cmdStrBfr, "!",              1,  0 );
+		PlaceInStrBfr( cmdStrBfr, sourceDeviceID,   2,  1 );
+		PlaceInStrBfr( cmdStrBfr, sourceInstanceID, 2,  3 );
+		PlaceInStrBfr( cmdStrBfr, targetDeviceID,   2,  5 );
+		PlaceInStrBfr( cmdStrBfr, targetInstanceID, 2,  7 );
+		PlaceInStrBfr( cmdStrBfr, commandID,        2,  9 );
+		PlaceInStrBfr( cmdStrBfr, parameter,        6, 11 );
+		PlaceInStrBfr( cmdStrBfr, "#",              1, 17 );
+		PlaceInStrBfr( cmdStrBfr, "\0",             1, 18 );
+	} else { // &ssiimmxxyyccSSZZDDDDDDD# similar - repl param w/status, add size and data
+		*t = 17+payloadSize;
+		PlaceInStrBfr( cmdStrBfr, "&",              1,  0 );
+		PlaceInStrBfr( cmdStrBfr, sourceDeviceID,   2,  1 );
+		PlaceInStrBfr( cmdStrBfr, sourceInstanceID, 2,  3 );
+		PlaceInStrBfr( cmdStrBfr, targetDeviceID,   2,  5 );
+		PlaceInStrBfr( cmdStrBfr, targetInstanceID, 2,  7 );
+		PlaceInStrBfr( cmdStrBfr, commandID,        2,  9 );
+		PlaceInStrBfr( cmdStrBfr, rtnStatus,        2, 11 );
+		PlaceInStrBfr( cmdStrBfr, payloadSize,      4, 13 );
+		PlaceInStrBfr( cmdStrBfr, (char *)payloadData, payloadSize, 17 );
+		PlaceInStrBfr( cmdStrBfr, "#",              1, 17+payloadSize );
+		PlaceInStrBfr( cmdStrBfr, "\0",             1, 18 );
+	}
 
 	return cmdStrBfr;
 }
-void gCommandObject::PlaceInStrBfr( char *s, char *ss, int size, int loc ) {
+void gCommandObject::PlaceInStrBfr( uint8_t *s, char *ss, int size, int loc ) {
 	for( int i=0; i<size; i++ )
 		*(s+loc+i) = ss[i];
 }
 
-void gCommandObject::PlaceInStrBfr( char *s, int data, int size, int loc ) {
+void gCommandObject::PlaceInStrBfr( uint8_t *s, int data, int size, int loc ) {
 	if( data < 0 ) {
 		PlaceInStrBfr( s, "-", 1, loc++ );
 		size--;

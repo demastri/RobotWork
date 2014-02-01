@@ -24,19 +24,19 @@
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\RobotSketches\godzuki\gCommandObject.h">
+    <ClInclude Include="..\..\..\RobotSketches\MainApplications\godzuki\gCommandObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\RobotSketches\godzuki\gCommandRouter.h">
+    <ClInclude Include="..\..\..\RobotSketches\MainApplications\godzuki\gCommandRouter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\RobotSketches\godzuki\gComms.h">
+    <ClInclude Include="..\..\..\RobotSketches\MainApplications\godzuki\gComms.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\RobotSketches\godzuki\gRouteTableList.h">
+    <ClInclude Include="..\..\..\RobotSketches\MainApplications\godzuki\gRouteTableList.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\RobotSketches\godzuki\gRoutingDeviceIDs.h">
+    <ClInclude Include="..\..\..\RobotSketches\MainApplications\godzuki\gRoutingDeviceIDs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

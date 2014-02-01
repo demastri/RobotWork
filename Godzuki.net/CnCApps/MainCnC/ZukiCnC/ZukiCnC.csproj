@@ -86,6 +86,10 @@
       <Project>{ed8cbf81-df49-4db9-a152-a11ccae314db}</Project>
       <Name>ZukiConsole</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Utilities\Knob\Knob.csproj">
+      <Project>{7af94d1d-004e-4606-8946-59bbcd6dc58f}</Project>
+      <Name>Knob</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -18,7 +18,7 @@ gServo::gServo() {
 
 	last_update_time = 0;
 	pos = 0;    // variable to store the servo position 
-	currentCommand = COMMAND_ID_SERVO_NO_COMMAND;
+	currentCommand = COMMAND_ID_GLOBAL_NONE;
 }
 
 void gServo::setup( int pin, int thisID, gCommandRouter *router ) {
@@ -40,7 +40,7 @@ void gServo::startSweep() {
 }
 
 CMD_METHOD_IMPLEMENT(gServo,continueSweep) {
-	if( currentCommand == COMMAND_ID_SERVO_NO_COMMAND )
+	if( currentCommand == COMMAND_ID_GLOBAL_NONE )
 		return;
 	int time_increment = 100;
 
@@ -64,7 +64,7 @@ CMD_METHOD_IMPLEMENT(gServo,continueSweep) {
 }
 
 void gServo::stopSweep() {
-	currentCommand = COMMAND_ID_SERVO_NO_COMMAND;
+	currentCommand = COMMAND_ID_GLOBAL_NONE;
 }
 
 void gServo::moveTo( int newPos ) {
@@ -84,7 +84,7 @@ CMD_METHOD_IMPLEMENT(gServo,processCommand) {
 		case COMMAND_ID_SERVO_CENTER: 
 			gMonitor.println("Going to center");
 			center();
-			currentCommand = COMMAND_ID_SERVO_NO_COMMAND;
+			currentCommand = COMMAND_ID_GLOBAL_NONE;
 			break;
 		case COMMAND_ID_SERVO_SWEEP_ONCE:
 			gMonitor.println("Sweeping once");
@@ -99,13 +99,13 @@ CMD_METHOD_IMPLEMENT(gServo,processCommand) {
 		case COMMAND_ID_SERVO_SWEEP_STOP:
 			gMonitor.println("Stopping sweep");
 			stopSweep();
-			currentCommand = COMMAND_ID_SERVO_NO_COMMAND;
+			currentCommand = COMMAND_ID_GLOBAL_NONE;
 			break;
 		case COMMAND_ID_SERVO_SET_POSITION:
 			gMonitor.print("Setting position to ");
 			gMonitor.println(cmdObj->parameter);
 			moveTo(cmdObj->parameter);
-			currentCommand = COMMAND_ID_SERVO_NO_COMMAND;
+			currentCommand = COMMAND_ID_GLOBAL_NONE;
 			break;
 		case COMMAND_ID_SERVO_READ_POSITION:
 			gMonitor.print("current servo position: ");    // do NOT update current_command...

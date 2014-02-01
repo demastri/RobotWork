@@ -12,14 +12,18 @@ namespace ZukiCnC
 {
     public partial class MainCnCForm : Form
     {
+        Dictionary<DateTime, Godzuki.gCommandObject> openCommands;
+
         bool isConnected;
         bool isExecutingGoal;
         Godzuki.ZukiComms gz = new Godzuki.ZukiComms();
 
         public MainCnCForm()
         {
-            isConnected = isExecutingGoal = false;
             InitializeComponent();
+
+            isConnected = isExecutingGoal = false;
+            openCommands = new Dictionary<DateTime, Godzuki.gCommandObject>();
             InitializeGoals();
             RefreshPortData_Click(null, null);
 
@@ -62,6 +66,13 @@ namespace ZukiCnC
                 {
                     ConnectToRobotButton.Text = "Disconnect";
                     isConnected = true;
+                    Godzuki.gCommandObject cmdObj = new Godzuki.gCommandObject(
+                        Godzuki.ZukiCommands.CNC_APP_DEVICE_ID, 1,
+                        Godzuki.ZukiCommands.GODZUKI_SENSOR_PLATFORM_DEVICE_ID, 1,
+                        Godzuki.ZukiCommands.COMMAND_ID_GLOBAL_REQUEST_STATUS);
+                    gz.PostCommand( cmdObj );
+                    // somehow we need to set a timer that expires and revokes the connectedness if we haven't gotten a reply
+                    openCommands.Add( DateTime.Now.Add(new TimeSpan(0,0,2)), cmdObj );
                 }
                 else
                 {
@@ -74,42 +85,119 @@ namespace ZukiCnC
                 gz.ShutDown();
                 isConnected = false;
             }
-
         }
 
         private void LogText(string s)
         {
-            sessionLog.Text += s + Environment.NewLine;
+            sessionLog.AppendText(s + Environment.NewLine);
         }
         private void MessageLoopTimer_Tick(object sender, EventArgs e)
         {
+
             while (gz.hasData)
             {
-                LogText(gz.curData[0]);
+                // if cmd or response
+                Godzuki.gCommandObject cmdObj = Godzuki.gCommandObject.IncomingCommand(gz.curData[0]);
+                if (cmdObj != null)
+                {
+                    // ###
+                    //  pair with open cmds
+                    //  take action based on content
+                }
+                else
+                {
+                    LogText(gz.curData[0]);
+                }
                 gz.curData.RemoveAt(0);
+            }
+            // in any event, if there are commands that have timed out, message them here...
+            List<DateTime> deadKeys = new List<DateTime>();
+            foreach( DateTime dt in openCommands.Keys ) 
+                if( DateTime.Now > dt )
+                {
+                    MessageBox.Show("Command Timeout: " + openCommands.ToString());
+                    deadKeys.Add(dt);
+                }
+            while (deadKeys.Count > 0)
+            {
+                openCommands.Remove(deadKeys[0]);
+                deadKeys.RemoveAt(0);
             }
         }
 
         private void GetServoPositionButton_Click(object sender, EventArgs e)
         {
             LogText("Request Servo Position");
-            // here's how the command system will work
             
-            // wrong way:
-            // since there's no real commands to route here, we can simply use the comms object 
-            // to get strings which we can pack and unpack as appropriate.
-            // for now
-            // gz.PostCommand(ServoDeviceID, ServoInstanceID, ServoReadCommandID);
-            gz.PostCommand("#5001030106000000!");
-
-            // right way?
-            // put the stringification back into the comms object
-            // route command objects as normal...
-            // ideally
-            // gz.PostCommand(ServoDeviceID, ServoInstanceID, ServoReadCommandID);
-
-            // in any case, at some point the command will return a response 
+            // at some point the command will return a response 
             // that will cause the display to update...
+            Godzuki.gCommandObject cmdObj = new Godzuki.gCommandObject(
+                Godzuki.ZukiCommands.CNC_APP_DEVICE_ID, 1,
+                Godzuki.ZukiCommands.SERVO_DEVICE_ID, 1,
+                Godzuki.ZukiCommands.COMMAND_ID_SERVO_READ_POSITION);
+
+            // stringification is back into the comms object
+            if (gz.PostCommand(cmdObj))
+                openCommands.Add(DateTime.Now.Add(new TimeSpan(0, 0, 2)), cmdObj);
+        }
+
+        private void SetServoButton_Click(object sender, EventArgs e)
+        {
+            LogText("Setting Servo Position");
+            int outVal = ServoTargetPos.Value;
+
+            // at some point the command will return a response 
+            // that will cause the display to update...
+            Godzuki.gCommandObject cmdObj = new Godzuki.gCommandObject(
+                Godzuki.ZukiCommands.CNC_APP_DEVICE_ID, 1,
+                Godzuki.ZukiCommands.SERVO_DEVICE_ID, 1,
+                Godzuki.ZukiCommands.COMMAND_ID_SERVO_SET_POSITION,
+                outVal);
+
+            // stringification is back into the comms object
+            if (gz.PostCommand(cmdObj))
+                openCommands.Add(DateTime.Now.Add(new TimeSpan(0, 0, 2)), cmdObj);
+        }
+
+        private void ServoTargetPos_DoubleClick(object sender, EventArgs e)
+        {
+            ServoTargetPos.Value = (ServoTargetPos.Minimum + ServoTargetPos.Maximum) / 2;
+        }
+
+        private void MotorSpeed_DoubleClick(object sender, EventArgs e)
+        {
+            if (MotorSpeed.Text == "Rev Speed")
+                MotorSpeed.Text = "Fwd Speed";
+            else
+                MotorSpeed.Text = "Rev Speed";
+        }
+
+        private void SnapPictureButton_Click(object sender, EventArgs e)
+        {
+            LogText("Request Camera Image");
+            // the command will return a response that will cause the display to update...
+            Godzuki.gCommandObject cmdObj = new Godzuki.gCommandObject(
+                Godzuki.ZukiCommands.CNC_APP_DEVICE_ID, 1,
+                Godzuki.ZukiCommands.CAMERA_DEVICE_ID, 1,
+                Godzuki.ZukiCommands.COMMAND_ID_CAMERA_SNAP_IMAGE );
+
+            // stringification is back into the comms object
+            if (gz.PostCommand(cmdObj))
+                openCommands.Add(DateTime.Now.Add(new TimeSpan(0, 0, 10)), cmdObj);
+        }
+
+        private void ReadRangerButton_Click(object sender, EventArgs e)
+        {
+            LogText("Request Ranger Reading");
+            // the command will return a response that will cause the display to update...
+            Godzuki.gCommandObject cmdObj = new Godzuki.gCommandObject(
+                Godzuki.ZukiCommands.CNC_APP_DEVICE_ID, 1,
+                Godzuki.ZukiCommands.DISTANCE_SENSOR_DEVICE_ID, 1,
+                Godzuki.ZukiCommands.COMMAND_ID_RANGER_READ_DISTANCE);
+
+            // stringification is back into the comms object
+            if (gz.PostCommand(cmdObj))
+                openCommands.Add(DateTime.Now.Add(new TimeSpan(0, 0, 10)), cmdObj);
         }
     }
 }

@@ -27,6 +27,7 @@ namespace Godzuki
 		static gCommandObject *UnpackCommandString( char *s );
 
 		void processCommand(int newCommand, int cmdParam );  
+		void print( const uint8_t *s, size_t t );
 		void print( char *s );
 		void println( char *s );
 		void print( int i );

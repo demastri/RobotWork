@@ -41,6 +41,8 @@
             this.availablePorts = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.knob1 = new AuSharp.Knob();
+            this.MotorSpeed = new AuSharp.Knob();
             this.button11 = new System.Windows.Forms.Button();
             this.button10 = new System.Windows.Forms.Button();
             this.button9 = new System.Windows.Forms.Button();
@@ -50,19 +52,19 @@
             this.groupBox9 = new System.Windows.Forms.GroupBox();
             this.textBox4 = new System.Windows.Forms.TextBox();
             this.groupBox8 = new System.Windows.Forms.GroupBox();
-            this.button13 = new System.Windows.Forms.Button();
+            this.ReadRangerButton = new System.Windows.Forms.Button();
             this.textBox3 = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.trackBar1 = new System.Windows.Forms.TrackBar();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
+            this.SetServoButton = new System.Windows.Forms.Button();
+            this.ServoTargetPos = new AuSharp.Knob();
             this.GetServoPositionButton = new System.Windows.Forms.Button();
             this.CurrentServoPosition = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.button3 = new System.Windows.Forms.Button();
-            this.button4 = new System.Windows.Forms.Button();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
             this.button2 = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
+            this.SnapPictureButton = new System.Windows.Forms.Button();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
@@ -100,6 +102,7 @@
             this.sessionLog.Multiline = true;
             this.sessionLog.Name = "sessionLog";
             this.sessionLog.ReadOnly = true;
+            this.sessionLog.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.sessionLog.Size = new System.Drawing.Size(252, 171);
             this.sessionLog.TabIndex = 0;
             // 
@@ -204,6 +207,8 @@
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.knob1);
+            this.groupBox3.Controls.Add(this.MotorSpeed);
             this.groupBox3.Controls.Add(this.button11);
             this.groupBox3.Controls.Add(this.button10);
             this.groupBox3.Controls.Add(this.button9);
@@ -215,6 +220,39 @@
             this.groupBox3.TabIndex = 2;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Motion Control";
+            // 
+            // knob1
+            // 
+            this.knob1.KnobColor = System.Drawing.Color.Black;
+            this.knob1.Location = new System.Drawing.Point(6, 128);
+            this.knob1.MarkerColor = System.Drawing.Color.Black;
+            this.knob1.MaxAngle = 180;
+            this.knob1.Maximum = 80;
+            this.knob1.Minimum = 40;
+            this.knob1.Name = "knob1";
+            this.knob1.Size = new System.Drawing.Size(57, 62);
+            this.knob1.TabIndex = 10;
+            this.knob1.Text = "Turn Speed";
+            this.knob1.TextKnobRelation = AuSharp.TextKnobRelation.KnobAboveText;
+            this.knob1.TickColor = System.Drawing.Color.Black;
+            this.knob1.Value = 50;
+            // 
+            // MotorSpeed
+            // 
+            this.MotorSpeed.KnobColor = System.Drawing.Color.Black;
+            this.MotorSpeed.Location = new System.Drawing.Point(201, 128);
+            this.MotorSpeed.MarkerColor = System.Drawing.Color.Black;
+            this.MotorSpeed.MaxAngle = 180;
+            this.MotorSpeed.Maximum = 150;
+            this.MotorSpeed.Minimum = 60;
+            this.MotorSpeed.Name = "MotorSpeed";
+            this.MotorSpeed.Size = new System.Drawing.Size(57, 62);
+            this.MotorSpeed.TabIndex = 9;
+            this.MotorSpeed.Text = "Fwd Speed";
+            this.MotorSpeed.TextKnobRelation = AuSharp.TextKnobRelation.KnobAboveText;
+            this.MotorSpeed.TickColor = System.Drawing.Color.Black;
+            this.MotorSpeed.Value = 80;
+            this.MotorSpeed.DoubleClick += new System.EventHandler(this.MotorSpeed_DoubleClick);
             // 
             // button11
             // 
@@ -298,7 +336,7 @@
             // 
             // groupBox8
             // 
-            this.groupBox8.Controls.Add(this.button13);
+            this.groupBox8.Controls.Add(this.ReadRangerButton);
             this.groupBox8.Controls.Add(this.textBox3);
             this.groupBox8.Controls.Add(this.label4);
             this.groupBox8.Location = new System.Drawing.Point(284, 137);
@@ -308,14 +346,15 @@
             this.groupBox8.TabStop = false;
             this.groupBox8.Text = "Ranging";
             // 
-            // button13
+            // ReadRangerButton
             // 
-            this.button13.Location = new System.Drawing.Point(141, 17);
-            this.button13.Name = "button13";
-            this.button13.Size = new System.Drawing.Size(47, 23);
-            this.button13.TabIndex = 7;
-            this.button13.Text = "Read";
-            this.button13.UseVisualStyleBackColor = true;
+            this.ReadRangerButton.Location = new System.Drawing.Point(141, 17);
+            this.ReadRangerButton.Name = "ReadRangerButton";
+            this.ReadRangerButton.Size = new System.Drawing.Size(47, 23);
+            this.ReadRangerButton.TabIndex = 7;
+            this.ReadRangerButton.Text = "Read";
+            this.ReadRangerButton.UseVisualStyleBackColor = true;
+            this.ReadRangerButton.Click += new System.EventHandler(this.ReadRangerButton_Click);
             // 
             // textBox3
             // 
@@ -343,11 +382,11 @@
             // 
             // groupBox7
             // 
+            this.groupBox7.Controls.Add(this.SetServoButton);
+            this.groupBox7.Controls.Add(this.ServoTargetPos);
             this.groupBox7.Controls.Add(this.GetServoPositionButton);
             this.groupBox7.Controls.Add(this.CurrentServoPosition);
             this.groupBox7.Controls.Add(this.label1);
-            this.groupBox7.Controls.Add(this.button3);
-            this.groupBox7.Controls.Add(this.button4);
             this.groupBox7.Location = new System.Drawing.Point(284, 192);
             this.groupBox7.Name = "groupBox7";
             this.groupBox7.Size = new System.Drawing.Size(264, 75);
@@ -355,9 +394,36 @@
             this.groupBox7.TabStop = false;
             this.groupBox7.Text = "Servo Control";
             // 
+            // SetServoButton
+            // 
+            this.SetServoButton.Location = new System.Drawing.Point(211, 17);
+            this.SetServoButton.Name = "SetServoButton";
+            this.SetServoButton.Size = new System.Drawing.Size(47, 23);
+            this.SetServoButton.TabIndex = 4;
+            this.SetServoButton.Text = "Set";
+            this.SetServoButton.UseVisualStyleBackColor = true;
+            this.SetServoButton.Click += new System.EventHandler(this.SetServoButton_Click);
+            // 
+            // ServoTargetPos
+            // 
+            this.ServoTargetPos.KnobColor = System.Drawing.Color.Black;
+            this.ServoTargetPos.Location = new System.Drawing.Point(161, 7);
+            this.ServoTargetPos.MarkerColor = System.Drawing.Color.Black;
+            this.ServoTargetPos.MaxAngle = 90;
+            this.ServoTargetPos.Maximum = 135;
+            this.ServoTargetPos.Minimum = 45;
+            this.ServoTargetPos.Name = "ServoTargetPos";
+            this.ServoTargetPos.Size = new System.Drawing.Size(57, 62);
+            this.ServoTargetPos.TabIndex = 8;
+            this.ServoTargetPos.Text = "Target Pos";
+            this.ServoTargetPos.TextKnobRelation = AuSharp.TextKnobRelation.KnobAboveText;
+            this.ServoTargetPos.TickColor = System.Drawing.Color.Black;
+            this.ServoTargetPos.Value = 45;
+            this.ServoTargetPos.DoubleClick += new System.EventHandler(this.ServoTargetPos_DoubleClick);
+            // 
             // GetServoPositionButton
             // 
-            this.GetServoPositionButton.Location = new System.Drawing.Point(141, 17);
+            this.GetServoPositionButton.Location = new System.Drawing.Point(96, 42);
             this.GetServoPositionButton.Name = "GetServoPositionButton";
             this.GetServoPositionButton.Size = new System.Drawing.Size(47, 23);
             this.GetServoPositionButton.TabIndex = 7;
@@ -370,7 +436,7 @@
             this.CurrentServoPosition.Location = new System.Drawing.Point(96, 19);
             this.CurrentServoPosition.Name = "CurrentServoPosition";
             this.CurrentServoPosition.ReadOnly = true;
-            this.CurrentServoPosition.Size = new System.Drawing.Size(39, 20);
+            this.CurrentServoPosition.Size = new System.Drawing.Size(47, 20);
             this.CurrentServoPosition.TabIndex = 6;
             // 
             // label1
@@ -382,28 +448,10 @@
             this.label1.TabIndex = 5;
             this.label1.Text = "Current Position:";
             // 
-            // button3
-            // 
-            this.button3.Location = new System.Drawing.Point(141, 41);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(47, 23);
-            this.button3.TabIndex = 4;
-            this.button3.Text = ">>";
-            this.button3.UseVisualStyleBackColor = true;
-            // 
-            // button4
-            // 
-            this.button4.Location = new System.Drawing.Point(87, 41);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(48, 23);
-            this.button4.TabIndex = 3;
-            this.button4.Text = "<<";
-            this.button4.UseVisualStyleBackColor = true;
-            // 
             // groupBox6
             // 
             this.groupBox6.Controls.Add(this.button2);
-            this.groupBox6.Controls.Add(this.button1);
+            this.groupBox6.Controls.Add(this.SnapPictureButton);
             this.groupBox6.Controls.Add(this.pictureBox1);
             this.groupBox6.Location = new System.Drawing.Point(554, 19);
             this.groupBox6.Name = "groupBox6";
@@ -421,14 +469,15 @@
             this.button2.Text = "Play / Pause";
             this.button2.UseVisualStyleBackColor = true;
             // 
-            // button1
+            // SnapPictureButton
             // 
-            this.button1.Location = new System.Drawing.Point(52, 215);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(80, 23);
-            this.button1.TabIndex = 1;
-            this.button1.Text = "Snap";
-            this.button1.UseVisualStyleBackColor = true;
+            this.SnapPictureButton.Location = new System.Drawing.Point(52, 215);
+            this.SnapPictureButton.Name = "SnapPictureButton";
+            this.SnapPictureButton.Size = new System.Drawing.Size(80, 23);
+            this.SnapPictureButton.TabIndex = 1;
+            this.SnapPictureButton.Text = "Snap";
+            this.SnapPictureButton.UseVisualStyleBackColor = true;
+            this.SnapPictureButton.Click += new System.EventHandler(this.SnapPictureButton_Click);
             // 
             // pictureBox1
             // 
@@ -507,15 +556,14 @@
         private System.Windows.Forms.GroupBox groupBox5;
         private System.Windows.Forms.TrackBar trackBar1;
         private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button SnapPictureButton;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.TextBox sessionLog;
         private System.Windows.Forms.PictureBox pictureBox2;
         private System.Windows.Forms.Button GetServoPositionButton;
         private System.Windows.Forms.TextBox CurrentServoPosition;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.Button SetServoButton;
         private System.Windows.Forms.Button button12;
         private System.Windows.Forms.ComboBox goalList;
         private System.Windows.Forms.Label label3;
@@ -530,12 +578,15 @@
         private System.Windows.Forms.GroupBox groupBox9;
         private System.Windows.Forms.TextBox textBox4;
         private System.Windows.Forms.GroupBox groupBox8;
-        private System.Windows.Forms.Button button13;
+        private System.Windows.Forms.Button ReadRangerButton;
         private System.Windows.Forms.TextBox textBox3;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Button RefreshPortData;
         private System.Windows.Forms.ComboBox availableInstances;
         private System.Windows.Forms.Timer MessageLoopTimer;
+        private AuSharp.Knob ServoTargetPos;
+        private AuSharp.Knob MotorSpeed;
+        private AuSharp.Knob knob1;
     }
 }
 

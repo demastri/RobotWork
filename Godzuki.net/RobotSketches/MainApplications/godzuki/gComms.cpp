@@ -52,13 +52,11 @@ void gComms::setup(bool defaultToRadio, int baudRate) {
 
 void gComms::BroadcastCommand( gCommandObject *cmdObj ) {
 	// this will be where all the magic happens :)
-	char *cmdString = cmdObj->ToCommandString();
+	size_t outSize;
+	uint8_t *cmdString = cmdObj->ToCommandString( &outSize );
 
-	print( "Eventually going out to the radio - <" );
-	print( cmdString );
-	println( ">" );
-
-	print( cmdString );
+	print( "Broadcasting command\n" );
+	print( cmdString, outSize );
 }
 
 gCommandObject *gComms::UnpackCommandString( char *s ) {
@@ -96,6 +94,15 @@ void gComms::processCommand(int newCommand, int cmdParam ) {
 	default:
 		break;
 	} 
+}
+
+void gComms::print( const uint8_t *s, size_t t ) {
+#ifndef WIN32
+	if( writeToRadio )
+		Serial1.write(s, t);
+	else
+		Serial.write(s, t);
+#endif
 }
 
 void gComms::print( char *s ) {

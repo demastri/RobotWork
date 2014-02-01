@@ -83,11 +83,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\RobotSketches\godzuki\gCommandObject.h" />
-    <ClInclude Include="..\..\RobotSketches\godzuki\gCommandRouter.h" />
-    <ClInclude Include="..\..\RobotSketches\godzuki\gComms.h" />
-    <ClInclude Include="..\..\RobotSketches\godzuki\gRouteTableList.h" />
-    <ClInclude Include="..\..\RobotSketches\godzuki\gRoutingDeviceIDs.h" />
+    <ClInclude Include="..\..\..\RobotSketches\MainApplications\godzuki\gCommandObject.h" />
+    <ClInclude Include="..\..\..\RobotSketches\MainApplications\godzuki\gCommandRouter.h" />
+    <ClInclude Include="..\..\..\RobotSketches\MainApplications\godzuki\gComms.h" />
+    <ClInclude Include="..\..\..\RobotSketches\MainApplications\godzuki\gRouteTableList.h" />
+    <ClInclude Include="..\..\..\RobotSketches\MainApplications\godzuki\gRoutingDeviceIDs.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Stdafx.h" />
     <ClInclude Include="ZukiProxy.h" />

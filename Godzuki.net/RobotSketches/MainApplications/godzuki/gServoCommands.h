@@ -8,6 +8,4 @@ static const int COMMAND_ID_SERVO_SWEEP_STOP		= 0x04;
 static const int COMMAND_ID_SERVO_SET_POSITION		= 0x05;
 static const int COMMAND_ID_SERVO_READ_POSITION		= 0x06;
 
-static const int COMMAND_ID_SERVO_NO_COMMAND       = 999;
-
 #endif

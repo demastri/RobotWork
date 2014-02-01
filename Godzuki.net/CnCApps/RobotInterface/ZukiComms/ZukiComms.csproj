@@ -39,7 +39,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="gCommandObject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ZukiCommands.cs" />
     <Compile Include="ZukiComms.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

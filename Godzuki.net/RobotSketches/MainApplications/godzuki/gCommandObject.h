@@ -1,6 +1,9 @@
 #ifndef G_COMMAND_OBJECT_H
 #define G_COMMAND_OBJECT_H
 
+typedef unsigned int size_t;
+typedef unsigned char uint8_t;
+
 class gCommandObject {
 	// RouteCommand becomes -- 
 	//   void RouteCommand( CommandObject ) rather than
@@ -94,12 +97,12 @@ public:
 	long payloadSize;
 	void *payloadData;
 
-	char *ToCommandString();
+	uint8_t *ToCommandString( size_t *t );
 
 private:
 	void Init( int srcdev, int srcinst, int dev, int inst, int cmd, int param, long paySize, void *payData );
-	void PlaceInStrBfr( char *s, char *ss, int size, int loc );
-	void PlaceInStrBfr( char *s, int data, int size, int loc );
+	void PlaceInStrBfr( uint8_t *s, char *ss, int size, int loc );
+	void PlaceInStrBfr( uint8_t *s, int data, int size, int loc );
 
 	//virtual char *Serialize();
 };

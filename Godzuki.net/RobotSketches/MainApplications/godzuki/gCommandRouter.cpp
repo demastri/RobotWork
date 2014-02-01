@@ -139,10 +139,11 @@ void gCommandRouter::ExecuteCommandQueue() {
 			// broadcast over network for remote handler
 			if( commandList->isLocal ) {
 #ifdef WIN32
-				char *cmdStr = commandList->ToCommandString();
-				commandList->commandID = GLOBAL_COMMAND_BROADCAST;
+				size_t thisSize;
+				uint8_t *cmdStr = commandList->ToCommandString(&thisSize);
+				commandList->commandID = COMMAND_ID_GLOBAL_BROADCAST;
 				commandList->isReply = true;
-				RouteReply( commandList, GLOBAL_COMMAND_STATUS_OK, gComms::strlen( cmdStr ), (void *)cmdStr );
+				RouteReply( commandList, GLOBAL_COMMAND_STATUS_OK, gComms::strlen( (char *)cmdStr ), (void *)cmdStr );
 #else
 				gMonitor.BroadcastCommand( commandList );
 				//gMonitor.println( "I had nowhere to send this command..." );

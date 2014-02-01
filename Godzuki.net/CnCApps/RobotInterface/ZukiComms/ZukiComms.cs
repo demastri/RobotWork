@@ -68,12 +68,24 @@ namespace Godzuki
             }
         }
 
-        public void PostCommand(string cmdString)
+        public bool PostCommand(gCommandObject cmdObj)
         {
+            return PostCommand( cmdObj.ToString() );
+        }
+        public bool PostCommand(string cmdString)
+        {
+            curData.Add(">> "+cmdString);
+
             if (serial != null && serial.IsOpen)
+            {
                 serial.Write(cmdString);
+                return true;
+            }
             else
+            {
                 curData.Add("ZukiBot - could not post data - no port\n");
+                return false;
+            }
         }
 
         /// <summary>
