@@ -66,6 +66,12 @@
     <ClInclude Include="gDistanceSensorCommands.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="gSDCard.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="gSDCardCommands.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="gComms.cpp">
@@ -96,6 +102,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="gDistanceSensorCommands.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="gSDCard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

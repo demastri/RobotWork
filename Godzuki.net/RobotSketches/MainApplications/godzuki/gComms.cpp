@@ -9,13 +9,23 @@ using namespace std;
 using namespace Godzuki;
 #endif
 
-const long USB_BAUD_RATE = 9600;
+const long RADIO_BAUD_RATE = 9600;
+const long USB_BAUD_RATE = 9600;		// 115200
 const int MAX_SETUP_WAIT_TIME = 2000;
 char gComms::refString[20];
+
+char *welcomsString = "Godzuki alive and well...";
+
 
 gComms::gComms() {
 }
 
+void gComms::setup() {
+	setup( true, RADIO_BAUD_RATE );
+}
+void gComms::setup(bool defaultToRadio) {
+	setup( defaultToRadio, RADIO_BAUD_RATE );
+}
 void gComms::setup(bool defaultToRadio, int baudRate) {
 	writeToRadio = defaultToRadio;
 #ifndef WIN32
@@ -27,25 +37,20 @@ void gComms::setup(bool defaultToRadio, int baudRate) {
 	}
 
 	curSetupWaitTime = 0;
-	Serial.begin(115200);
+	Serial.begin(USB_BAUD_RATE);
 	while (!Serial && curSetupWaitTime < MAX_SETUP_WAIT_TIME) {
 		delay(20); // Wait untilSerial is ready - Leonardo
 		curSetupWaitTime += 20;
 	}
 
+
 	if( Serial ) {
-		Serial.println("Godzuki alive and well...");
-		if( Serial1 )
-			Serial.println("radio available as well");
-		else
-			Serial.println("radio dead!!");
+		Serial.print(welcomsString);
+		Serial.println((char *)(Serial1 ? "radio too" : "radio dead") );
 	}
 	if( Serial1 ) {
-		Serial1.println("Godzuki alive and well...");
-		if( Serial )
-			Serial1.println("USb available as well");
-		else
-			Serial1.println("USB dead!!");
+		Serial1.print(welcomsString);
+		Serial1.println((char *)(Serial ? "USB too" : "USB dead") );
 	}
 #endif
 }
@@ -55,7 +60,6 @@ void gComms::BroadcastCommand( gCommandObject *cmdObj ) {
 	size_t outSize;
 	uint8_t *cmdString = cmdObj->ToCommandString( &outSize );
 
-	print( "Broadcasting command\n" );
 	print( cmdString, outSize );
 }
 
@@ -76,14 +80,6 @@ gCommandObject *gComms::UnpackCommandString( char *s ) {
 	return cmdObj;
 }
 
-
-
-void gComms::setup(bool defaultToRadio) {
-	setup( defaultToRadio, 9600 );
-}
-void gComms::setup() {
-	setup( true, 9600 );
-}
 void gComms::processCommand(int newCommand, int cmdParam ) {
 	switch( newCommand ) {
 	case FOLLOW_SERIAL: 

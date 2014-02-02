@@ -36,7 +36,9 @@ void gDistanceSensor::setup(int thisID, gCommandRouter *router, int trigPin, int
 
 void gDistanceSensor::setupCommandListener( gCommandRouter &router ) {
 	CMD_METHOD_REGISTER_DEFAULT(gDistanceSensor, processCommand);
-	CMD_METHOD_REGISTER_TIMER(gDistanceSensor, COMMAND_ID_RANGER_CHECK_READING, continueReadings, readTimeGap);
+	if( readTimeGap > 0 ) {
+		CMD_METHOD_REGISTER_TIMER(gDistanceSensor, COMMAND_ID_RANGER_CHECK_READING, continueReadings, readTimeGap);
+	}
 }
 
 int gDistanceSensor::getDistance() {
@@ -66,15 +68,12 @@ CMD_METHOD_IMPLEMENT( gDistanceSensor, processCommand ) {
 	if(cmdObj->commandID != currentCommand ) {
 		switch( cmdObj->commandID ) {
 		case COMMAND_ID_RANGER_READ_DISTANCE: 
-			gMonitor.print("Get distance reading:");
 			currentCommand = COMMAND_ID_RANGER_READ_DISTANCE;
 			break;
 		case COMMAND_ID_RANGER_READ_SERIES: 
-			gMonitor.println("Starting recurring distance readings");
 			currentCommand = COMMAND_ID_RANGER_READ_SERIES;
 			break;
 		case COMMAND_ID_RANGER_END_SERIES: 
-			gMonitor.println("Ending recurring distance readings");
 			currentCommand = COMMAND_ID_GLOBAL_NONE;
 			break;
 		default: 
@@ -94,9 +93,7 @@ CMD_METHOD_IMPLEMENT( gDistanceSensor, continueReadings) {
 	}
 	distance = getDistance();
 
-	gMonitor.print("Distance=");
 	gMonitor.print(distance);
-	gMonitor.println("cm");
 }
 
 

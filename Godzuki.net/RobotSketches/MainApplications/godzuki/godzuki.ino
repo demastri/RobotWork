@@ -2,6 +2,7 @@
 #include <Adafruit_MotorShield.h>
 #include <Servo.h>
 #include "utility/Adafruit_PWMServoDriver.h"
+#include <SdFat.h>
 
 ////////////////////
 
@@ -25,7 +26,7 @@ gInputs myInputs;
 
 ///////  ultrasonic sensor definitions
 #include "gDistanceSensor.h"
-//gDistanceSensor myDistanceSensor;
+gDistanceSensor myDistanceSensor;
 unsigned long lastDistanceTime=0;
 
 ///////  communications control definitions
@@ -35,8 +36,14 @@ extern gComms gMonitor;
 #include "gMotorControl.h"
 gMotorControl gMotors;
 
+#include "gSDCard.h"
+#include "gSDCardCommands.h"
+gSDCard mySDCard;
+
 extern int DEFAULT_DEVICE_ID;
 extern int DEFAULT_INSTANCE_ID;
+
+bool itsCrayCray = false;
 
 ////////////////////
 void setup() { 
@@ -46,11 +53,12 @@ void setup() {
 	myRouter.setup();
 
 	gMonitor.setup(true);
+	myInputs.setup(1, &myRouter);
 	myHBStatus.setup(1, &myRouter);
 	myServo.setup(9, 1, &myRouter);
 	gMotors.setup(1, &myRouter);
-	myInputs.setup(1, &myRouter);
-	//myDistanceSensor.setup(1, &myRouter, 5, 6, 500);
+	myDistanceSensor.setup(1, &myRouter, 5, 6, -1);
+	mySDCard.setup(1, &myRouter, 10);
 } 
 
 void loop() {
@@ -72,4 +80,5 @@ void loop() {
 
 	// handle maintenance stuff
 	ROUTE_COMMAND( HEARTBEAT_DEVICE_ID, 1, COMMAND_ID_HBSTATUS_LOOP_FINALLY, -1 );
+	delay( 100 );
 }

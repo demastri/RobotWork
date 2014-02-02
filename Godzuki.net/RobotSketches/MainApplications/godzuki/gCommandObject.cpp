@@ -1,7 +1,3 @@
-#ifndef WIN32
-#include <Arduino.h>
-#endif
-
 #include "gCommandObject.h"
 #include "gComms.h"
 
@@ -118,21 +114,16 @@ void gCommandObject::PlaceInStrBfr( uint8_t *s, int data, int size, int loc ) {
 	PlaceInStrBfr( s, myBfr, thisStrlen, loc+size-thisStrlen );
 }
 
+extern char *breakStr;
 
 void gCommandObject::print() {
-	gMonitor.print("Dumping cmd object... <");
+	gMonitor.print("Dump cmd <");
 	gMonitor.print( isReply ? sourceDeviceID : targetDeviceID );
-	gMonitor.print("> - <");
+	gMonitor.print(breakStr);
 	gMonitor.print( isReply ? sourceInstanceID : targetInstanceID);
-	gMonitor.print("> - <");
+	gMonitor.print(breakStr);
 	gMonitor.print( commandID );
-	gMonitor.print("> - <");
+	gMonitor.print(breakStr);
 	gMonitor.print( parameter );
 	gMonitor.println(">");
-#if 0 
-	if( cmdHandler == 0 )
-		gMonitor.println("had some kind of handler...");
-	else
-		gMonitor.println("ruh roh");
-#endif
 }

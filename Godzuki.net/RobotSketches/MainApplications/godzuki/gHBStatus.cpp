@@ -11,7 +11,6 @@ gHBStatus::gHBStatus() {
 	HEARTBEAT_WIDTH = 100; //mills
 	last_heartbeat_on = 0;
 	ledState = 0;
-	printHeartbeatStatus = false;
 }
 void gHBStatus::setup(int thisID, gCommandRouter *router ) {
 	instanceID = thisID;
@@ -48,17 +47,9 @@ void gHBStatus::checkHeartbeat() {
 		setStatusActually(0);
 	}
 	if( millis() - last_heartbeat_on > HEARTBEAT_WIDTH ) {
-		if( printHeartbeatStatus ) {
-			gMonitor.print("turning off at: ");
-			gMonitor.println(millis());
-		}
 		clearStatusActually(0);
 	}
 	if( millis() - last_heartbeat_on > HEARTBEAT_FREQUENCY ) {
-		if( printHeartbeatStatus ) {
-			gMonitor.print("turning on at: ");
-			gMonitor.println(millis());
-		}
 		last_heartbeat_on = millis();
 		setStatusActually(0);
 	}

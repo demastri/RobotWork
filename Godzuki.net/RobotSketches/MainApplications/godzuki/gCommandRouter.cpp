@@ -15,13 +15,17 @@ extern unsigned long millis();
 static int devicesNOTtoMonitor[] = {HEARTBEAT_DEVICE_ID, -1};
 static int devicesNOTtoRoute[] = {-1, SERVO_DEVICE_ID, -1};
 
-extern int DEFAULT_DEVICE_ID = -1;
-extern int DEFAULT_INSTANCE_ID = -1;
+int DEFAULT_DEVICE_ID = -1;
+int DEFAULT_INSTANCE_ID = -1;
 
 
-RouteTableList *gCommandRouter::listBase = 0;
-gCommandObject *gCommandRouter::commandList = 0;
-gCommandObject *gCommandRouter::commandResponses = 0;
+static RouteTableList *listBase = 0;
+static gCommandObject *commandList = 0;
+static gCommandObject *commandResponses = 0;
+//RouteTableList *gCommandRouter::listBase = 0;
+//gCommandObject *gCommandRouter::commandList = 0;
+//gCommandObject *gCommandRouter::commandResponses = 0;
+
 
 gCommandRouter::gCommandRouter() {
 }
@@ -126,7 +130,7 @@ void gCommandRouter::ExecuteCommandQueue() {
 				monitorMe = false;
 		for( int *pi=devicesNOTtoRoute; *pi>=0; pi++ ) {
 			if( commandList->targetDeviceID == *pi ) {
-				gMonitor.println( "Not Routing Command:" );
+				//gMonitor.println( "Not Routing Command:" );
 				commandList->print();
 				return;
 			}
@@ -146,8 +150,6 @@ void gCommandRouter::ExecuteCommandQueue() {
 				RouteReply( commandList, GLOBAL_COMMAND_STATUS_OK, gComms::strlen( (char *)cmdStr ), (void *)cmdStr );
 #else
 				gMonitor.BroadcastCommand( commandList );
-				//gMonitor.println( "I had nowhere to send this command..." );
-				//commandList->print();
 #endif
 			}
 		}
@@ -162,7 +164,7 @@ void gCommandRouter::HandleCommandResponses() {
 				monitorMe = false;
 		for( int *pi=devicesNOTtoRoute; *pi>=0; pi++ ) {
 			if( commandResponses->sourceDeviceID == *pi ) {
-				gMonitor.println( "Not Routing Command:" );
+				//gMonitor.println( "Not Routing Command:" );
 				commandResponses->print();
 				return;
 			}
@@ -172,10 +174,8 @@ void gCommandRouter::HandleCommandResponses() {
 		if( pHandler != 0 ) {
 			pHandler->thisHandler( pHandler->objRef, commandResponses );
 		} else {
-			// ### broadcast over network for remote target
+			// broadcast over network for remote target
 			gMonitor.BroadcastCommand( commandResponses );
-			gMonitor.println( "I had nowhere to send this response..." );
-			commandResponses->print();
 		}
 		DequeueCommand( &commandResponses, commandResponses );
 	}
@@ -263,14 +263,15 @@ void gCommandRouter::DumpHandlerTree() {
 		curEntry = curEntry->nextEntry;
 	}
 }
+char *breakStr = "> - <";
 void gCommandRouter::PrintRouteList(RouteTableList *l) {
-	gMonitor.print("Dumping cmd handler object... <");
+	gMonitor.print("Dump <");
 	gMonitor.print( l->deviceID );
-	gMonitor.print("> - <");
+	gMonitor.print(breakStr);
 	gMonitor.print( l->instanceID );
-	gMonitor.print("> - <");
+	gMonitor.print(breakStr);
 	gMonitor.print( l->cmdID );
-	gMonitor.print("> - <");
+	gMonitor.print(breakStr);
 	gMonitor.print( l->reTriggerInMills );
 	gMonitor.println(">");
 

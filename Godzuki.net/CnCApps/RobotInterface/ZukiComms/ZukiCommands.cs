@@ -56,10 +56,21 @@ namespace Godzuki
         // distance sensor commands
         public const int COMMAND_ID_RANGER_READ_DISTANCE    = 01;
 
-
         // camera commands
         public const int COMMAND_ID_CAMERA_SNAP_IMAGE       = 01;
         public const int COMMAND_ID_CAMERA_PULL_DIRECTORY   = 02;
         public const int COMMAND_ID_CAMERA_RETREIVE_FILE    = 03;
+
+        // SD Card commands
+        public const int COMMAND_ID_SDCARD_INIT             = 01;
+        public const int COMMAND_ID_SDCARD_GET_DIR          = 02;
+        public const int COMMAND_ID_SDCARD_GET_FILE         = 03;
+        public const int COMMAND_ID_SDCARD_DEL_FILE         = 04;
+        public const int COMMAND_ID_SDCARD_PUSH_FILE        = 05;
+        public const int COMMAND_ID_SDCARD_OPEN_FILE        = 06;
+        public const int COMMAND_ID_SDCARD_WRITE_FILE       = 07;
+        public const int COMMAND_ID_SDCARD_CLOSE_FILE       = 08;
+        public const int COMMAND_ID_SDCARD_UPDATE_FILE      = 09;
+
     }
 }

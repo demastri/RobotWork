@@ -85,35 +85,27 @@ CMD_METHOD_IMPLEMENT(gServo,processCommand) {
 	if( cmdObj->commandID != currentCommand ) {
 		switch( cmdObj->commandID ) {
 		case COMMAND_ID_SERVO_CENTER: 
-			gMonitor.println("Going to center");
 			center();
 			currentCommand = COMMAND_ID_GLOBAL_NONE;
 			break;
 		case COMMAND_ID_SERVO_SWEEP_ONCE:
-			gMonitor.println("Sweeping once");
 			startSweep();
 			currentCommand = cmdObj->commandID;
 			break;
 		case COMMAND_ID_SERVO_SWEEP_CONTINUOUS:
-			gMonitor.println("Sweeping continuously");
 			startSweep();
 			currentCommand = cmdObj->commandID;
 			break;
 		case COMMAND_ID_SERVO_SWEEP_STOP:
-			gMonitor.println("Stopping sweep");
 			stopSweep();
 			currentCommand = COMMAND_ID_GLOBAL_NONE;
 			break;
 		case COMMAND_ID_SERVO_SET_POSITION:
-			gMonitor.print("Setting position to ");
-			gMonitor.println(cmdObj->parameter);
 			moveTo(cmdObj->parameter);
 			ROUTE_REPLY( GLOBAL_COMMAND_STATUS_OK, 0, 0 );
 			currentCommand = COMMAND_ID_GLOBAL_NONE;
 			break;
 		case COMMAND_ID_SERVO_READ_POSITION:
-			gMonitor.print("current servo position: ");    // do NOT update current_command...
-			gMonitor.println(pos);                // let it keep doing whatever it was doing...
 			gCommandObject::PlaceInStrBfr( cmdBfr, pos, 3, 0 );
 			ROUTE_REPLY( GLOBAL_COMMAND_STATUS_OK, gComms::strlen( (char *)cmdBfr ), cmdBfr );
 			break;

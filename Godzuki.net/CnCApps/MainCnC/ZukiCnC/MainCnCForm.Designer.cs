@@ -63,12 +63,14 @@
             this.CurrentServoPosition = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.SDcommandChoice = new System.Windows.Forms.ComboBox();
             this.button2 = new System.Windows.Forms.Button();
             this.SnapPictureButton = new System.Windows.Forms.Button();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.MessageLoopTimer = new System.Windows.Forms.Timer(this.components);
+            this.ClearCmdLogButton = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -450,6 +452,7 @@
             // 
             // groupBox6
             // 
+            this.groupBox6.Controls.Add(this.SDcommandChoice);
             this.groupBox6.Controls.Add(this.button2);
             this.groupBox6.Controls.Add(this.SnapPictureButton);
             this.groupBox6.Controls.Add(this.pictureBox1);
@@ -460,9 +463,28 @@
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = "Imaging";
             // 
+            // SDcommandChoice
+            // 
+            this.SDcommandChoice.FormattingEnabled = true;
+            this.SDcommandChoice.Items.AddRange(new object[] {
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9"});
+            this.SDcommandChoice.Location = new System.Drawing.Point(6, 216);
+            this.SDcommandChoice.Name = "SDcommandChoice";
+            this.SDcommandChoice.Size = new System.Drawing.Size(68, 21);
+            this.SDcommandChoice.TabIndex = 3;
+            this.SDcommandChoice.Text = "1";
+            // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(138, 215);
+            this.button2.Location = new System.Drawing.Point(168, 215);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(80, 23);
             this.button2.TabIndex = 2;
@@ -471,7 +493,7 @@
             // 
             // SnapPictureButton
             // 
-            this.SnapPictureButton.Location = new System.Drawing.Point(52, 215);
+            this.SnapPictureButton.Location = new System.Drawing.Point(82, 215);
             this.SnapPictureButton.Name = "SnapPictureButton";
             this.SnapPictureButton.Size = new System.Drawing.Size(80, 23);
             this.SnapPictureButton.TabIndex = 1;
@@ -512,11 +534,22 @@
             this.MessageLoopTimer.Interval = 250;
             this.MessageLoopTimer.Tick += new System.EventHandler(this.MessageLoopTimer_Tick);
             // 
+            // ClearCmdLogButton
+            // 
+            this.ClearCmdLogButton.Location = new System.Drawing.Point(232, 558);
+            this.ClearCmdLogButton.Name = "ClearCmdLogButton";
+            this.ClearCmdLogButton.Size = new System.Drawing.Size(44, 23);
+            this.ClearCmdLogButton.TabIndex = 4;
+            this.ClearCmdLogButton.Text = "Clr";
+            this.ClearCmdLogButton.UseVisualStyleBackColor = true;
+            this.ClearCmdLogButton.Click += new System.EventHandler(this.ClearCmdLogButton_Click);
+            // 
             // MainCnCForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(848, 590);
+            this.Controls.Add(this.ClearCmdLogButton);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
@@ -587,6 +620,8 @@
         private AuSharp.Knob ServoTargetPos;
         private AuSharp.Knob MotorSpeed;
         private AuSharp.Knob knob1;
+        private System.Windows.Forms.ComboBox SDcommandChoice;
+        private System.Windows.Forms.Button ClearCmdLogButton;
     }
 }
 

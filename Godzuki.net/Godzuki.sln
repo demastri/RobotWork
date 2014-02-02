@@ -51,7 +51,7 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "ZukiWeb", "CnCApps\MainCnC\
 		Release.AspNetCompiler.ForceOverwrite = "true"
 		Release.AspNetCompiler.FixedNames = "false"
 		Release.AspNetCompiler.Debug = "False"
-		VWDPort = "62770"
+		VWDPort = "51876"
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "godzuki", "RobotSketches\MainApplications\godzuki\godzuki.vcxproj", "{B0E25949-EF2D-421B-A620-AECDE30EA4EE}"

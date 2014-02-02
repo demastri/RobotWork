@@ -50,9 +50,9 @@ private:
 	void QueueCommand( gCommandObject **head, gCommandObject *objData );
 	void DequeueCommand( gCommandObject **head, gCommandObject *objData );
 
-	static RouteTableList *listBase;
-	static gCommandObject *commandList;
-	static gCommandObject *commandResponses;
+	//static RouteTableList *listBase;
+	//static gCommandObject *commandList;
+	//static gCommandObject *commandResponses;
 };
 
 #endif

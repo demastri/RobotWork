@@ -10,13 +10,15 @@ const int gButtonMappingCmds[] = {COMMAND_ID_SERVO_SWEEP_ONCE,	COMMAND_ID_SERVO_
 const int gButtonMappingDevs[] = {SERVO_DEVICE_ID,				SERVO_DEVICE_ID,				SERVO_DEVICE_ID,			SERVO_DEVICE_ID,					SERVO_DEVICE_ID };
 const int gButtonMappingIDs[] =	 {1,							1,								1,							1,									1 };
 
-
 #include "gInputs.h"
 #include "gComms.h"
 extern gComms gMonitor;
 #include "gCommandRouter.h"
 
 static const unsigned int adc_key_val[5] = { 30, 150, 360, 535, 760 };
+
+#undef USB_MONITOR_CMDS
+#undef RADIO_MONITOR_CMDS
 
 gInputs::gInputs() {
 	adc_key_in = 0;
@@ -50,6 +52,7 @@ CMD_METHOD_IMPLEMENT(gInputs,processCommand) {
 int gInputs::ReadCommand(int &param) {
 	char serialCmd[20];
 	int cmdSize = 0;
+#ifdef USB_MONITOR_CMDS
 	if (Serial.available()) {
 		int kbdKey = Serial.read();
 		switch (kbdKey) {
@@ -65,7 +68,7 @@ int gInputs::ReadCommand(int &param) {
 					break;
 			}
 			serialCmd[cmdSize++] = '\0';
-			Serial.print( "Remote Command String..." );
+			Serial.print( "[cmd]" );
 			Serial.println( serialCmd );
 			if( kbdKey == '#' ) {
 				pRouter->RouteCommand( gComms::UnpackCommandString(serialCmd) );
@@ -145,6 +148,7 @@ int gInputs::ReadCommand(int &param) {
 			break;
 		}
 	}
+#endif
 
 	if (Serial1.available()) {
 		int kbdKey = Serial1.read();
@@ -167,6 +171,7 @@ int gInputs::ReadCommand(int &param) {
 				pRouter->RouteCommand( gComms::UnpackCommandString(serialCmd) );
 			}
 			break;
+#ifdef RADIO_MONITOR_CMDS
 		case 'h':
 			pRouter->DumpHandlerTree();
 			return ROUTER_NO_COMMAND;
@@ -243,6 +248,7 @@ int gInputs::ReadCommand(int &param) {
 			return FOLLOW_SERIAL;
 		default:
 			break;
+#endif
 		}
 	}
 

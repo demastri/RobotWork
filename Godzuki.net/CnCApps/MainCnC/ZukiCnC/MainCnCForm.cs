@@ -76,8 +76,12 @@ namespace ZukiCnC
                 }
                 else
                 {
+                    MessageLoopTimer.Stop();
+
                     gz.curData.Add("Couldn't open port, please check connections...");
                     MessageBox.Show("Couldn't open port, please check connections...");
+                
+                    MessageLoopTimer.Start();
                 }
             }
             else
@@ -124,7 +128,12 @@ namespace ZukiCnC
                             openCommands.Remove(thisKey);
                             if (cmdObj.rtnStatus != Godzuki.ZukiCommands.GLOBAL_COMMAND_STATUS_OK)
                             {
-                                MessageBox.Show("Command " + openCmd.ToString() + " failed with status code <" + cmdObj.rtnStatus.ToString() + ">");
+                                string outString = cmdObj.rtnStatus.ToString();
+                                if (cmdObj.payloadSize > 0) // ok - we got a status message as well;
+                                    outString += " " + new string(cmdObj.payloadData);
+                                MessageLoopTimer.Stop();
+                                MessageBox.Show("Command " + openCmd.ToString() + " failed with status code <" + outString + ">");
+                                MessageLoopTimer.Start();
                             }
                             else
                             {
@@ -175,7 +184,9 @@ namespace ZukiCnC
                 {
                     string cmd = openCommands[dt].ToString();
                     openCommands.Remove(dt);
+                    MessageLoopTimer.Stop();
                     MessageBox.Show("Command Timeout: " + cmd);
+                    MessageLoopTimer.Start();
                     break;
                 }
         }
@@ -229,6 +240,18 @@ namespace ZukiCnC
 
         private void SnapPictureButton_Click(object sender, EventArgs e)
         {
+            LogText("Temporary - coopt for SD Test" );
+            Godzuki.gCommandObject cmdObj = new Godzuki.gCommandObject(
+                Godzuki.ZukiCommands.CNC_APP_DEVICE_ID, 1,
+                Godzuki.ZukiCommands.SDCARD_DEVICE_ID, 1,
+                Convert.ToInt16(SDcommandChoice.SelectedItem));
+
+            // stringification is back into the comms object
+            if (gz.PostCommand(cmdObj))
+                openCommands.Add(DateTime.Now.Add(new TimeSpan(0, 0, 2)), cmdObj);
+
+            return;
+#if false
             LogText("Request Camera Image");
             // the command will return a response that will cause the display to update...
             Godzuki.gCommandObject cmdObj = new Godzuki.gCommandObject(
@@ -239,6 +262,7 @@ namespace ZukiCnC
             // stringification is back into the comms object
             if (gz.PostCommand(cmdObj))
                 openCommands.Add(DateTime.Now.Add(new TimeSpan(0, 0, 10)), cmdObj);
+#endif
         }
 
         private void ReadRangerButton_Click(object sender, EventArgs e)
@@ -253,6 +277,11 @@ namespace ZukiCnC
             // stringification is back into the comms object
             if (gz.PostCommand(cmdObj))
                 openCommands.Add(DateTime.Now.Add(new TimeSpan(0, 0, 10)), cmdObj);
+        }
+
+        private void ClearCmdLogButton_Click(object sender, EventArgs e)
+        {
+            sessionLog.Clear();
         }
     }
 }
