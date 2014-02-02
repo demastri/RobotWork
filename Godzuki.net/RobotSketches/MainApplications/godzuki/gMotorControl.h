@@ -30,9 +30,13 @@ private:
 
 	const static int maxMotors = 4;
 	gMotor *(myMotors[4]);
+	void setSpeed( int thisSpeed, int motorID);
 	void setSpeeds( int thisSpeed );
+	void setDirection(int thisDir, int motorID);
 	void setDirections( int thisDir );
+	void start(int motorID);
 	void startAll();
+	void stop(int motorID);
 	void stopAll();
 };
 

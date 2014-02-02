@@ -98,6 +98,9 @@ namespace Godzuki
                     object sender,
                     SerialDataReceivedEventArgs e)
         {
+            bool displayOnlyCommandObjects = true;
+            bool displayOnlyResponseStrings = true;
+
             SerialPort sp = (SerialPort)sender;
             string indata = sp.ReadExisting();
 
@@ -111,14 +114,25 @@ namespace Godzuki
             {
                 r.localBfr += indata;
                 // if some part of this signifies the end of the command, parse out everything else and add to list
-                int cmdLoc = r.localBfr.IndexOfAny( new char[]{'#', '\n'} );
-                if( cmdLoc >= 0 ) {
-                    string outStr = r.localBfr.Substring(0, cmdLoc+1);
-                    if( cmdLoc+1 == r.localBfr.Length )
+                int cmdStart = r.localBfr.IndexOfAny(new char[] { '!', '&' });
+                int cmdEnd = r.localBfr.IndexOfAny(new char[] { '#', '\n' },  (cmdStart < 0 ? 0 : cmdStart) );
+                if (cmdEnd >= 0 )
+                {
+                    if (cmdStart < 0 )  // spin it off for display anyway...
+                        if( !displayOnlyCommandObjects )
+                            r.curData.Add(r.localBfr);
+                    if (cmdStart >= 0)
+                    {
+                        if (!displayOnlyCommandObjects)
+                            r.curData.Add(r.localBfr.Substring(0, cmdStart));
+                        if( !displayOnlyResponseStrings || r.localBfr[cmdStart] == '&' )
+                            r.curData.Add(r.localBfr.Substring(cmdStart, (cmdEnd - cmdStart) + 1) );
+                    }
+
+                    if( cmdEnd+1 == r.localBfr.Length )
                         r.localBfr = "";
                     else
-                        r.localBfr = r.localBfr.Substring(cmdLoc+1);
-                    r.curData.Add( outStr );
+                        r.localBfr = r.localBfr.Substring(cmdEnd+1);
                 }
             }
         }

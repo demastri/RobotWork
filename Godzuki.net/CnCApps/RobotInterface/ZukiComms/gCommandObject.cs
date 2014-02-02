@@ -13,7 +13,7 @@ namespace Godzuki
             Init(srcdev, srcinst, dev, inst, cmd, param, paySize, payData);
         }
 
-        public gCommandObject(int srcdev, int srcinst, int dev, int inst, int cmd, int param)
+        public gCommandObject(int srcdev, int srcinst, int dev, int inst, int cmd, long param)
         {
             Init(srcdev, srcinst, dev, inst, cmd, param, 0, null);
         }
@@ -22,7 +22,7 @@ namespace Godzuki
             Init(srcdev, srcinst, dev, inst, cmd, -1, 0, null);
         }
 
-        public gCommandObject(int dev, int inst, int cmd, int param)
+        public gCommandObject(int dev, int inst, int cmd, long param)
         {
             Init(-1, -1, dev, inst, cmd, param, 0, null);
         }
@@ -37,7 +37,7 @@ namespace Godzuki
             Init(-1, -1, -1, -1, -1, -1, 0, null);
         }
 
-        private void Init(int srcdev, int srcinst, int dev, int inst, int cmd, int param, long paySize, char[] payData)
+        private void Init(int srcdev, int srcinst, int dev, int inst, int cmd, long param, long paySize, char[] payData)
         {
             sourceDeviceID = srcdev;
             sourceInstanceID = srcinst;
@@ -63,7 +63,7 @@ namespace Godzuki
                 possCmd.targetInstanceID    = Convert.ToInt16( s.Substring(7,2) );
                 possCmd.commandID           = Convert.ToInt16( s.Substring(9,2) );
                 possCmd.rtnStatus = 0;
-                possCmd.parameter = Convert.ToInt16(s.Substring(11, 6));
+                possCmd.parameter = Convert.ToInt64(s.Substring(11, 6));
                 possCmd.payloadSize = 0;
                 possCmd.payloadData = null;
                 possCmd.isReply = false;
@@ -92,7 +92,7 @@ namespace Godzuki
         public int targetDeviceID;
         public int targetInstanceID;
         public int commandID;
-        public int parameter;
+        public long parameter;
 
         public int sourceDeviceID;
         public int sourceInstanceID;

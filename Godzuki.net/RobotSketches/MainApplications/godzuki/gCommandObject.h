@@ -80,7 +80,7 @@ public:
 	int targetDeviceID;
 	int targetInstanceID;
 	int commandID;
-	int parameter;
+	long parameter;
 
 	int sourceDeviceID;
 	int sourceInstanceID;

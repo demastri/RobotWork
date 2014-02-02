@@ -44,14 +44,26 @@ namespace Godzuki
         public const int COMMAND_ID_SERVO_READ_POSITION      = 06;
 
         // motor control commands
-        public const int COMMAND_ID_MOTORCONTROL_SET_SPEED_SLOW  = 01;
-        public const int COMMAND_ID_MOTORCONTROL_SET_SPEED_FAST  = 02;
-        public const int COMMAND_ID_MOTORCONTROL_SET_SPEED_BUMP  = 07;
-        public const int COMMAND_ID_MOTORCONTROL_SET_SPEED       = 08;
-        public const int COMMAND_ID_MOTORCONTROL_SET_DIR_FWD     = 03;
-        public const int COMMAND_ID_MOTORCONTROL_SET_DIR_REV     = 04;
-        public const int COMMAND_ID_MOTORCONTROL_START           = 05;
-        public const int COMMAND_ID_MOTORCONTROL_STOP            = 06;
+        public const int COMMAND_ID_MOTORCONTROL_SET_SPEED_SLOW = 01;
+        public const int COMMAND_ID_MOTORCONTROL_SET_SPEED_FAST = 02;
+        public const int COMMAND_ID_MOTORCONTROL_SET_SPEED_BUMP = 07;
+        public const int COMMAND_ID_MOTORCONTROL_SET_SPEED      = 08;
+        public const int COMMAND_ID_MOTORCONTROL_SET_DIR_FWD    = 03;
+        public const int COMMAND_ID_MOTORCONTROL_SET_DIR_REV    = 04;
+        public const int COMMAND_ID_MOTORCONTROL_START          = 05;
+        public const int COMMAND_ID_MOTORCONTROL_STOP           = 06;
+
+        public const int COMMAND_CONST_MOTORCONTROL_FORWARD     = 0x01;
+        public const int COMMAND_CONST_MOTORCONTROL_BACKWARD    = 0x02;
+        public const int COMMAND_CONST_MOTORCONTROL_TURNLEFT    = 0x03;
+        public const int COMMAND_CONST_MOTORCONTROL_TURNRIGHT   = 0x04;
+        public const int COMMAND_CONST_MOTORCONTROL_STOP        = 0x05;
+
+        public const int COMMAND_CONST_MOTORCONTROL_MOTOR1      = 0x01;
+        public const int COMMAND_CONST_MOTORCONTROL_MOTOR2      = 0x02;
+        public const int COMMAND_CONST_MOTORCONTROL_MOTOR3      = 0x04;
+        public const int COMMAND_CONST_MOTORCONTROL_MOTOR4      = 0x08;
+        public const int COMMAND_CONST_MOTORCONTROL_MOTORS_ALL  = 0x0F;
 
         // distance sensor commands
         public const int COMMAND_ID_RANGER_READ_DISTANCE    = 01;

@@ -47,29 +47,57 @@ CMD_METHOD_IMPLEMENT(gMotorControl,processCommand) {
 	switch( cmdObj->commandID ) {
 	case COMMAND_ID_MOTORCONTROL_SET_SPEED_FAST:
 		setSpeeds(150);
+		ROUTE_REPLY(GLOBAL_COMMAND_STATUS_OK,0,0);
 		break;
 	case COMMAND_ID_MOTORCONTROL_SET_SPEED_SLOW:
 		setSpeeds(50);
+		ROUTE_REPLY(GLOBAL_COMMAND_STATUS_OK,0,0);
 		break;
 	case COMMAND_ID_MOTORCONTROL_SET_SPEED:
 		setSpeeds(cmdObj->parameter);
+		ROUTE_REPLY(GLOBAL_COMMAND_STATUS_OK,0,0);
 		break;
 	case COMMAND_ID_MOTORCONTROL_SET_SPEED_BUMP:
 		currentSpeed += 50;
 		currentSpeed %= 256;
 		setSpeeds(currentSpeed);
+		ROUTE_REPLY(GLOBAL_COMMAND_STATUS_OK,0,0);
 		break;
 	case COMMAND_ID_MOTORCONTROL_SET_DIR_FWD:
 		setDirections(FORWARD);
+		ROUTE_REPLY(GLOBAL_COMMAND_STATUS_OK,0,0);
 		break;
 	case COMMAND_ID_MOTORCONTROL_SET_DIR_REV:
 		setDirections(BACKWARD);
+		ROUTE_REPLY(GLOBAL_COMMAND_STATUS_OK,0,0);
 		break;
 	case COMMAND_ID_MOTORCONTROL_START:
+		if( cmdObj->parameter > 0 ) { // embed everything into one command
+			// 6 characters
+			//  3 chars for motor control
+				// first is 1-fwd,2-back,3-left,4-right
+				// next 2 are 1 bit for each motor, bit 0 => motor 1..bit 3 => motor 4
+			//  3 for speed - 0-255
+			int paramDir = cmdObj->parameter / 100000;
+			int paramMask = (cmdObj->parameter / 1000) % 100;
+			int paramSpeed = cmdObj->parameter % 1000;
+			for( int i=0; i<maxMotors; i++ ) {
+				int thisDir = (paramDir == COMMAND_CONST_MOTORCONTROL_FORWARD ? FORWARD : 
+					(paramDir == COMMAND_CONST_MOTORCONTROL_BACKWARD ? BACKWARD : 
+					(paramDir == COMMAND_CONST_MOTORCONTROL_TURNLEFT ? (i<2 ? BACKWARD : FORWARD) : (i<2 ? FORWARD : BACKWARD) )));
+				if( (paramMask & (1<<i)) ) {
+					setDirection( thisDir, i );
+					setSpeed( paramSpeed, i );
+					start( i );
+				}
+			}
+		}
 		startAll();
+		ROUTE_REPLY(GLOBAL_COMMAND_STATUS_OK,0,0);
 		break;
 	case COMMAND_ID_MOTORCONTROL_STOP:
 		stopAll();
+		ROUTE_REPLY(GLOBAL_COMMAND_STATUS_OK,0,0);
 		break;
 	}
 }
@@ -77,25 +105,39 @@ CMD_METHOD_IMPLEMENT(gMotorControl,processCommand) {
 void gMotorControl::setSpeeds(int thisSpeed) {
 	currentSpeed = thisSpeed;
 	for( int i=0; i<maxMotors; i++ )
-		if( myMotors[i] != 0 )
-			if( !itsCrayCray) myMotors[i]->setSpeed(thisSpeed);
+		setSpeed(thisSpeed, i);
+}
+void gMotorControl::setSpeed(int thisSpeed, int motorID) {
+	currentSpeed = thisSpeed;
+	if( !itsCrayCray && myMotors[motorID] != 0 ) 
+		myMotors[motorID]->setSpeed(thisSpeed);
 }
 
 void gMotorControl::setDirections(int thisDir) {
 	for( int i=0; i<maxMotors; i++ )
-		if( myMotors[i] != 0 )
-			if( !itsCrayCray) myMotors[i]->setDirection(thisDir);
+		setDirection(thisDir, i);
+}
+void gMotorControl::setDirection(int thisDir, int motorID) {
+	if( !itsCrayCray && myMotors[motorID] != 0 ) 
+		myMotors[motorID]->setDirection(thisDir);
 }
 
 void gMotorControl::startAll() {
 	for( int i=0; i<maxMotors; i++ )
-		if( myMotors[i] != 0 )
-			if( !itsCrayCray) myMotors[i]->go();
+		start( i );
+}
+void gMotorControl::start(int motorID) {
+	if( myMotors[motorID] != 0 )
+		if( !itsCrayCray ) 
+			myMotors[motorID]->go();
 }
 
 void gMotorControl::stopAll() {
 	for( int i=0; i<maxMotors; i++ )
-		if( myMotors[i] != 0 )
-			if( !itsCrayCray) myMotors[i]->stop();
+		stop( i );
+}
+void gMotorControl::stop(int motorID) {
+	if( !itsCrayCray && myMotors[motorID] != 0 ) 
+		myMotors[motorID]->stop();
 }
 

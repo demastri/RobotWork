@@ -40,14 +40,19 @@
             this.ConnectToRobotButton = new System.Windows.Forms.Button();
             this.availablePorts = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.knob1 = new AuSharp.Knob();
+            this.MotorSelectGroup = new System.Windows.Forms.GroupBox();
+            this.GoButton = new System.Windows.Forms.Button();
+            this.motorCheckRR = new System.Windows.Forms.CheckBox();
+            this.motorCheckFR = new System.Windows.Forms.CheckBox();
+            this.motorCheckRL = new System.Windows.Forms.CheckBox();
+            this.motorCheckFL = new System.Windows.Forms.CheckBox();
+            this.TurningSpeed = new AuSharp.Knob();
             this.MotorSpeed = new AuSharp.Knob();
-            this.button11 = new System.Windows.Forms.Button();
-            this.button10 = new System.Windows.Forms.Button();
-            this.button9 = new System.Windows.Forms.Button();
-            this.button8 = new System.Windows.Forms.Button();
-            this.button7 = new System.Windows.Forms.Button();
+            this.MotorBack = new System.Windows.Forms.Button();
+            this.MotorLeft = new System.Windows.Forms.Button();
+            this.MotorRight = new System.Windows.Forms.Button();
+            this.MotorStop = new System.Windows.Forms.Button();
+            this.MotorFwd = new System.Windows.Forms.Button();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.groupBox9 = new System.Windows.Forms.GroupBox();
             this.textBox4 = new System.Windows.Forms.TextBox();
@@ -73,7 +78,7 @@
             this.ClearCmdLogButton = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
-            this.groupBox3.SuspendLayout();
+            this.MotorSelectGroup.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox9.SuspendLayout();
             this.groupBox8.SuspendLayout();
@@ -207,37 +212,96 @@
             this.label2.TabIndex = 8;
             this.label2.Text = "COM/Instance:";
             // 
-            // groupBox3
+            // MotorSelectGroup
             // 
-            this.groupBox3.Controls.Add(this.knob1);
-            this.groupBox3.Controls.Add(this.MotorSpeed);
-            this.groupBox3.Controls.Add(this.button11);
-            this.groupBox3.Controls.Add(this.button10);
-            this.groupBox3.Controls.Add(this.button9);
-            this.groupBox3.Controls.Add(this.button8);
-            this.groupBox3.Controls.Add(this.button7);
-            this.groupBox3.Location = new System.Drawing.Point(647, 362);
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(189, 196);
-            this.groupBox3.TabIndex = 2;
-            this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Motion Control";
+            this.MotorSelectGroup.Controls.Add(this.GoButton);
+            this.MotorSelectGroup.Controls.Add(this.motorCheckRR);
+            this.MotorSelectGroup.Controls.Add(this.motorCheckFR);
+            this.MotorSelectGroup.Controls.Add(this.motorCheckRL);
+            this.MotorSelectGroup.Controls.Add(this.motorCheckFL);
+            this.MotorSelectGroup.Controls.Add(this.TurningSpeed);
+            this.MotorSelectGroup.Controls.Add(this.MotorSpeed);
+            this.MotorSelectGroup.Controls.Add(this.MotorBack);
+            this.MotorSelectGroup.Controls.Add(this.MotorLeft);
+            this.MotorSelectGroup.Controls.Add(this.MotorRight);
+            this.MotorSelectGroup.Controls.Add(this.MotorStop);
+            this.MotorSelectGroup.Controls.Add(this.MotorFwd);
+            this.MotorSelectGroup.Location = new System.Drawing.Point(647, 362);
+            this.MotorSelectGroup.Name = "MotorSelectGroup";
+            this.MotorSelectGroup.Size = new System.Drawing.Size(189, 196);
+            this.MotorSelectGroup.TabIndex = 2;
+            this.MotorSelectGroup.TabStop = false;
+            this.MotorSelectGroup.Text = "Motion Control";
             // 
-            // knob1
+            // GoButton
             // 
-            this.knob1.KnobColor = System.Drawing.Color.Black;
-            this.knob1.Location = new System.Drawing.Point(7, 133);
-            this.knob1.MarkerColor = System.Drawing.Color.Black;
-            this.knob1.MaxAngle = 180;
-            this.knob1.Maximum = 80;
-            this.knob1.Minimum = 40;
-            this.knob1.Name = "knob1";
-            this.knob1.Size = new System.Drawing.Size(57, 62);
-            this.knob1.TabIndex = 10;
-            this.knob1.Text = "Turn Speed";
-            this.knob1.TextKnobRelation = AuSharp.TextKnobRelation.KnobAboveText;
-            this.knob1.TickColor = System.Drawing.Color.Black;
-            this.knob1.Value = 50;
+            this.GoButton.Location = new System.Drawing.Point(75, 19);
+            this.GoButton.Name = "GoButton";
+            this.GoButton.Size = new System.Drawing.Size(30, 23);
+            this.GoButton.TabIndex = 15;
+            this.GoButton.Text = "Go";
+            this.GoButton.UseVisualStyleBackColor = true;
+            this.GoButton.Click += new System.EventHandler(this.GoButton_Click);
+            // 
+            // motorCheckRR
+            // 
+            this.motorCheckRR.Appearance = System.Windows.Forms.Appearance.Button;
+            this.motorCheckRR.AutoSize = true;
+            this.motorCheckRR.Location = new System.Drawing.Point(153, 46);
+            this.motorCheckRR.Name = "motorCheckRR";
+            this.motorCheckRR.Size = new System.Drawing.Size(33, 23);
+            this.motorCheckRR.TabIndex = 14;
+            this.motorCheckRR.Text = "RR";
+            this.motorCheckRR.UseVisualStyleBackColor = true;
+            // 
+            // motorCheckFR
+            // 
+            this.motorCheckFR.Appearance = System.Windows.Forms.Appearance.Button;
+            this.motorCheckFR.AutoSize = true;
+            this.motorCheckFR.Location = new System.Drawing.Point(154, 17);
+            this.motorCheckFR.Name = "motorCheckFR";
+            this.motorCheckFR.Size = new System.Drawing.Size(31, 23);
+            this.motorCheckFR.TabIndex = 13;
+            this.motorCheckFR.Text = "FR";
+            this.motorCheckFR.UseVisualStyleBackColor = true;
+            // 
+            // motorCheckRL
+            // 
+            this.motorCheckRL.Appearance = System.Windows.Forms.Appearance.Button;
+            this.motorCheckRL.AutoSize = true;
+            this.motorCheckRL.Location = new System.Drawing.Point(6, 49);
+            this.motorCheckRL.Name = "motorCheckRL";
+            this.motorCheckRL.Size = new System.Drawing.Size(31, 23);
+            this.motorCheckRL.TabIndex = 12;
+            this.motorCheckRL.Text = "RL";
+            this.motorCheckRL.UseVisualStyleBackColor = true;
+            // 
+            // motorCheckFL
+            // 
+            this.motorCheckFL.Appearance = System.Windows.Forms.Appearance.Button;
+            this.motorCheckFL.AutoSize = true;
+            this.motorCheckFL.Location = new System.Drawing.Point(7, 20);
+            this.motorCheckFL.Name = "motorCheckFL";
+            this.motorCheckFL.Size = new System.Drawing.Size(29, 23);
+            this.motorCheckFL.TabIndex = 11;
+            this.motorCheckFL.Text = "FL";
+            this.motorCheckFL.UseVisualStyleBackColor = true;
+            // 
+            // TurningSpeed
+            // 
+            this.TurningSpeed.KnobColor = System.Drawing.Color.Black;
+            this.TurningSpeed.Location = new System.Drawing.Point(7, 133);
+            this.TurningSpeed.MarkerColor = System.Drawing.Color.Black;
+            this.TurningSpeed.MaxAngle = 180;
+            this.TurningSpeed.Maximum = 200;
+            this.TurningSpeed.Minimum = 80;
+            this.TurningSpeed.Name = "TurningSpeed";
+            this.TurningSpeed.Size = new System.Drawing.Size(57, 62);
+            this.TurningSpeed.TabIndex = 10;
+            this.TurningSpeed.Text = "Turn Speed";
+            this.TurningSpeed.TextKnobRelation = AuSharp.TextKnobRelation.KnobAboveText;
+            this.TurningSpeed.TickColor = System.Drawing.Color.Black;
+            this.TurningSpeed.Value = 80;
             // 
             // MotorSpeed
             // 
@@ -245,61 +309,65 @@
             this.MotorSpeed.Location = new System.Drawing.Point(122, 133);
             this.MotorSpeed.MarkerColor = System.Drawing.Color.Black;
             this.MotorSpeed.MaxAngle = 180;
-            this.MotorSpeed.Maximum = 150;
-            this.MotorSpeed.Minimum = 60;
+            this.MotorSpeed.Maximum = 200;
+            this.MotorSpeed.Minimum = 75;
             this.MotorSpeed.Name = "MotorSpeed";
             this.MotorSpeed.Size = new System.Drawing.Size(57, 62);
             this.MotorSpeed.TabIndex = 9;
-            this.MotorSpeed.Text = "Fwd Speed";
+            this.MotorSpeed.Text = "F/R Speed";
             this.MotorSpeed.TextKnobRelation = AuSharp.TextKnobRelation.KnobAboveText;
             this.MotorSpeed.TickColor = System.Drawing.Color.Black;
             this.MotorSpeed.Value = 80;
-            this.MotorSpeed.DoubleClick += new System.EventHandler(this.MotorSpeed_DoubleClick);
             // 
-            // button11
+            // MotorBack
             // 
-            this.button11.Location = new System.Drawing.Point(75, 124);
-            this.button11.Name = "button11";
-            this.button11.Size = new System.Drawing.Size(30, 23);
-            this.button11.TabIndex = 4;
-            this.button11.Text = "V";
-            this.button11.UseVisualStyleBackColor = true;
+            this.MotorBack.Location = new System.Drawing.Point(75, 124);
+            this.MotorBack.Name = "MotorBack";
+            this.MotorBack.Size = new System.Drawing.Size(30, 23);
+            this.MotorBack.TabIndex = 4;
+            this.MotorBack.Text = "V";
+            this.MotorBack.UseVisualStyleBackColor = true;
+            this.MotorBack.Click += new System.EventHandler(this.MotorBack_Click);
             // 
-            // button10
+            // MotorLeft
             // 
-            this.button10.Location = new System.Drawing.Point(39, 95);
-            this.button10.Name = "button10";
-            this.button10.Size = new System.Drawing.Size(30, 23);
-            this.button10.TabIndex = 3;
-            this.button10.Text = "<";
-            this.button10.UseVisualStyleBackColor = true;
+            this.MotorLeft.Location = new System.Drawing.Point(39, 95);
+            this.MotorLeft.Name = "MotorLeft";
+            this.MotorLeft.Size = new System.Drawing.Size(30, 23);
+            this.MotorLeft.TabIndex = 3;
+            this.MotorLeft.Text = "<";
+            this.MotorLeft.UseVisualStyleBackColor = true;
+            this.MotorLeft.Click += new System.EventHandler(this.MotorLeft_Click);
             // 
-            // button9
+            // MotorRight
             // 
-            this.button9.Location = new System.Drawing.Point(111, 95);
-            this.button9.Name = "button9";
-            this.button9.Size = new System.Drawing.Size(30, 23);
-            this.button9.TabIndex = 2;
-            this.button9.Text = ">";
-            this.button9.UseVisualStyleBackColor = true;
+            this.MotorRight.Location = new System.Drawing.Point(111, 95);
+            this.MotorRight.Name = "MotorRight";
+            this.MotorRight.Size = new System.Drawing.Size(30, 23);
+            this.MotorRight.TabIndex = 2;
+            this.MotorRight.Text = ">";
+            this.MotorRight.UseVisualStyleBackColor = true;
+            this.MotorRight.Click += new System.EventHandler(this.MotorRight_Click);
             // 
-            // button8
+            // MotorStop
             // 
-            this.button8.Location = new System.Drawing.Point(75, 95);
-            this.button8.Name = "button8";
-            this.button8.Size = new System.Drawing.Size(30, 23);
-            this.button8.TabIndex = 1;
-            this.button8.Text = "X";
-            this.button8.UseVisualStyleBackColor = true;
+            this.MotorStop.Location = new System.Drawing.Point(75, 95);
+            this.MotorStop.Name = "MotorStop";
+            this.MotorStop.Size = new System.Drawing.Size(30, 23);
+            this.MotorStop.TabIndex = 1;
+            this.MotorStop.Text = "X";
+            this.MotorStop.UseVisualStyleBackColor = true;
+            this.MotorStop.Click += new System.EventHandler(this.MotorStop_Click);
             // 
-            // button7
+            // MotorFwd
             // 
-            this.button7.Location = new System.Drawing.Point(75, 66);
-            this.button7.Name = "button7";
-            this.button7.Size = new System.Drawing.Size(30, 23);
-            this.button7.TabIndex = 0;
-            this.button7.Text = "^";
-            this.button7.UseVisualStyleBackColor = true;
+            this.MotorFwd.Location = new System.Drawing.Point(75, 66);
+            this.MotorFwd.Name = "MotorFwd";
+            this.MotorFwd.Size = new System.Drawing.Size(30, 23);
+            this.MotorFwd.TabIndex = 0;
+            this.MotorFwd.Text = "^";
+            this.MotorFwd.UseVisualStyleBackColor = true;
+            this.MotorFwd.Click += new System.EventHandler(this.MotorFwd_Click);
             // 
             // groupBox4
             // 
@@ -551,7 +619,7 @@
             this.ClientSize = new System.Drawing.Size(848, 590);
             this.Controls.Add(this.ClearCmdLogButton);
             this.Controls.Add(this.groupBox4);
-            this.Controls.Add(this.groupBox3);
+            this.Controls.Add(this.MotorSelectGroup);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Name = "MainCnCForm";
@@ -560,7 +628,8 @@
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
-            this.groupBox3.ResumeLayout(false);
+            this.MotorSelectGroup.ResumeLayout(false);
+            this.MotorSelectGroup.PerformLayout();
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
             this.groupBox9.ResumeLayout(false);
@@ -582,7 +651,7 @@
 
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.GroupBox MotorSelectGroup;
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.GroupBox groupBox7;
         private System.Windows.Forms.GroupBox groupBox6;
@@ -603,11 +672,11 @@
         private System.Windows.Forms.Button ConnectToRobotButton;
         private System.Windows.Forms.ComboBox availablePorts;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Button button11;
-        private System.Windows.Forms.Button button10;
-        private System.Windows.Forms.Button button9;
-        private System.Windows.Forms.Button button8;
-        private System.Windows.Forms.Button button7;
+        private System.Windows.Forms.Button MotorBack;
+        private System.Windows.Forms.Button MotorLeft;
+        private System.Windows.Forms.Button MotorRight;
+        private System.Windows.Forms.Button MotorStop;
+        private System.Windows.Forms.Button MotorFwd;
         private System.Windows.Forms.GroupBox groupBox9;
         private System.Windows.Forms.TextBox textBox4;
         private System.Windows.Forms.GroupBox groupBox8;
@@ -619,9 +688,14 @@
         private System.Windows.Forms.Timer MessageLoopTimer;
         private AuSharp.Knob ServoTargetPos;
         private AuSharp.Knob MotorSpeed;
-        private AuSharp.Knob knob1;
+        private AuSharp.Knob TurningSpeed;
         private System.Windows.Forms.ComboBox SDcommandChoice;
         private System.Windows.Forms.Button ClearCmdLogButton;
+        private System.Windows.Forms.CheckBox motorCheckFL;
+        private System.Windows.Forms.CheckBox motorCheckRR;
+        private System.Windows.Forms.CheckBox motorCheckFR;
+        private System.Windows.Forms.CheckBox motorCheckRL;
+        private System.Windows.Forms.Button GoButton;
     }
 }
 

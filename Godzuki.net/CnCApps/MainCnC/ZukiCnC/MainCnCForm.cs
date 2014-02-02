@@ -48,7 +48,7 @@ namespace ZukiCnC
             if (ports.Length == 0)
                 availablePorts.Items.Add("None");
             else
-                foreach( string s in ports )
+                foreach (string s in ports)
                     availablePorts.Items.Add(s);
             if (refText != "" && ports.Contains(refText))
                 availablePorts.SelectedText = refText;
@@ -70,9 +70,9 @@ namespace ZukiCnC
                         Godzuki.ZukiCommands.CNC_APP_DEVICE_ID, 1,
                         Godzuki.ZukiCommands.GODZUKI_SENSOR_PLATFORM_DEVICE_ID, 1,
                         Godzuki.ZukiCommands.COMMAND_ID_GLOBAL_REQUEST_STATUS);
-                    gz.PostCommand( cmdObj );
+                    gz.PostCommand(cmdObj);
                     // somehow we need to set a timer that expires and revokes the connectedness if we haven't gotten a reply
-                    openCommands.Add( DateTime.Now.Add(new TimeSpan(0,0,2)), cmdObj );
+                    openCommands.Add(DateTime.Now.Add(new TimeSpan(0, 0, 2)), cmdObj);
                 }
                 else
                 {
@@ -80,7 +80,7 @@ namespace ZukiCnC
 
                     gz.curData.Add("Couldn't open port, please check connections...");
                     MessageBox.Show("Couldn't open port, please check connections...");
-                
+
                     MessageLoopTimer.Start();
                 }
             }
@@ -94,7 +94,8 @@ namespace ZukiCnC
 
         private void LogText(string s)
         {
-            sessionLog.AppendText(s + Environment.NewLine);
+            if( s.Trim() != "" )
+                sessionLog.AppendText(s.Trim() + Environment.NewLine);
         }
         private void MessageLoopTimer_Tick(object sender, EventArgs e)
         {
@@ -148,7 +149,7 @@ namespace ZukiCnC
                                                 GetServoPositionButton_Click(null, null);
                                                 break;
                                             case Godzuki.ZukiCommands.COMMAND_ID_SERVO_READ_POSITION:
-                                                CurrentServoPosition.Text = Convert.ToUInt16( new string( cmdObj.payloadData) ).ToString();
+                                                CurrentServoPosition.Text = Convert.ToUInt16(new string(cmdObj.payloadData)).ToString();
                                                 LogText("ACK for Servo Read Position");
                                                 break;
                                         }
@@ -157,13 +158,15 @@ namespace ZukiCnC
                                         switch (cmdObj.commandID)
                                         {
                                             case Godzuki.ZukiCommands.COMMAND_ID_GLOBAL_REQUEST_STATUS:
-                                                LogText("ACK for Global Status");  // issue read command
+                                                LogText("ACK for Global Status"); 
                                                 ConnectToRobotButton.Text = "Connected";
                                                 break;
                                         }
                                         break;
                                     default:
-                                        LogText("don't quite know how to handle this response");
+                                        // don't have to do anything, just consume the ack...
+                                        LogText("ACK for "+openCmd.ToString());  // issue read command
+                                        //LogText("don't quite know how to handle this response");
                                         break;
                                 }
 
@@ -179,8 +182,8 @@ namespace ZukiCnC
             }
             // in any event, if there are commands that have timed out, message them here...
             List<DateTime> deadKeys = new List<DateTime>();
-            foreach( DateTime dt in openCommands.Keys ) 
-                if( DateTime.Now > dt )
+            foreach (DateTime dt in openCommands.Keys)
+                if (DateTime.Now > dt)
                 {
                     string cmd = openCommands[dt].ToString();
                     openCommands.Remove(dt);
@@ -194,7 +197,7 @@ namespace ZukiCnC
         private void GetServoPositionButton_Click(object sender, EventArgs e)
         {
             LogText("Request Servo Position");
-            
+
             // at some point the command will return a response 
             // that will cause the display to update...
             Godzuki.gCommandObject cmdObj = new Godzuki.gCommandObject(
@@ -230,17 +233,10 @@ namespace ZukiCnC
             ServoTargetPos.Value = (ServoTargetPos.Minimum + ServoTargetPos.Maximum) / 2;
         }
 
-        private void MotorSpeed_DoubleClick(object sender, EventArgs e)
-        {
-            if (MotorSpeed.Text == "Rev Speed")
-                MotorSpeed.Text = "Fwd Speed";
-            else
-                MotorSpeed.Text = "Rev Speed";
-        }
-
+       
         private void SnapPictureButton_Click(object sender, EventArgs e)
         {
-            LogText("Temporary - coopt for SD Test" );
+            LogText("Temporary - coopt for SD Test");
             Godzuki.gCommandObject cmdObj = new Godzuki.gCommandObject(
                 Godzuki.ZukiCommands.CNC_APP_DEVICE_ID, 1,
                 Godzuki.ZukiCommands.SDCARD_DEVICE_ID, 1,
@@ -283,5 +279,78 @@ namespace ZukiCnC
         {
             sessionLog.Clear();
         }
+
+        #region motor commands
+        private void SendMotorCommand(int cmd, int speed)
+        {
+            // read the motor select checks
+            int motorMask = 0;
+            if (motorCheckFL.Checked)
+                motorMask += Godzuki.ZukiCommands.COMMAND_CONST_MOTORCONTROL_MOTOR1;
+            if (motorCheckRL.Checked)
+                motorMask += Godzuki.ZukiCommands.COMMAND_CONST_MOTORCONTROL_MOTOR2;
+            if (motorCheckFR.Checked)
+                motorMask += Godzuki.ZukiCommands.COMMAND_CONST_MOTORCONTROL_MOTOR4;
+            if (motorCheckRR.Checked)
+                motorMask += Godzuki.ZukiCommands.COMMAND_CONST_MOTORCONTROL_MOTOR3;
+            // build the right command 
+            long parameter = cmd * 100000 + (motorMask * 1000) + speed;
+
+            Godzuki.gCommandObject cmdObj = new Godzuki.gCommandObject(
+                Godzuki.ZukiCommands.CNC_APP_DEVICE_ID, 1,
+                Godzuki.ZukiCommands.MOTOR_CONTROL_DEVICE_ID, 1,
+                Godzuki.ZukiCommands.COMMAND_ID_MOTORCONTROL_START, parameter);
+            // go
+            if (gz.PostCommand(cmdObj))
+                openCommands.Add(DateTime.Now.Add(new TimeSpan(0, 0, 5)), cmdObj);
+        }
+        private void MotorStop_Click(object sender, EventArgs e)
+        {
+            SendMotorCommand(Godzuki.ZukiCommands.COMMAND_CONST_MOTORCONTROL_STOP, 0);
+        }
+        private void MotorFwd_Click(object sender, EventArgs e)
+        {
+            SendMotorCommand(Godzuki.ZukiCommands.COMMAND_CONST_MOTORCONTROL_FORWARD, MotorSpeed.Value);
+        }
+        private void MotorBack_Click(object sender, EventArgs e)
+        {
+            SendMotorCommand(Godzuki.ZukiCommands.COMMAND_CONST_MOTORCONTROL_BACKWARD, MotorSpeed.Value);
+        }
+        private void MotorLeft_Click(object sender, EventArgs e)
+        {
+            SendMotorCommand(Godzuki.ZukiCommands.COMMAND_CONST_MOTORCONTROL_TURNLEFT, TurningSpeed.Value);
+        }
+        private void MotorRight_Click(object sender, EventArgs e)
+        {
+            SendMotorCommand(Godzuki.ZukiCommands.COMMAND_CONST_MOTORCONTROL_TURNRIGHT, TurningSpeed.Value);
+        }
+        private void GoButton_Click(object sender, EventArgs e)
+        {
+            Godzuki.gCommandObject cmdObj = new Godzuki.gCommandObject(
+                Godzuki.ZukiCommands.CNC_APP_DEVICE_ID, 1,
+                Godzuki.ZukiCommands.MOTOR_CONTROL_DEVICE_ID, 1,
+                Godzuki.ZukiCommands.COMMAND_ID_MOTORCONTROL_SET_SPEED_SLOW, -1);
+            if (gz.PostCommand(cmdObj))
+                openCommands.Add(DateTime.Now.Add(new TimeSpan(0, 0, 5)), cmdObj);
+
+            cmdObj = new Godzuki.gCommandObject(
+                Godzuki.ZukiCommands.CNC_APP_DEVICE_ID, 1,
+                Godzuki.ZukiCommands.MOTOR_CONTROL_DEVICE_ID, 1,
+                Godzuki.ZukiCommands.COMMAND_ID_MOTORCONTROL_SET_DIR_FWD, -1);
+            if (gz.PostCommand(cmdObj))
+                openCommands.Add(DateTime.Now.Add(new TimeSpan(0, 0, 5,1)), cmdObj);
+
+            cmdObj = new Godzuki.gCommandObject(
+                Godzuki.ZukiCommands.CNC_APP_DEVICE_ID, 1,
+                Godzuki.ZukiCommands.MOTOR_CONTROL_DEVICE_ID, 1,
+                Godzuki.ZukiCommands.COMMAND_ID_MOTORCONTROL_START, -1);
+            if (gz.PostCommand(cmdObj))
+                openCommands.Add(DateTime.Now.Add(new TimeSpan(0, 0, 5,2)), cmdObj);
+
+        }
+
+        #endregion
+
+
     }
 }

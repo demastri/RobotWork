@@ -3,10 +3,10 @@
 
 #include "RoutingDeviceIDs.h"
 
-typedef void cmdHandler( void *objRef, int commandID, int parameter );
+typedef void cmdHandler( void *objRef, int commandID, long parameter );
 
-#define CMD_METHOD_DEFINE(M)                static void M##Proxy(void *thisObj, int commandID, int paramID ); void M##Actually( int commandID, int paramID )
-#define CMD_METHOD_IMPLEMENT(C,M)           void C::M##Proxy(void *thisObj, int commandID, int paramID ) { ((C *)thisObj)->M##Actually( commandID, paramID); } void C::M##Actually(int commandID, int paramID )
+#define CMD_METHOD_DEFINE(M)                static void M##Proxy(void *thisObj, int commandID, long paramID ); void M##Actually( int commandID, long paramID )
+#define CMD_METHOD_IMPLEMENT(C,M)           void C::M##Proxy(void *thisObj, int commandID, long paramID ) { ((C *)thisObj)->M##Actually( commandID, paramID); } void C::M##Actually(int commandID, int paramID )
 
 #define CMD_METHOD_REGISTER(Z,X,M)          router.AddCommandHandler( DEVICE_ID, instanceID, this, X,  (&Z::M##Proxy), -1 )
 #define CMD_METHOD_REGISTER_TIMER(Z,X,M,T)  router.AddCommandHandler( DEVICE_ID, instanceID, this, X,  (&Z::M##Proxy), T )
