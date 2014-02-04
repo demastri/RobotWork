@@ -1,3 +1,5 @@
+#include <PinChangeInt.h>
+
 int pin = 13;
 volatile int state = LOW;
 
@@ -20,9 +22,12 @@ int totalLoop=0;
 
 void setup()
 {
+  Serial1.begin(9600);             //Set serial baud rate to 9600
   pinMode(pin, OUTPUT);
-  attachInterrupt(0, updateLeft, CHANGE);
-  attachInterrupt(1, updateRight, CHANGE);
+  PCintPort::attachInterrupt(10, updateLeft,CHANGE);
+  PCintPort::attachInterrupt(11, updateRight,CHANGE);
+  //attachInterrupt(0, updateLeft, CHANGE);	// int 0 is pin 3
+  //attachInterrupt(1, updateRight, CHANGE);	// int 1 is pin 2
 }
 
 void loop()
@@ -43,14 +48,14 @@ void calculateSpeeds() {
 	lastSpeedCalcTime = now;
 }
 void displaySpeeds() {
-	Serial.print( "Total l/r: " );
-	Serial.print( leftTotalClicks );
-	Serial.print( "/" );
-	Serial.println( rightTotalClicks );
-	Serial.print( "Total l/r: " );
-	Serial.print( leftAggregateClicks );
-	Serial.print( "/" );
-	Serial.println( rightAggregateClicks );
+	Serial1.print( "Total l/r: " );
+	Serial1.print( leftTotalClicks );
+	Serial1.print( "/" );
+	Serial1.print( rightTotalClicks );
+	Serial1.print( "inst spd l/r: " );
+	Serial1.print( leftInstantaneousSpeed );
+	Serial1.print( "/" );
+	Serial1.println( rightInstantaneousSpeed );
 }
 
 

@@ -309,8 +309,7 @@
             this.MotorSpeed.Location = new System.Drawing.Point(122, 133);
             this.MotorSpeed.MarkerColor = System.Drawing.Color.Black;
             this.MotorSpeed.MaxAngle = 180;
-            this.MotorSpeed.Maximum = 200;
-            this.MotorSpeed.Minimum = 75;
+            this.MotorSpeed.Maximum = 255;
             this.MotorSpeed.Name = "MotorSpeed";
             this.MotorSpeed.Size = new System.Drawing.Size(57, 62);
             this.MotorSpeed.TabIndex = 9;

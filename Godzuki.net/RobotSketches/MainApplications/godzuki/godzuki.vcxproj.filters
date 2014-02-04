@@ -21,9 +21,6 @@
     <ClInclude Include="Visual Micro\.godzuki.vsarduino.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="gComms.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="gDistanceSensor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -72,11 +69,11 @@
     <ClInclude Include="gSDCardCommands.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="RouteTableList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="gComms.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="gDistanceSensor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

@@ -73,7 +73,6 @@
   <ItemGroup>
     <ClInclude Include="gCommandObject.h" />
     <ClInclude Include="gCommandRouter.h" />
-    <ClInclude Include="gComms.h" />
     <ClInclude Include="gDistanceSensor.h" />
     <ClInclude Include="gDistanceSensorCommands.h" />
     <ClInclude Include="gHBStatus.h" />
@@ -88,12 +87,12 @@
     <ClInclude Include="gSDCardCommands.h" />
     <ClInclude Include="gServo.h" />
     <ClInclude Include="gServoCommands.h" />
+    <ClInclude Include="RouteTableList.h" />
     <ClInclude Include="Visual Micro\.godzuki.vsarduino.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="gCommandObject.cpp" />
     <ClCompile Include="gCommandRouter.cpp" />
-    <ClCompile Include="gComms.cpp" />
     <ClCompile Include="gDistanceSensor.cpp" />
     <ClCompile Include="gDistanceSensorCommands.cpp" />
     <ClCompile Include="gHBStatus.cpp" />
