@@ -92,6 +92,44 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Knob", "CnCApps\Utilities\K
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GodzukEYe", "RobotSketches\MainApplications\GodzukEYe\GodzukEYe.vcxproj", "{69518B0A-5FF4-43C7-8B4C-5362F4E42504}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ZukiLib", "ZukiLib", "{A9E5E57E-C0DE-4994-B368-71A19C76F6BF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Header Files", "Header Files", "{20CC6DA1-00B2-47A9-B7AC-6ECEFF1A3F8D}"
+	ProjectSection(SolutionItems) = preProject
+		RobotSketches\libraries\ZukiLib\gCommandObject.h = RobotSketches\libraries\ZukiLib\gCommandObject.h
+		RobotSketches\libraries\ZukiLib\gCommandRouter.h = RobotSketches\libraries\ZukiLib\gCommandRouter.h
+		RobotSketches\libraries\ZukiLib\gComms.h = RobotSketches\libraries\ZukiLib\gComms.h
+		RobotSketches\libraries\ZukiLib\gDistanceSensor.h = RobotSketches\libraries\ZukiLib\gDistanceSensor.h
+		RobotSketches\libraries\ZukiLib\gDistanceSensorCommands.h = RobotSketches\libraries\ZukiLib\gDistanceSensorCommands.h
+		RobotSketches\libraries\ZukiLib\gHBStatus.h = RobotSketches\libraries\ZukiLib\gHBStatus.h
+		RobotSketches\libraries\ZukiLib\gHBStatusCommands.h = RobotSketches\libraries\ZukiLib\gHBStatusCommands.h
+		RobotSketches\libraries\ZukiLib\gInputs.h = RobotSketches\libraries\ZukiLib\gInputs.h
+		RobotSketches\libraries\ZukiLib\gMotor.h = RobotSketches\libraries\ZukiLib\gMotor.h
+		RobotSketches\libraries\ZukiLib\gMotorControl.h = RobotSketches\libraries\ZukiLib\gMotorControl.h
+		RobotSketches\libraries\ZukiLib\gMotorControlCommands.h = RobotSketches\libraries\ZukiLib\gMotorControlCommands.h
+		RobotSketches\libraries\ZukiLib\gRouteTableList.h = RobotSketches\libraries\ZukiLib\gRouteTableList.h
+		RobotSketches\libraries\ZukiLib\gRoutingDeviceIDs.h = RobotSketches\libraries\ZukiLib\gRoutingDeviceIDs.h
+		RobotSketches\libraries\ZukiLib\gSDCard.h = RobotSketches\libraries\ZukiLib\gSDCard.h
+		RobotSketches\libraries\ZukiLib\gSDCardCommands.h = RobotSketches\libraries\ZukiLib\gSDCardCommands.h
+		RobotSketches\libraries\ZukiLib\gServo.h = RobotSketches\libraries\ZukiLib\gServo.h
+		RobotSketches\libraries\ZukiLib\gServoCommands.h = RobotSketches\libraries\ZukiLib\gServoCommands.h
+		RobotSketches\libraries\ZukiLib\ZukiLib.h = RobotSketches\libraries\ZukiLib\ZukiLib.h
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Source Files", "Source Files", "{58E6A118-293E-4DC5-B592-72D216BA4A2F}"
+	ProjectSection(SolutionItems) = preProject
+		RobotSketches\libraries\ZukiLib\gCommandObject.cpp = RobotSketches\libraries\ZukiLib\gCommandObject.cpp
+		RobotSketches\libraries\ZukiLib\gCommandRouter.cpp = RobotSketches\libraries\ZukiLib\gCommandRouter.cpp
+		RobotSketches\libraries\ZukiLib\gComms.cpp = RobotSketches\libraries\ZukiLib\gComms.cpp
+		RobotSketches\libraries\ZukiLib\gDistanceSensor.cpp = RobotSketches\libraries\ZukiLib\gDistanceSensor.cpp
+		RobotSketches\libraries\ZukiLib\gHBStatus.cpp = RobotSketches\libraries\ZukiLib\gHBStatus.cpp
+		RobotSketches\libraries\ZukiLib\gInputs.cpp = RobotSketches\libraries\ZukiLib\gInputs.cpp
+		RobotSketches\libraries\ZukiLib\gMotor.cpp = RobotSketches\libraries\ZukiLib\gMotor.cpp
+		RobotSketches\libraries\ZukiLib\gMotorControl.cpp = RobotSketches\libraries\ZukiLib\gMotorControl.cpp
+		RobotSketches\libraries\ZukiLib\gSDCard.cpp = RobotSketches\libraries\ZukiLib\gSDCard.cpp
+		RobotSketches\libraries\ZukiLib\gServo.cpp = RobotSketches\libraries\ZukiLib\gServo.cpp
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -441,6 +479,7 @@ Global
 		{F92CF8C3-C84B-4693-941B-B4AFE3E48C4C} = {08CB754A-F9D2-4F56-8744-250470A6115B}
 		{641335E6-5FB9-4262-84BD-856D7498214F} = {9744E0B8-0B49-4DF6-8A3F-327FD9BF1493}
 		{9D85AA06-B3CF-4F54-92AA-3AC4025A8F41} = {9744E0B8-0B49-4DF6-8A3F-327FD9BF1493}
+		{A9E5E57E-C0DE-4994-B368-71A19C76F6BF} = {9744E0B8-0B49-4DF6-8A3F-327FD9BF1493}
 		{A5C8264C-34A8-4318-8C37-9BBF3788BBA6} = {641335E6-5FB9-4262-84BD-856D7498214F}
 		{6022918F-D103-4FC5-AEB7-370EF65D818A} = {641335E6-5FB9-4262-84BD-856D7498214F}
 		{BEAFDF77-F1FA-4079-9FCA-11237CCDBA3E} = {641335E6-5FB9-4262-84BD-856D7498214F}
@@ -467,5 +506,7 @@ Global
 		{7FEFAC22-0C98-4840-B656-CC72390B6AD8} = {B37D3D0C-2D81-442A-9CCE-D5A4B86ED5CB}
 		{5D1A2F0A-3FE6-44A1-B73B-27CBB1E0FA23} = {B37D3D0C-2D81-442A-9CCE-D5A4B86ED5CB}
 		{7AF94D1D-004E-4606-8946-59BBCD6DC58F} = {F92CF8C3-C84B-4693-941B-B4AFE3E48C4C}
+		{20CC6DA1-00B2-47A9-B7AC-6ECEFF1A3F8D} = {A9E5E57E-C0DE-4994-B368-71A19C76F6BF}
+		{58E6A118-293E-4DC5-B592-72D216BA4A2F} = {A9E5E57E-C0DE-4994-B368-71A19C76F6BF}
 	EndGlobalSection
 EndGlobal

@@ -46,8 +46,6 @@
             this.motorCheckFR = new System.Windows.Forms.CheckBox();
             this.motorCheckRL = new System.Windows.Forms.CheckBox();
             this.motorCheckFL = new System.Windows.Forms.CheckBox();
-            this.TurningSpeed = new AuSharp.Knob();
-            this.MotorSpeed = new AuSharp.Knob();
             this.MotorBack = new System.Windows.Forms.Button();
             this.MotorLeft = new System.Windows.Forms.Button();
             this.MotorRight = new System.Windows.Forms.Button();
@@ -63,7 +61,6 @@
             this.trackBar1 = new System.Windows.Forms.TrackBar();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
             this.SetServoButton = new System.Windows.Forms.Button();
-            this.ServoTargetPos = new AuSharp.Knob();
             this.GetServoPositionButton = new System.Windows.Forms.Button();
             this.CurrentServoPosition = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
@@ -76,6 +73,11 @@
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.MessageLoopTimer = new System.Windows.Forms.Timer(this.components);
             this.ClearCmdLogButton = new System.Windows.Forms.Button();
+            this.LeftMotorSpeed = new System.Windows.Forms.Label();
+            this.ServoTargetPos = new AuSharp.Knob();
+            this.TurningSpeed = new AuSharp.Knob();
+            this.MotorSpeed = new AuSharp.Knob();
+            this.RightMotorSpeed = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.MotorSelectGroup.SuspendLayout();
@@ -214,7 +216,9 @@
             // 
             // MotorSelectGroup
             // 
+            this.MotorSelectGroup.Controls.Add(this.RightMotorSpeed);
             this.MotorSelectGroup.Controls.Add(this.GoButton);
+            this.MotorSelectGroup.Controls.Add(this.LeftMotorSpeed);
             this.MotorSelectGroup.Controls.Add(this.motorCheckRR);
             this.MotorSelectGroup.Controls.Add(this.motorCheckFR);
             this.MotorSelectGroup.Controls.Add(this.motorCheckRL);
@@ -286,37 +290,6 @@
             this.motorCheckFL.TabIndex = 11;
             this.motorCheckFL.Text = "FL";
             this.motorCheckFL.UseVisualStyleBackColor = true;
-            // 
-            // TurningSpeed
-            // 
-            this.TurningSpeed.KnobColor = System.Drawing.Color.Black;
-            this.TurningSpeed.Location = new System.Drawing.Point(7, 133);
-            this.TurningSpeed.MarkerColor = System.Drawing.Color.Black;
-            this.TurningSpeed.MaxAngle = 180;
-            this.TurningSpeed.Maximum = 200;
-            this.TurningSpeed.Minimum = 80;
-            this.TurningSpeed.Name = "TurningSpeed";
-            this.TurningSpeed.Size = new System.Drawing.Size(57, 62);
-            this.TurningSpeed.TabIndex = 10;
-            this.TurningSpeed.Text = "Turn Speed";
-            this.TurningSpeed.TextKnobRelation = AuSharp.TextKnobRelation.KnobAboveText;
-            this.TurningSpeed.TickColor = System.Drawing.Color.Black;
-            this.TurningSpeed.Value = 80;
-            // 
-            // MotorSpeed
-            // 
-            this.MotorSpeed.KnobColor = System.Drawing.Color.Black;
-            this.MotorSpeed.Location = new System.Drawing.Point(122, 133);
-            this.MotorSpeed.MarkerColor = System.Drawing.Color.Black;
-            this.MotorSpeed.MaxAngle = 180;
-            this.MotorSpeed.Maximum = 255;
-            this.MotorSpeed.Name = "MotorSpeed";
-            this.MotorSpeed.Size = new System.Drawing.Size(57, 62);
-            this.MotorSpeed.TabIndex = 9;
-            this.MotorSpeed.Text = "F/R Speed";
-            this.MotorSpeed.TextKnobRelation = AuSharp.TextKnobRelation.KnobAboveText;
-            this.MotorSpeed.TickColor = System.Drawing.Color.Black;
-            this.MotorSpeed.Value = 80;
             // 
             // MotorBack
             // 
@@ -473,23 +446,6 @@
             this.SetServoButton.UseVisualStyleBackColor = true;
             this.SetServoButton.Click += new System.EventHandler(this.SetServoButton_Click);
             // 
-            // ServoTargetPos
-            // 
-            this.ServoTargetPos.KnobColor = System.Drawing.Color.Black;
-            this.ServoTargetPos.Location = new System.Drawing.Point(161, 7);
-            this.ServoTargetPos.MarkerColor = System.Drawing.Color.Black;
-            this.ServoTargetPos.MaxAngle = 90;
-            this.ServoTargetPos.Maximum = 135;
-            this.ServoTargetPos.Minimum = 45;
-            this.ServoTargetPos.Name = "ServoTargetPos";
-            this.ServoTargetPos.Size = new System.Drawing.Size(57, 62);
-            this.ServoTargetPos.TabIndex = 8;
-            this.ServoTargetPos.Text = "Target Pos";
-            this.ServoTargetPos.TextKnobRelation = AuSharp.TextKnobRelation.KnobAboveText;
-            this.ServoTargetPos.TickColor = System.Drawing.Color.Black;
-            this.ServoTargetPos.Value = 45;
-            this.ServoTargetPos.DoubleClick += new System.EventHandler(this.ServoTargetPos_DoubleClick);
-            // 
             // GetServoPositionButton
             // 
             this.GetServoPositionButton.Location = new System.Drawing.Point(96, 42);
@@ -611,6 +567,72 @@
             this.ClearCmdLogButton.UseVisualStyleBackColor = true;
             this.ClearCmdLogButton.Click += new System.EventHandler(this.ClearCmdLogButton_Click);
             // 
+            // LeftMotorSpeed
+            // 
+            this.LeftMotorSpeed.AutoSize = true;
+            this.LeftMotorSpeed.Location = new System.Drawing.Point(6, 76);
+            this.LeftMotorSpeed.Name = "LeftMotorSpeed";
+            this.LeftMotorSpeed.Size = new System.Drawing.Size(35, 13);
+            this.LeftMotorSpeed.TabIndex = 15;
+            this.LeftMotorSpeed.Text = "label5";
+            // 
+            // ServoTargetPos
+            // 
+            this.ServoTargetPos.KnobColor = System.Drawing.Color.Black;
+            this.ServoTargetPos.Location = new System.Drawing.Point(161, 7);
+            this.ServoTargetPos.MarkerColor = System.Drawing.Color.Black;
+            this.ServoTargetPos.MaxAngle = 90;
+            this.ServoTargetPos.Maximum = 135;
+            this.ServoTargetPos.Minimum = 45;
+            this.ServoTargetPos.Name = "ServoTargetPos";
+            this.ServoTargetPos.Size = new System.Drawing.Size(57, 62);
+            this.ServoTargetPos.TabIndex = 8;
+            this.ServoTargetPos.Text = "Target Pos";
+            this.ServoTargetPos.TextKnobRelation = AuSharp.TextKnobRelation.KnobAboveText;
+            this.ServoTargetPos.TickColor = System.Drawing.Color.Black;
+            this.ServoTargetPos.Value = 45;
+            this.ServoTargetPos.DoubleClick += new System.EventHandler(this.ServoTargetPos_DoubleClick);
+            // 
+            // TurningSpeed
+            // 
+            this.TurningSpeed.KnobColor = System.Drawing.Color.Black;
+            this.TurningSpeed.Location = new System.Drawing.Point(7, 133);
+            this.TurningSpeed.MarkerColor = System.Drawing.Color.Black;
+            this.TurningSpeed.MaxAngle = 180;
+            this.TurningSpeed.Maximum = 200;
+            this.TurningSpeed.Minimum = 80;
+            this.TurningSpeed.Name = "TurningSpeed";
+            this.TurningSpeed.Size = new System.Drawing.Size(57, 62);
+            this.TurningSpeed.TabIndex = 10;
+            this.TurningSpeed.Text = "Turn Speed";
+            this.TurningSpeed.TextKnobRelation = AuSharp.TextKnobRelation.KnobAboveText;
+            this.TurningSpeed.TickColor = System.Drawing.Color.Black;
+            this.TurningSpeed.Value = 80;
+            // 
+            // MotorSpeed
+            // 
+            this.MotorSpeed.KnobColor = System.Drawing.Color.Black;
+            this.MotorSpeed.Location = new System.Drawing.Point(122, 133);
+            this.MotorSpeed.MarkerColor = System.Drawing.Color.Black;
+            this.MotorSpeed.MaxAngle = 180;
+            this.MotorSpeed.Maximum = 255;
+            this.MotorSpeed.Name = "MotorSpeed";
+            this.MotorSpeed.Size = new System.Drawing.Size(57, 62);
+            this.MotorSpeed.TabIndex = 9;
+            this.MotorSpeed.Text = "F/R Speed";
+            this.MotorSpeed.TextKnobRelation = AuSharp.TextKnobRelation.KnobAboveText;
+            this.MotorSpeed.TickColor = System.Drawing.Color.Black;
+            this.MotorSpeed.Value = 80;
+            // 
+            // RightMotorSpeed
+            // 
+            this.RightMotorSpeed.AutoSize = true;
+            this.RightMotorSpeed.Location = new System.Drawing.Point(144, 76);
+            this.RightMotorSpeed.Name = "RightMotorSpeed";
+            this.RightMotorSpeed.Size = new System.Drawing.Size(35, 13);
+            this.RightMotorSpeed.TabIndex = 16;
+            this.RightMotorSpeed.Text = "label5";
+            // 
             // MainCnCForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -695,6 +717,8 @@
         private System.Windows.Forms.CheckBox motorCheckFR;
         private System.Windows.Forms.CheckBox motorCheckRL;
         private System.Windows.Forms.Button GoButton;
+        private System.Windows.Forms.Label LeftMotorSpeed;
+        private System.Windows.Forms.Label RightMotorSpeed;
     }
 }
 

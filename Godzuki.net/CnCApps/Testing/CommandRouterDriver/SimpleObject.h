@@ -1,8 +1,8 @@
 #ifndef SIMPLE_OBJECT_H
 #define SIMPLE_OBJECT_H
 
-#include "../../../RobotSketches/MainApplications/godzuki/gRoutingDeviceIDs.h"
-#include "../../../RobotSketches/MainApplications/godzuki/gCommandRouter.h"
+#include "../../../RobotSketches/libraries/ZukiLib/gRoutingDeviceIDs.h"
+#include "../../../RobotSketches/libraries/ZukiLib/gCommandRouter.h"
 
 class SimpleObject {
 public:

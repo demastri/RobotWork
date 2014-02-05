@@ -58,6 +58,8 @@ namespace ZukiCnC
                 availableInstances.SelectedIndex = 0;
         }
 
+        int tickCount = 0;
+
         private void ConnectToRobotButton_Click(object sender, EventArgs e)
         {
             if (!isConnected)
@@ -94,7 +96,7 @@ namespace ZukiCnC
 
         private void LogText(string s)
         {
-            if( s.Trim() != "" )
+            if (s.Trim() != "")
                 sessionLog.AppendText(s.Trim() + Environment.NewLine);
         }
         private void MessageLoopTimer_Tick(object sender, EventArgs e)
@@ -158,14 +160,24 @@ namespace ZukiCnC
                                         switch (cmdObj.commandID)
                                         {
                                             case Godzuki.ZukiCommands.COMMAND_ID_GLOBAL_REQUEST_STATUS:
-                                                LogText("ACK for Global Status"); 
+                                                LogText("ACK for Global Status");
                                                 ConnectToRobotButton.Text = "Connected";
+                                                break;
+                                        }
+                                        break;
+                                    case Godzuki.ZukiCommands.MOTOR_CONTROL_DEVICE_ID:
+                                        switch (cmdObj.commandID)
+                                        {
+                                            case Godzuki.ZukiCommands.COMMAND_ID_MOTORCONTROL_PULL_SPEEDS:
+                                                LogText("ACK for GetSpeeds");
+                                                LeftMotorSpeed.Text = new string(cmdObj.payloadData).Substring(0,4)+" mm/s";
+                                                RightMotorSpeed.Text = new string(cmdObj.payloadData).Substring(4,4)+" mm/s";
                                                 break;
                                         }
                                         break;
                                     default:
                                         // don't have to do anything, just consume the ack...
-                                        LogText("ACK for "+openCmd.ToString());  // issue read command
+                                        LogText("ACK for " + openCmd.ToString());  // issue read command
                                         //LogText("don't quite know how to handle this response");
                                         break;
                                 }
@@ -179,6 +191,8 @@ namespace ZukiCnC
                     LogText(gz.curData[0]);
                 }
                 gz.curData.RemoveAt(0);
+
+
             }
             // in any event, if there are commands that have timed out, message them here...
             List<DateTime> deadKeys = new List<DateTime>();
@@ -192,6 +206,17 @@ namespace ZukiCnC
                     MessageLoopTimer.Start();
                     break;
                 }
+            if (isConnected && (++tickCount %4) == 3)
+            {
+                Godzuki.gCommandObject newCmdObj = new Godzuki.gCommandObject(
+                    Godzuki.ZukiCommands.CNC_APP_DEVICE_ID, 1,
+                    Godzuki.ZukiCommands.MOTOR_CONTROL_DEVICE_ID, 1,
+                    Godzuki.ZukiCommands.COMMAND_ID_MOTORCONTROL_PULL_SPEEDS);
+
+                // stringification is back into the comms object
+                if (gz.PostCommand(newCmdObj))
+                    openCommands.Add(DateTime.Now.Add(new TimeSpan(0, 0, 2)), newCmdObj);
+            }
         }
 
         private void GetServoPositionButton_Click(object sender, EventArgs e)
@@ -233,7 +258,7 @@ namespace ZukiCnC
             ServoTargetPos.Value = (ServoTargetPos.Minimum + ServoTargetPos.Maximum) / 2;
         }
 
-       
+
         private void SnapPictureButton_Click(object sender, EventArgs e)
         {
             LogText("Temporary - coopt for SD Test");
@@ -338,19 +363,18 @@ namespace ZukiCnC
                 Godzuki.ZukiCommands.MOTOR_CONTROL_DEVICE_ID, 1,
                 Godzuki.ZukiCommands.COMMAND_ID_MOTORCONTROL_SET_DIR_FWD, -1);
             if (gz.PostCommand(cmdObj))
-                openCommands.Add(DateTime.Now.Add(new TimeSpan(0, 0, 5,1)), cmdObj);
+                openCommands.Add(DateTime.Now.Add(new TimeSpan(0, 0, 5, 1)), cmdObj);
 
             cmdObj = new Godzuki.gCommandObject(
                 Godzuki.ZukiCommands.CNC_APP_DEVICE_ID, 1,
                 Godzuki.ZukiCommands.MOTOR_CONTROL_DEVICE_ID, 1,
                 Godzuki.ZukiCommands.COMMAND_ID_MOTORCONTROL_START, -1);
             if (gz.PostCommand(cmdObj))
-                openCommands.Add(DateTime.Now.Add(new TimeSpan(0, 0, 5,2)), cmdObj);
+                openCommands.Add(DateTime.Now.Add(new TimeSpan(0, 0, 5, 2)), cmdObj);
 
         }
 
         #endregion
-
 
     }
 }

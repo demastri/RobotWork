@@ -24,19 +24,13 @@
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\RobotSketches\MainApplications\godzuki\gCommandObject.h">
+    <ClInclude Include="..\..\..\RobotSketches\libraries\ZukiLib\gCommandObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\RobotSketches\MainApplications\godzuki\gCommandRouter.h">
+    <ClInclude Include="..\..\..\RobotSketches\libraries\ZukiLib\gCommandRouter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\RobotSketches\MainApplications\godzuki\gComms.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\RobotSketches\MainApplications\godzuki\gRouteTableList.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\RobotSketches\MainApplications\godzuki\gRoutingDeviceIDs.h">
+    <ClInclude Include="..\..\..\RobotSketches\libraries\ZukiLib\gComms.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -50,16 +44,16 @@
     <ClCompile Include="Stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\RobotSketches\MainApplications\godzuki\gCommandObject.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\RobotSketches\MainApplications\godzuki\gCommandRouter.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\RobotSketches\MainApplications\godzuki\gComms.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Testing\CommandRouterDriver\WinMillis.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\RobotSketches\libraries\ZukiLib\gCommandObject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\RobotSketches\libraries\ZukiLib\gCommandRouter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\RobotSketches\libraries\ZukiLib\gComms.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

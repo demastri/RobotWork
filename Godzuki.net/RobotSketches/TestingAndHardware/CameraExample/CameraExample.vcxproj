@@ -44,7 +44,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\Program Files (x86)\Arduino\hardware\arduino\cores\arduino;C:\Program Files (x86)\Arduino\hardware\arduino\variants\leonardo;C:\Program Files (x86)\Arduino\libraries\SD;C:\Program Files (x86)\Arduino\libraries\SD\utility;C:\Program Files (x86)\Arduino\libraries\SoftwareSerial;C:\Program Files (x86)\Arduino\libraries\SoftwareSerial\utility;c:\program files (x86)\arduino\hardware\tools\avr\avr\include\;c:\program files (x86)\arduino\hardware\tools\avr\avr\include\avr\;c:\program files (x86)\arduino\hardware\tools\avr\avr\;c:\program files (x86)\arduino\hardware\tools\avr\lib\gcc\avr\4.3.2\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Program Files (x86)\Arduino\hardware\arduino\cores\arduino;C:\Program Files (x86)\Arduino\hardware\arduino\variants\leonardo;C:\Program Files (x86)\Arduino\libraries\Adafruit_VC0706;C:\Program Files (x86)\Arduino\libraries\Adafruit_VC0706\utility;C:\Program Files (x86)\Arduino\libraries\SD;C:\Program Files (x86)\Arduino\libraries\SD\utility;C:\Program Files (x86)\Arduino\libraries\SoftwareSerial;C:\Program Files (x86)\Arduino\libraries\SoftwareSerial\utility;c:\program files (x86)\arduino\hardware\tools\avr\avr\include\;c:\program files (x86)\arduino\hardware\tools\avr\avr\include\avr\;c:\program files (x86)\arduino\hardware\tools\avr\avr\;c:\program files (x86)\arduino\hardware\tools\avr\lib\gcc\avr\4.3.2\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ForcedIncludeFiles>D:\Projects\Workspaces\RobotWork\Godzuki.net\RobotSketches\TestingAndHardware\CameraExample\Visual Micro\.CameraExample.vsarduino.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
       <IgnoreStandardIncludePath>true</IgnoreStandardIncludePath>
       <PreprocessorDefinitions>__AVR_ATmega32U4__;ARDUINO=105;ARDUINO_MAIN;__AVR__;F_CPU=16000000L;__cplusplus;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -78,4 +78,9 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties arduino.upload.port="COM2" />
+    </VisualStudio>
+  </ProjectExtensions>
 </Project>

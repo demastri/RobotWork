@@ -29,7 +29,7 @@ gMotorControl::gMotorControl() {
 	// TODO Auto-generated constructor stub
 	mmsPerClick = 10.2;
 	gMotorControl::leftTotalClicks = gMotorControl::rightTotalClicks = 0;
-	instSpeedUpdateTime = 500;
+	instSpeedUpdateTime = 1000;
 	leftAggregateClicks=rightAggregateClicks=0;
 	leftLastAggregateClicks=rightLastAggregateClicks=0;
 	lastSpeedCalcTime=0;
@@ -59,7 +59,7 @@ void gMotorControl::setup(int thisID, gCommandRouter *router, int leftEncoderPin
 }
 void gMotorControl::setupCommandListener( gCommandRouter &router ) {
 	CMD_METHOD_REGISTER_DEFAULT(gMotorControl, processCommand);
-	CMD_METHOD_REGISTER_TIMER(gMotorControl, COMMAND_ID_MOTORCONTROL_UPDATE_SPEEDS, processCommand, instSpeedUpdateTime);
+	CMD_METHOD_REGISTER_TIMER(gMotorControl, COMMAND_ID_MOTORCONTROL_UPDATE_SPEEDS, calculateSpeeds, instSpeedUpdateTime);
 
 	pRouter = &router;
 }
@@ -136,7 +136,7 @@ CMD_METHOD_IMPLEMENT(gMotorControl,processCommand) {
 		gCommandObject::PlaceInStrBfr( rtnSpdBfr, outLeft,  4, 0 );
 		gCommandObject::PlaceInStrBfr( rtnSpdBfr, outRight,  4, 4 );
 		gCommandObject::PlaceInStrBfr( rtnSpdBfr, "\0",  1, 8 );
-		ROUTE_REPLY(GLOBAL_COMMAND_STATUS_OK,0,0);
+		ROUTE_REPLY(GLOBAL_COMMAND_STATUS_OK,8,rtnSpdBfr);
 		break;
 	case COMMAND_ID_MOTORCONTROL_PULL_LOCATION:
 		ROUTE_REPLY(GLOBAL_COMMAND_STATUS_OK,0,0);

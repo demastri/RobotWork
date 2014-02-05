@@ -57,7 +57,7 @@
 // Using SoftwareSerial (Arduino 1.0+) or NewSoftSerial (Arduino 0023 & prior):
 #if ARDUINO >= 100
 // On Uno: camera TX connected to pin 2, camera RX to pin 3:
-SoftwareSerial cameraconnection = SoftwareSerial(2, 3);
+SoftwareSerial cameraconnection = SoftwareSerial(11, 8);
 // On Mega: camera TX connected to pin 69 (A15), camera RX to pin 3:
 //SoftwareSerial cameraconnection = SoftwareSerial(69, 3);
 #else
@@ -83,54 +83,54 @@ void setup() {
 #endif
 #endif
 
-	Serial.begin(9600);
-	Serial.println("VC0706 Camera snapshot test");
+	Serial1.begin(9600);
+	Serial1.println("VC0706 Camera snapshot test");
 
 	// see if the card is present and can be initialized:
 	if (!SD.begin(chipSelect)) {
-		Serial.println("Card failed, or not present");
+		Serial1.println("Card failed, or not present");
 		// don't do anything more:
 		return;
 	}  
 
 	// Try to locate the camera
 	if (cam.begin()) {
-		Serial.println("Camera Found:");
+		Serial1.println("Camera Found:");
 	} else {
-		Serial.println("No camera found?");
+		Serial1.println("No camera found?");
 		return;
 	}
 	// Print out the camera version information (optional)
 	char *reply = cam.getVersion();
 	if (reply == 0) {
-		Serial.print("Failed to get version");
+		Serial1.print("Failed to get version");
 	} else {
-		Serial.println("-----------------");
-		Serial.print(reply);
-		Serial.println("-----------------");
+		Serial1.println("-----------------");
+		Serial1.print(reply);
+		Serial1.println("-----------------");
 	}
 
 	// Set the picture size - you can choose one of 640x480, 320x240 or 160x120 
 	// Remember that bigger pictures take longer to transmit!
 
-	cam.setImageSize(VC0706_640x480);        // biggest
+	//cam.setImageSize(VC0706_640x480);        // biggest
 	//cam.setImageSize(VC0706_320x240);        // medium
-	//cam.setImageSize(VC0706_160x120);          // small
+	cam.setImageSize(VC0706_160x120);          // small
 
 	// You can read the size back from the camera (optional, but maybe useful?)
 	uint8_t imgsize = cam.getImageSize();
-	Serial.print("Image size: ");
-	if (imgsize == VC0706_640x480) Serial.println("640x480");
-	if (imgsize == VC0706_320x240) Serial.println("320x240");
-	if (imgsize == VC0706_160x120) Serial.println("160x120");
+	Serial1.print("Image size: ");
+	if (imgsize == VC0706_640x480) Serial1.println("640x480");
+	if (imgsize == VC0706_320x240) Serial1.println("320x240");
+	if (imgsize == VC0706_160x120) Serial1.println("160x120");
 
-	Serial.println("Snap in 3 secs...");
+	Serial1.println("Snap in 3 secs...");
 	delay(3000);
 
 	if (! cam.takePicture()) 
-		Serial.println("Failed to snap!");
+		Serial1.println("Failed to snap!");
 	else 
-		Serial.println("Picture taken!");
+		Serial1.println("Picture taken!");
 
 	// Create an image with the name IMAGExx.JPG
 	char filename[13];
@@ -149,9 +149,9 @@ void setup() {
 
 	// Get the size of the image (frame) taken  
 	uint16_t jpglen = cam.frameLength();
-	Serial.print("Storing ");
-	Serial.print(jpglen, DEC);
-	Serial.print(" byte image.");
+	Serial1.print("Storing ");
+	Serial1.print(jpglen, DEC);
+	Serial1.print(" byte image.");
 
 	int32_t time = millis();
 	pinMode(8, OUTPUT);
@@ -164,17 +164,17 @@ void setup() {
 		buffer = cam.readPicture(bytesToRead);
 		imgFile.write(buffer, bytesToRead);
 		if(++wCount >= 64) { // Every 2K, give a little feedback so it doesn't appear locked up
-			Serial.print('.');
+			Serial1.print('.');
 			wCount = 0;
 		}
-		//Serial.print("Read ");  Serial.print(bytesToRead, DEC); Serial.println(" bytes");
+		//Serial1.print("Read ");  Serial1.print(bytesToRead, DEC); Serial1.println(" bytes");
 		jpglen -= bytesToRead;
 	}
 	imgFile.close();
 
 	time = millis() - time;
-	Serial.println("done!");
-	Serial.print(time); Serial.println(" ms elapsed");
+	Serial1.println("done!");
+	Serial1.print(time); Serial1.println(" ms elapsed");
 }
 
 void loop() {

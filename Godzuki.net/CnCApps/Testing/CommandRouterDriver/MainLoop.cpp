@@ -10,7 +10,7 @@ extern unsigned long millis();
 
 #include <chrono>
 
-#include "../../../RobotSketches/MainApplications/godzuki/gComms.h"
+#include "../../../RobotSketches/libraries/ZukiLib/gComms.h"
 extern Godzuki::gComms gMonitor;
 
 #include "SimpleObject.h"

@@ -52,6 +52,9 @@ namespace Godzuki
         public const int COMMAND_ID_MOTORCONTROL_SET_DIR_REV    = 04;
         public const int COMMAND_ID_MOTORCONTROL_START          = 05;
         public const int COMMAND_ID_MOTORCONTROL_STOP           = 06;
+        public const int COMMAND_ID_MOTORCONTROL_PULL_SPEEDS    =  9;
+        public const int COMMAND_ID_MOTORCONTROL_UPDATE_SPEEDS  = 10;
+        public const int COMMAND_ID_MOTORCONTROL_PULL_LOCATION  = 11;
 
         public const int COMMAND_CONST_MOTORCONTROL_FORWARD     = 0x01;
         public const int COMMAND_CONST_MOTORCONTROL_BACKWARD    = 0x02;

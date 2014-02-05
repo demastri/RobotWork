@@ -83,23 +83,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\RobotSketches\MainApplications\godzuki\gCommandObject.h" />
-    <ClInclude Include="..\..\..\RobotSketches\MainApplications\godzuki\gCommandRouter.h" />
-    <ClInclude Include="..\..\..\RobotSketches\MainApplications\godzuki\gComms.h" />
-    <ClInclude Include="..\..\..\RobotSketches\MainApplications\godzuki\gRouteTableList.h" />
-    <ClInclude Include="..\..\..\RobotSketches\MainApplications\godzuki\gRoutingDeviceIDs.h" />
+    <ClInclude Include="..\..\..\RobotSketches\libraries\ZukiLib\gCommandObject.h" />
+    <ClInclude Include="..\..\..\RobotSketches\libraries\ZukiLib\gCommandRouter.h" />
+    <ClInclude Include="..\..\..\RobotSketches\libraries\ZukiLib\gComms.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Stdafx.h" />
     <ClInclude Include="ZukiProxy.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\RobotSketches\MainApplications\godzuki\gCommandObject.cpp">
+    <ClCompile Include="..\..\..\RobotSketches\libraries\ZukiLib\gCommandObject.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="..\..\..\RobotSketches\MainApplications\godzuki\gCommandRouter.cpp">
+    <ClCompile Include="..\..\..\RobotSketches\libraries\ZukiLib\gCommandRouter.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="..\..\..\RobotSketches\MainApplications\godzuki\gComms.cpp">
+    <ClCompile Include="..\..\..\RobotSketches\libraries\ZukiLib\gComms.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="..\..\Testing\CommandRouterDriver\WinMillis.cpp" />

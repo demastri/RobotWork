@@ -32,7 +32,7 @@ extern "C" void __cxa_pure_virtual() {;}
 //
 //
 
-#include "C:\Arduino\hardware\arduino\variants\leonardo\pins_arduino.h" 
-#include "C:\Arduino\hardware\arduino\cores\arduino\arduino.h"
-#include "C:\Projects\JPD\BBRepos\RobotWork\Godzuki.net\RobotSketches\MainApplications\GodzukEYe\GodzukEYe.ino"
+#include "C:\Program Files (x86)\Arduino\hardware\arduino\variants\leonardo\pins_arduino.h" 
+#include "C:\Program Files (x86)\Arduino\hardware\arduino\cores\arduino\arduino.h"
+#include "D:\Projects\Workspaces\RobotWork\Godzuki.net\RobotSketches\MainApplications\GodzukEYe\GodzukEYe.ino"
 #endif

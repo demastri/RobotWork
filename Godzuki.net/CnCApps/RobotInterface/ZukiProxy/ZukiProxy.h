@@ -2,8 +2,8 @@
 
 #pragma once
 
-#include "..\..\..\RobotSketches\MainApplications\godzuki\gCommandRouter.h"
-#include "..\..\..\RobotSketches\MainApplications\godzuki\gComms.h"
+#include "..\..\..\RobotSketches\libraries\ZukiLib\gCommandRouter.h"
+#include "..\..\..\RobotSketches\libraries\ZukiLib\gComms.h"
 
 using namespace System;
 
