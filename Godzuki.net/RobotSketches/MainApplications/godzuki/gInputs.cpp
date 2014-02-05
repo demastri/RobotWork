@@ -52,7 +52,6 @@ CMD_METHOD_IMPLEMENT(gInputs,processCommand) {
 int gInputs::ReadCommand(int &param) {
 	char serialCmd[20];
 	int cmdSize = 0;
-#ifdef USB_MONITOR_CMDS
 	if (Serial.available()) {
 		int kbdKey = Serial.read();
 		switch (kbdKey) {
@@ -71,9 +70,10 @@ int gInputs::ReadCommand(int &param) {
 			Serial.print( "[cmd]" );
 			Serial.println( serialCmd );
 			if( kbdKey == '#' ) {
-				pRouter->RouteCommand( gComms::UnpackCommandString(serialCmd) );
+				pRouter->RouteCommand( gComms::UnpackCommandString(serialCmd, 0) );
 			}
 			break;
+#ifdef USB_MONITOR_CMDS
 		case 'h':
 			pRouter->DumpHandlerTree();
 			return ROUTER_NO_COMMAND;
@@ -146,9 +146,9 @@ int gInputs::ReadCommand(int &param) {
 			return FOLLOW_SERIAL;
 		default:
 			break;
+#endif
 		}
 	}
-#endif
 
 	if (Serial1.available()) {
 		int kbdKey = Serial1.read();
@@ -168,7 +168,7 @@ int gInputs::ReadCommand(int &param) {
 			Serial1.print( "Remote Command String..." );
 			Serial1.println( serialCmd );
 			if( kbdKey == '#' ) {
-				pRouter->RouteCommand( gComms::UnpackCommandString(serialCmd) );
+				pRouter->RouteCommand( gComms::UnpackCommandString(serialCmd, 1) );
 			}
 			break;
 #ifdef RADIO_MONITOR_CMDS

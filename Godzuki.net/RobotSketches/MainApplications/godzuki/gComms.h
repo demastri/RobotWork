@@ -23,8 +23,8 @@ namespace Godzuki
 		void setup(bool defaultToRadio);
 		void setup();
 
-		void BroadcastCommand( gCommandObject *cmdObj );
-		static gCommandObject *UnpackCommandString( char *s );
+		void BroadcastCommand( gCommandObject *cmdObj, int dest );
+		static gCommandObject *UnpackCommandString( char *s, int src );
 
 		void processCommand(int newCommand, int cmdParam );  
 		void print( const uint8_t *s, size_t t );

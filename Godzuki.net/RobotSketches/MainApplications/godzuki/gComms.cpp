@@ -55,15 +55,16 @@ void gComms::setup(bool defaultToRadio, int baudRate) {
 #endif
 }
 
-void gComms::BroadcastCommand( gCommandObject *cmdObj ) {
+void gComms::BroadcastCommand( gCommandObject *cmdObj, int dest ) {
 	// this will be where all the magic happens :)
 	size_t outSize;
 	uint8_t *cmdString = cmdObj->ToCommandString( &outSize );
 
 	print( cmdString, outSize );
+//###
 }
 
-gCommandObject *gComms::UnpackCommandString( char *s ) {
+gCommandObject *gComms::UnpackCommandString( char *s, int src ) {
 	gCommandObject *cmdObj =  new gCommandObject();
 	cmdObj->sourceDeviceID		= (s[1]-'0')*10 + (s[2]-'0');
 	cmdObj->sourceInstanceID	= (s[3]-'0')*10 + (s[4]-'0');
@@ -75,7 +76,7 @@ gCommandObject *gComms::UnpackCommandString( char *s ) {
 		cmdObj->parameter = -cmdObj->parameter;
 	else
 		cmdObj->parameter += (s[11]-'0')*100000;
-	cmdObj->isLocal = false;
+	cmdObj->cmdSrc = src;
 
 	return cmdObj;
 }

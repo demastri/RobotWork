@@ -8,27 +8,27 @@ gComms gMonitor;
 
 extern unsigned long millis();
 
-gCommandObject::gCommandObject( int srcdev, int srcinst, int dev, int inst, int cmd, int param, long paySize, void *payData ) {
-	Init( srcdev, srcinst, dev, inst, cmd, param, paySize, payData );
+gCommandObject::gCommandObject( int src, int srcdev, int srcinst, int dev, int inst, int cmd, int param, long paySize, void *payData ) {
+	Init( src, srcdev, srcinst, dev, inst, cmd, param, paySize, payData );
 }
 
-gCommandObject::gCommandObject( int srcdev, int srcinst, int dev, int inst, int cmd ) {
-	Init( srcdev, srcinst, dev, inst, cmd, -1, 0, 0 );
+gCommandObject::gCommandObject( int src, int srcdev, int srcinst, int dev, int inst, int cmd ) {
+	Init( src, srcdev, srcinst, dev, inst, cmd, -1, 0, 0 );
 }
 
-gCommandObject::gCommandObject( int dev, int inst, int cmd, int param ) {
-	Init( -1, -1, dev, inst, cmd, param, 0, 0 );
+gCommandObject::gCommandObject( int src, int dev, int inst, int cmd, int param ) {
+	Init( src, -1, -1, dev, inst, cmd, param, 0, 0 );
 }
 
-gCommandObject::gCommandObject( int dev, int inst, int cmd ) {
-	Init( -1, -1, dev, inst, cmd, -1, 0, 0 );
+gCommandObject::gCommandObject( int src, int dev, int inst, int cmd ) {
+	Init( src, -1, -1, dev, inst, cmd, -1, 0, 0 );
 }
 
 gCommandObject::gCommandObject() {
-	Init( -1, -1, -1, -1, -1, -1, 0, 0 );
+	Init( 0, -1, -1, -1, -1, -1, -1, 0, 0 );
 }
 
-void gCommandObject::Init( int srcdev, int srcinst, int dev, int inst, int cmd, int param, long paySize, void *payData ) {
+void gCommandObject::Init( int src, int srcdev, int srcinst, int dev, int inst, int cmd, int param, long paySize, void *payData ) {
 	sourceDeviceID = srcdev;
 	sourceInstanceID = srcinst;
 	targetDeviceID = dev;
@@ -38,7 +38,7 @@ void gCommandObject::Init( int srcdev, int srcinst, int dev, int inst, int cmd, 
 	payloadSize = paySize;
 	payloadData = payData;
 	isReply = false;
-	isLocal = true;
+	cmdSrc = src;
 
 	nextEntry = prevEntry = 0;
 }
@@ -52,6 +52,7 @@ gCommandObject::gCommandObject( gCommandObject *rhs ) {
 	payloadSize = rhs->payloadSize;
 	payloadData = rhs->payloadData;
 	isReply = rhs->isReply;
+	cmdSrc = rhs->cmdSrc;
 
 	nextEntry = prevEntry = 0;
 }

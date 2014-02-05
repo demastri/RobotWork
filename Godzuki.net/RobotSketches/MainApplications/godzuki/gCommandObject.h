@@ -70,10 +70,10 @@ class gCommandObject {
 	//			if this gComms obj requested it, and it registers for the reply, the reply will eventually find its target on the mesh...
 	//			synchronous is easy - send back to the same port you're on.  It's the asynch ones that require any thought.
 public:
-	gCommandObject( int srcdev, int srcinst, int dev, int inst, int cmd, int param, long paySize, void *payData );
-	gCommandObject( int srcdev, int srcinst, int dev, int inst, int cmd );
-	gCommandObject( int dev, int inst, int cmd, int param );
-	gCommandObject( int dev, int inst, int cmd );
+	gCommandObject( int src, int srcdev, int srcinst, int dev, int inst, int cmd, int param, long paySize, void *payData );
+	gCommandObject( int src, int srcdev, int srcinst, int dev, int inst, int cmd );
+	gCommandObject( int src, int dev, int inst, int cmd, int param );
+	gCommandObject( int src, int dev, int inst, int cmd );
 	gCommandObject( gCommandObject *rhs);
 	gCommandObject();
 
@@ -85,7 +85,7 @@ public:
 	int sourceDeviceID;
 	int sourceInstanceID;
 	bool isReply;
-	bool isLocal;
+	int cmdSrc;
 
 	gCommandObject *nextEntry;
 	gCommandObject *prevEntry;
@@ -100,9 +100,10 @@ public:
 	uint8_t *ToCommandString( size_t *t );
 	static void PlaceInStrBfr( uint8_t *s, char *ss, int size, int loc );
 	static void PlaceInStrBfr( uint8_t *s, int data, int size, int loc );
+	static int strcmp( char *s1, char *s2 );
 
 private:
-	void Init( int srcdev, int srcinst, int dev, int inst, int cmd, int param, long paySize, void *payData );
+	void Init( int src, int srcdev, int srcinst, int dev, int inst, int cmd, int param, long paySize, void *payData );
 
 	//virtual char *Serialize();
 };

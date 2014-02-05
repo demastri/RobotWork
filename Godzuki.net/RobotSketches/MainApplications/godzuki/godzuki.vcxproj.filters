@@ -72,6 +72,9 @@
     <ClInclude Include="RouteTableList.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="gComms.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="gDistanceSensor.cpp">
@@ -92,16 +95,19 @@
     <ClCompile Include="gServo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="gCommandRouter.cpp">
+    <ClCompile Include="gDistanceSensorCommands.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="gSDCard.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="gComms.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="gCommandObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="gDistanceSensorCommands.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="gSDCard.cpp">
+    <ClCompile Include="gCommandRouter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

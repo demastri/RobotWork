@@ -141,7 +141,7 @@ void gCommandRouter::ExecuteCommandQueue() {
 			pHandler->thisHandler( pHandler->objRef, commandList );
 		} else {
 			// broadcast over network for remote handler
-			if( commandList->isLocal ) {
+			if( commandList->cmdSrc == -1 ) {
 #ifdef WIN32
 				size_t thisSize;
 				uint8_t *cmdStr = commandList->ToCommandString(&thisSize);
@@ -149,8 +149,15 @@ void gCommandRouter::ExecuteCommandQueue() {
 				commandList->isReply = true;
 				RouteReply( commandList, GLOBAL_COMMAND_STATUS_OK, gComms::strlen( (char *)cmdStr ), (void *)cmdStr );
 #else
-				gMonitor.BroadcastCommand( commandList );
+				gMonitor.BroadcastCommand( commandList, 0 );
+				gMonitor.BroadcastCommand( commandList, 1 );
 #endif
+			}
+			if( commandList->cmdSrc == 0 ) {
+				gMonitor.BroadcastCommand( commandList, 1 );
+			}
+			if( commandList->cmdSrc == 1 ) {
+				gMonitor.BroadcastCommand( commandList, 0 );
 			}
 		}
 		DequeueCommand( &commandList, commandList );
@@ -175,7 +182,8 @@ void gCommandRouter::HandleCommandResponses() {
 			pHandler->thisHandler( pHandler->objRef, commandResponses );
 		} else {
 			// broadcast over network for remote target
-			gMonitor.BroadcastCommand( commandResponses );
+			gMonitor.BroadcastCommand( commandResponses, 0 );
+			gMonitor.BroadcastCommand( commandResponses, 1 );
 		}
 		DequeueCommand( &commandResponses, commandResponses );
 	}
@@ -212,7 +220,7 @@ void gCommandRouter::HandleTimedCommands() {
 	while( curEntry != 0 && ++handlerCount < 50 ) {
 		if( curEntry->reTriggerInMills > 0 && curEntry->nextTrigger <= now ) {
 			// add timed command to the list for execution
-			QueueCommand( &commandList, new gCommandObject(DEFAULT_DEVICE_ID, DEFAULT_INSTANCE_ID, curEntry->deviceID, curEntry->instanceID, curEntry->cmdID, now,0,0) );
+			QueueCommand( &commandList, new gCommandObject(-1, DEFAULT_DEVICE_ID, DEFAULT_INSTANCE_ID, curEntry->deviceID, curEntry->instanceID, curEntry->cmdID, now,0,0) );
 			curEntry->nextTrigger += curEntry->reTriggerInMills;
 		}
 		curEntry = curEntry->nextEntry;
