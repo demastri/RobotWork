@@ -1,3 +1,5 @@
+#include <Adafruit_VC0706.h>
+#include <SoftwareSerial.h>         
 #include <ZukiLib.h>
 #include <gComms.h>
 #include <gCommandObject.h>
@@ -40,9 +42,9 @@ extern gComms gMonitor;
 //#include "gMotorControl.h"
 //gMotorControl gMotors;
 
-#include "gSDCard.h"
-#include "gSDCardCommands.h"
-gSDCard mySDCard;
+#include "gCamera.h"
+#include "gCameraCommands.h"
+gSDCard myCamera;
 
 extern int DEFAULT_DEVICE_ID;
 extern int DEFAULT_INSTANCE_ID;
@@ -52,7 +54,7 @@ bool itsCrayCray = false;
 ////////////////////
 void setup() { 
 	DEFAULT_DEVICE_ID = GODZUKI_SENSOR_PLATFORM_DEVICE_ID;
-	DEFAULT_INSTANCE_ID = 1;
+	DEFAULT_INSTANCE_ID = 2;
 
 	myRouter.setup();
 
@@ -62,7 +64,6 @@ void setup() {
 	myServo.setup(9, 1, &myRouter);
 	//gMotors.setup(1, &myRouter, 10, 11);
 	//myDistanceSensor.setup(1, &myRouter, 5, 6, -1);
-	mySDCard.setup(1, &myRouter, 10);
 } 
 
 void loop() {
