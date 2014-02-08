@@ -1,9 +1,16 @@
+// don't include it here...
+#include <Adafruit_VC0706.h>
+#include <SoftwareSerial.h>         
+#include <ZukiLib.h>
+#include <gComms.h>
+#include <gCommandObject.h>
 #include <PinChangeInt.h>
 #include <Wire.h>
 #include <Adafruit_MotorShield.h>
 #include <Servo.h>
 #include "utility/Adafruit_PWMServoDriver.h"
 #include <SdFat.h>
+
 
 ////////////////////
 
@@ -53,7 +60,7 @@ void setup() {
 
 	myRouter.setup();
 
-	gMonitor.setup(true);
+	gMonitor.setup(1, &myRouter, true);
 	myInputs.setup(1, &myRouter);
 	myHBStatus.setup(1, &myRouter);
 	//myServo.setup(9, 1, &myRouter);
@@ -72,9 +79,6 @@ void loop() {
 
 	int kbdParam = -1;
 	int new_command_input = myInputs.ReadCommand( kbdParam );
-
-	// handle any radio stuff
-	gMonitor.processCommand(new_command_input, kbdParam );
 
 	// handle ALL the command stuff
 	myRouter.ScanCommands();

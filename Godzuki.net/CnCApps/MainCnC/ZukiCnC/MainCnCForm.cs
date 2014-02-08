@@ -455,7 +455,7 @@ namespace ZukiCnC
                 // if i'm not done, have I timed out?
                 if (DateTime.Now > currentStepTimeout)
                 {
-                    bool failthrough = true;
+                    bool failthrough = IgnoreStepFails.Checked;
                     LogText("Goal Failed");
                     if (!failthrough)
                     {
@@ -559,13 +559,24 @@ namespace ZukiCnC
             List<string> paramValues = Tokenize(currentGoalNode.Attributes["DefaultValues"].Value, ",");
             for (int i = 0; i < paramNames.Count; i++)
             {
-                ParamCapture pc = new ParamCapture();
-                pc.StartPosition = FormStartPosition.CenterParent;
-                pc.ParameterDisplay.Text = paramNames[i];
-                pc.ValueDisplay.Text = paramValues[i];
-                if (pc.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                if (UseGoalDefaults.Checked)
                 {
-                    goalParamTokens.Add(paramNames[i], pc.ValueDisplay.Text);
+                    goalParamTokens.Add(paramNames[i], paramValues[i]);
+                }
+                else
+                {
+                    ParamCapture pc = new ParamCapture();
+                    pc.StartPosition = FormStartPosition.CenterParent;
+                    pc.ParameterDisplay.Text = paramNames[i];
+                    pc.ValueDisplay.Text = paramValues[i];
+                    if (pc.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                    {
+                        goalParamTokens.Add(paramNames[i], pc.ValueDisplay.Text);
+                    }
+                    else
+                    {
+                        goalParamTokens.Add(paramNames[i], paramValues[i]);
+                    }
                 }
             }
             MessageLoopTimer.Start();
@@ -589,6 +600,8 @@ namespace ZukiCnC
                 availablePorts.SelectedIndex = 0;
             if (availableInstances.SelectedIndex < 0)
                 availableInstances.SelectedIndex = 0;
+
+            InitializeGoals();
         }
 
         private List<string> Tokenize(string s, string delim)

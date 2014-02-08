@@ -32,6 +32,8 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.sessionLog = new System.Windows.Forms.TextBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.GoalCurrentStep = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
             this.availableInstances = new System.Windows.Forms.ComboBox();
             this.RefreshPortData = new System.Windows.Forms.Button();
             this.ExecuteGoalButton = new System.Windows.Forms.Button();
@@ -78,8 +80,8 @@
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.MessageLoopTimer = new System.Windows.Forms.Timer(this.components);
             this.ClearCmdLogButton = new System.Windows.Forms.Button();
-            this.label5 = new System.Windows.Forms.Label();
-            this.GoalCurrentStep = new System.Windows.Forms.TextBox();
+            this.UseGoalDefaults = new System.Windows.Forms.CheckBox();
+            this.IgnoreStepFails = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.MotorSelectGroup.SuspendLayout();
@@ -119,6 +121,8 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.IgnoreStepFails);
+            this.groupBox2.Controls.Add(this.UseGoalDefaults);
             this.groupBox2.Controls.Add(this.GoalCurrentStep);
             this.groupBox2.Controls.Add(this.label5);
             this.groupBox2.Controls.Add(this.availableInstances);
@@ -135,6 +139,23 @@
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Connection";
+            // 
+            // GoalCurrentStep
+            // 
+            this.GoalCurrentStep.Location = new System.Drawing.Point(89, 100);
+            this.GoalCurrentStep.Name = "GoalCurrentStep";
+            this.GoalCurrentStep.ReadOnly = true;
+            this.GoalCurrentStep.Size = new System.Drawing.Size(258, 20);
+            this.GoalCurrentStep.TabIndex = 16;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(14, 103);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(69, 13);
+            this.label5.TabIndex = 15;
+            this.label5.Text = "Current Step:";
             // 
             // availableInstances
             // 
@@ -638,22 +659,25 @@
             this.ClearCmdLogButton.UseVisualStyleBackColor = true;
             this.ClearCmdLogButton.Click += new System.EventHandler(this.ClearCmdLogButton_Click);
             // 
-            // label5
+            // UseGoalDefaults
             // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(14, 79);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(69, 13);
-            this.label5.TabIndex = 15;
-            this.label5.Text = "Current Step:";
+            this.UseGoalDefaults.AutoSize = true;
+            this.UseGoalDefaults.Location = new System.Drawing.Point(239, 74);
+            this.UseGoalDefaults.Name = "UseGoalDefaults";
+            this.UseGoalDefaults.Size = new System.Drawing.Size(87, 17);
+            this.UseGoalDefaults.TabIndex = 17;
+            this.UseGoalDefaults.Text = "Use Defaults";
+            this.UseGoalDefaults.UseVisualStyleBackColor = true;
             // 
-            // GoalCurrentStep
+            // IgnoreStepFails
             // 
-            this.GoalCurrentStep.Location = new System.Drawing.Point(89, 76);
-            this.GoalCurrentStep.Name = "GoalCurrentStep";
-            this.GoalCurrentStep.ReadOnly = true;
-            this.GoalCurrentStep.Size = new System.Drawing.Size(258, 20);
-            this.GoalCurrentStep.TabIndex = 16;
+            this.IgnoreStepFails.AutoSize = true;
+            this.IgnoreStepFails.Location = new System.Drawing.Point(139, 74);
+            this.IgnoreStepFails.Name = "IgnoreStepFails";
+            this.IgnoreStepFails.Size = new System.Drawing.Size(75, 17);
+            this.IgnoreStepFails.TabIndex = 18;
+            this.IgnoreStepFails.Text = "Ignore Fail";
+            this.IgnoreStepFails.UseVisualStyleBackColor = true;
             // 
             // MainCnCForm
             // 
@@ -743,6 +767,8 @@
         private System.Windows.Forms.Label RightMotorSpeed;
         private System.Windows.Forms.TextBox GoalCurrentStep;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.CheckBox IgnoreStepFails;
+        private System.Windows.Forms.CheckBox UseGoalDefaults;
     }
 }
 

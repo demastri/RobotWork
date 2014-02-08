@@ -143,8 +143,8 @@ int gInputs::ReadCommand(int &param) {
 			ROUTE_COMMAND( SERVO_DEVICE_ID, 1, COMMAND_ID_SERVO_SET_POSITION, param );
 			return ROUTER_NO_COMMAND;
 		case 'f':
-			param = 0;
-			return FOLLOW_SERIAL;
+			ROUTE_COMMAND( COMMS_DEVICE_ID, 1, COMMAND_ID_COMMS_FOLLOW_SERIAL, 0 );
+			return ROUTER_NO_COMMAND;
 		default:
 			break;
 #endif
@@ -245,8 +245,8 @@ int gInputs::ReadCommand(int &param) {
 			ROUTE_COMMAND( SERVO_DEVICE_ID, 1, COMMAND_ID_SERVO_SET_POSITION, param );
 			return ROUTER_NO_COMMAND;
 		case 'f':
-			param = 1;
-			return FOLLOW_SERIAL;
+			ROUTE_COMMAND( COMMS_DEVICE_ID, 1, COMMAND_ID_COMMS_FOLLOW_SERIAL, 1 );
+			return ROUTER_NO_COMMAND;
 		default:
 			break;
 #endif

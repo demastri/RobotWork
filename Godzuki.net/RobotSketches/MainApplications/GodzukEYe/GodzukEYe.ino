@@ -1,3 +1,6 @@
+// don't include it here...
+#define PinChangeInt_h
+
 #include <Adafruit_VC0706.h>
 #include <SoftwareSerial.h>         
 #include <ZukiLib.h>
@@ -31,9 +34,9 @@ static gHBStatus myHBStatus;
 gInputs myInputs;
 
 ///////  ultrasonic sensor definitions
-//#include "gDistanceSensor.h"
-//gDistanceSensor myDistanceSensor;
-//unsigned long lastDistanceTime=0;
+#include "gDistanceSensor.h"
+gDistanceSensor myDistanceSensor;
+unsigned long lastDistanceTime=0;
 
 ///////  communications control definitions
 #include "gComms.h"
@@ -44,7 +47,7 @@ extern gComms gMonitor;
 
 #include "gCamera.h"
 #include "gCameraCommands.h"
-gSDCard myCamera;
+gCamera myCamera;
 
 extern int DEFAULT_DEVICE_ID;
 extern int DEFAULT_INSTANCE_ID;
@@ -58,12 +61,13 @@ void setup() {
 
 	myRouter.setup();
 
-	gMonitor.setup(true);
+	gMonitor.setup(1, &myRouter, true);
 	myInputs.setup(1, &myRouter);
 	myHBStatus.setup(1, &myRouter);
 	myServo.setup(9, 1, &myRouter);
 	//gMotors.setup(1, &myRouter, 10, 11);
-	//myDistanceSensor.setup(1, &myRouter, 5, 6, -1);
+	myDistanceSensor.setup(1, &myRouter, 5, 6, -1);
+	myCamera.setup(1, &myRouter);
 } 
 
 void loop() {
@@ -76,9 +80,6 @@ void loop() {
 
 	int kbdParam = -1;
 	int new_command_input = myInputs.ReadCommand( kbdParam );
-
-	// handle any radio stuff
-	gMonitor.processCommand(new_command_input, kbdParam );
 
 	// handle ALL the command stuff
 	myRouter.ScanCommands();

@@ -3,7 +3,9 @@
 
 const int FOLLOW_SERIAL    = 900; // no button - 'f'
 
+#include "gCommandRouter.h"
 #include "gCommandObject.h"
+#include "gCommsCommands.h"
 
 // NOTE - gComms now sets up both the USB Serial port and the radio
 // be sure to set this up first!!
@@ -13,36 +15,42 @@ namespace Godzuki
 {
 	public class gComms
 #else
-	class gComms
+class gComms
 #endif
-	{	
-	public:
-		gComms();
-		bool writeToRadio;
-		void setup(bool defaultToRadio, int baudRate);
-		void setup(bool defaultToRadio);
-		void setup();
+{	
+public:
+	static const int DEVICE_ID = COMMS_DEVICE_ID;
 
-		void BroadcastCommand( gCommandObject *cmdObj, int dest );
-		static gCommandObject *UnpackCommandString( char *s, int src );
+	gComms();
+	bool writeToRadio;
+	void setup(int thisID, gCommandRouter *router, bool defaultToRadio, int baudRate);
+	void setup(int thisID, gCommandRouter *router, bool defaultToRadio);
+	void setup();
+	CMD_METHOD_DEFINE(processCommand);
 
-		void processCommand(int newCommand, int cmdParam );  
-		void print( const uint8_t *s, size_t t );
-		void print( char *s );
-		void println( char *s );
-		void print( int i );
-		void println( int i );
+	void BroadcastCommand( gCommandObject *cmdObj, int dest );
+	static gCommandObject *UnpackCommandString( char *s, int src );
 
-		static char *intToStr( int i );
-		static char refString[20];
-		static unsigned int strlen( char *s ) { int i=0; while( *(s+i) != '\0') i++; return i; };
+	void print( const uint8_t *s, size_t t );
+	void print( char *s );
+	void println( char *s );
+	void print( int i );
+	void println( int i );
 
-	private:
-		void printToRadio( char *s );
-		void printlnToRadio( char *s );
-		void printToUSB( char *s );
-		void printlnToUSB( char *s );
-	};
+	static char *intToStr( int i );
+	static char refString[20];
+	static unsigned int strlen( char *s ) { int i=0; while( *(s+i) != '\0') i++; return i; };
+
+private:
+	gCommandRouter *pRouter;
+	int instanceID;
+	void setupCommandListener( gCommandRouter &router );
+
+	void printToRadio( char *s );
+	void printlnToRadio( char *s );
+	void printToUSB( char *s );
+	void printlnToUSB( char *s );
+};
 
 #ifdef WIN32
 }

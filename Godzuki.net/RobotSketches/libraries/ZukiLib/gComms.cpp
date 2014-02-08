@@ -21,12 +21,12 @@ gComms::gComms() {
 }
 
 void gComms::setup() {
-	setup( true, RADIO_BAUD_RATE );
+	setup( -1, 0, true, RADIO_BAUD_RATE );
 }
-void gComms::setup(bool defaultToRadio) {
-	setup( defaultToRadio, RADIO_BAUD_RATE );
+void gComms::setup(int thisID, gCommandRouter *router, bool defaultToRadio) {
+	setup( thisID, router, defaultToRadio, RADIO_BAUD_RATE );
 }
-void gComms::setup(bool defaultToRadio, int baudRate) {
+void gComms::setup(int thisID, gCommandRouter *router, bool defaultToRadio, int baudRate) {
 	writeToRadio = defaultToRadio;
 #ifndef WIN32
 	int curSetupWaitTime = 0;
@@ -53,7 +53,15 @@ void gComms::setup(bool defaultToRadio, int baudRate) {
 		Serial1.println((char *)(Serial ? "USB too" : "USB dead") );
 	}
 #endif
+	if( router != 0 )
+		setupCommandListener( *router );
 }
+void gComms::setupCommandListener( gCommandRouter &router ) {
+	CMD_METHOD_REGISTER_DEFAULT(gComms, processCommand);
+
+	pRouter = &router;
+}
+
 
 void gComms::BroadcastCommand( gCommandObject *cmdObj, int dest ) {
 	// this will be where all the magic happens :)
@@ -81,10 +89,10 @@ gCommandObject *gComms::UnpackCommandString( char *s, int src ) {
 	return cmdObj;
 }
 
-void gComms::processCommand(int newCommand, int cmdParam ) {
-	switch( newCommand ) {
-	case FOLLOW_SERIAL: 
-		writeToRadio = (cmdParam == 1);   // 1 = radio, 0 = usb
+CMD_METHOD_IMPLEMENT(gComms,processCommand) {
+	switch( cmdObj->commandID ) {
+	case COMMAND_ID_COMMS_FOLLOW_SERIAL: 
+		writeToRadio = (cmdObj->parameter == 1);   // 1 = radio, 0 = usb
 		print( "Switching to follow monitor on " );
 		println( (char *)(writeToRadio ? "radio" : "USB") );
 		break;
