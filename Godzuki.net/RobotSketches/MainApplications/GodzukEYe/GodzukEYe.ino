@@ -1,16 +1,7 @@
-// don't include it here...
-#define PinChangeInt_h
+#include <Servo.h>
 
 #include <Adafruit_VC0706.h>
 #include <SoftwareSerial.h>         
-#include <ZukiLib.h>
-#include <gComms.h>
-#include <gCommandObject.h>
-#include <PinChangeInt.h>
-#include <Wire.h>
-#include <Adafruit_MotorShield.h>
-#include <Servo.h>
-#include "utility/Adafruit_PWMServoDriver.h"
 #include <SdFat.h>
 
 ////////////////////

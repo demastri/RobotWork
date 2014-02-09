@@ -96,24 +96,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ZukiLib", "ZukiLib", "{A9E5
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Header Files", "Header Files", "{20CC6DA1-00B2-47A9-B7AC-6ECEFF1A3F8D}"
 	ProjectSection(SolutionItems) = preProject
-		RobotSketches\libraries\ZukiLib\gCamera.h = RobotSketches\libraries\ZukiLib\gCamera.h
-		RobotSketches\libraries\ZukiLib\gCameraCommands.h = RobotSketches\libraries\ZukiLib\gCameraCommands.h
 		RobotSketches\libraries\ZukiLib\gCommandObject.h = RobotSketches\libraries\ZukiLib\gCommandObject.h
 		RobotSketches\libraries\ZukiLib\gCommandRouter.h = RobotSketches\libraries\ZukiLib\gCommandRouter.h
 		RobotSketches\libraries\ZukiLib\gComms.h = RobotSketches\libraries\ZukiLib\gComms.h
+		RobotSketches\libraries\ZukiLib\gCommsCommands.h = RobotSketches\libraries\ZukiLib\gCommsCommands.h
 		RobotSketches\libraries\ZukiLib\gDistanceSensor.h = RobotSketches\libraries\ZukiLib\gDistanceSensor.h
 		RobotSketches\libraries\ZukiLib\gDistanceSensorCommands.h = RobotSketches\libraries\ZukiLib\gDistanceSensorCommands.h
 		RobotSketches\libraries\ZukiLib\gHBStatus.h = RobotSketches\libraries\ZukiLib\gHBStatus.h
 		RobotSketches\libraries\ZukiLib\gHBStatusCommands.h = RobotSketches\libraries\ZukiLib\gHBStatusCommands.h
 		RobotSketches\libraries\ZukiLib\gInputs.h = RobotSketches\libraries\ZukiLib\gInputs.h
-		RobotSketches\libraries\ZukiLib\gMotor.h = RobotSketches\libraries\ZukiLib\gMotor.h
-		RobotSketches\libraries\ZukiLib\gMotorControl.h = RobotSketches\libraries\ZukiLib\gMotorControl.h
-		RobotSketches\libraries\ZukiLib\gCommsCommands.h = RobotSketches\libraries\ZukiLib\gCommsCommands.h
-		RobotSketches\libraries\ZukiLib\gMotorControlCommands.h = RobotSketches\libraries\ZukiLib\gMotorControlCommands.h
 		RobotSketches\libraries\ZukiLib\gRouteTableList.h = RobotSketches\libraries\ZukiLib\gRouteTableList.h
 		RobotSketches\libraries\ZukiLib\gRoutingDeviceIDs.h = RobotSketches\libraries\ZukiLib\gRoutingDeviceIDs.h
-		RobotSketches\libraries\ZukiLib\gSDCard.h = RobotSketches\libraries\ZukiLib\gSDCard.h
-		RobotSketches\libraries\ZukiLib\gSDCardCommands.h = RobotSketches\libraries\ZukiLib\gSDCardCommands.h
 		RobotSketches\libraries\ZukiLib\gServo.h = RobotSketches\libraries\ZukiLib\gServo.h
 		RobotSketches\libraries\ZukiLib\gServoCommands.h = RobotSketches\libraries\ZukiLib\gServoCommands.h
 		RobotSketches\libraries\ZukiLib\ZukiLib.h = RobotSketches\libraries\ZukiLib\ZukiLib.h
@@ -121,16 +114,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Header Files", "Header File
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Source Files", "Source Files", "{58E6A118-293E-4DC5-B592-72D216BA4A2F}"
 	ProjectSection(SolutionItems) = preProject
-		RobotSketches\libraries\ZukiLib\gCamera.cpp = RobotSketches\libraries\ZukiLib\gCamera.cpp
 		RobotSketches\libraries\ZukiLib\gCommandObject.cpp = RobotSketches\libraries\ZukiLib\gCommandObject.cpp
 		RobotSketches\libraries\ZukiLib\gCommandRouter.cpp = RobotSketches\libraries\ZukiLib\gCommandRouter.cpp
 		RobotSketches\libraries\ZukiLib\gComms.cpp = RobotSketches\libraries\ZukiLib\gComms.cpp
 		RobotSketches\libraries\ZukiLib\gDistanceSensor.cpp = RobotSketches\libraries\ZukiLib\gDistanceSensor.cpp
 		RobotSketches\libraries\ZukiLib\gHBStatus.cpp = RobotSketches\libraries\ZukiLib\gHBStatus.cpp
 		RobotSketches\libraries\ZukiLib\gInputs.cpp = RobotSketches\libraries\ZukiLib\gInputs.cpp
-		RobotSketches\libraries\ZukiLib\gMotor.cpp = RobotSketches\libraries\ZukiLib\gMotor.cpp
-		RobotSketches\libraries\ZukiLib\gMotorControl.cpp = RobotSketches\libraries\ZukiLib\gMotorControl.cpp
-		RobotSketches\libraries\ZukiLib\gSDCard.cpp = RobotSketches\libraries\ZukiLib\gSDCard.cpp
 		RobotSketches\libraries\ZukiLib\gServo.cpp = RobotSketches\libraries\ZukiLib\gServo.cpp
 	EndProjectSection
 EndProject
@@ -139,15 +128,48 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Primitives", "Primitives", "{7B3E249F-345F-45E7-9985-47557157E290}"
 	ProjectSection(SolutionItems) = preProject
 		CnCApps\MainCnC\Goals\Primitives\Calibrate Motors.xml = CnCApps\MainCnC\Goals\Primitives\Calibrate Motors.xml
+		CnCApps\MainCnC\Goals\Primitives\Command Test.xml = CnCApps\MainCnC\Goals\Primitives\Command Test.xml
 		CnCApps\MainCnC\Goals\Primitives\Internal Tests.xml = CnCApps\MainCnC\Goals\Primitives\Internal Tests.xml
 		CnCApps\MainCnC\Goals\Primitives\Move Straight.xml = CnCApps\MainCnC\Goals\Primitives\Move Straight.xml
-		CnCApps\MainCnC\Goals\Primitives\Command Test.xml = CnCApps\MainCnC\Goals\Primitives\Command Test.xml
 		CnCApps\MainCnC\Goals\Primitives\Read Ranger.xml = CnCApps\MainCnC\Goals\Primitives\Read Ranger.xml
 		CnCApps\MainCnC\Goals\Primitives\Snap Pic.xml = CnCApps\MainCnC\Goals\Primitives\Snap Pic.xml
 		CnCApps\MainCnC\Goals\Primitives\Turn.xml = CnCApps\MainCnC\Goals\Primitives\Turn.xml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Behaviors", "Behaviors", "{4539C8AA-65FD-4DDB-A0C4-0CC3E4574244}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "libraries", "libraries", "{83AD712B-4FD8-41B5-883A-A8A0F3B355C6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ZukiCamera", "ZukiCamera", "{1897E05C-2E38-4D44-9CCD-D2EEFD5AE1EB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ZukiMotors", "ZukiMotors", "{156A4ADD-6DE6-4124-B485-DAEB2FF606F1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Header Files", "Header Files", "{53254422-CCA3-4E4A-B087-817BAFDC120D}"
+	ProjectSection(SolutionItems) = preProject
+		RobotSketches\libraries\ZukiCamera\gCamera.h = RobotSketches\libraries\ZukiCamera\gCamera.h
+		RobotSketches\libraries\ZukiCamera\gCameraCommands.h = RobotSketches\libraries\ZukiCamera\gCameraCommands.h
+		RobotSketches\libraries\ZukiLib\gSDCard.h = RobotSketches\libraries\ZukiLib\gSDCard.h
+		RobotSketches\libraries\ZukiLib\gSDCardCommands.h = RobotSketches\libraries\ZukiLib\gSDCardCommands.h
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Source Files", "Source Files", "{03C0F7F2-2A9A-4686-ACE3-F7E241C6A75D}"
+	ProjectSection(SolutionItems) = preProject
+		RobotSketches\libraries\ZukiCamera\gCamera.cpp = RobotSketches\libraries\ZukiCamera\gCamera.cpp
+		RobotSketches\libraries\ZukiLib\gSDCard.cpp = RobotSketches\libraries\ZukiLib\gSDCard.cpp
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Header Files", "Header Files", "{0F646163-14D0-4676-84D0-44A8081594A0}"
+	ProjectSection(SolutionItems) = preProject
+		RobotSketches\libraries\ZukiMotors\gMotor.h = RobotSketches\libraries\ZukiMotors\gMotor.h
+		RobotSketches\libraries\ZukiMotors\gMotorControl.h = RobotSketches\libraries\ZukiMotors\gMotorControl.h
+		RobotSketches\libraries\ZukiMotors\gMotorControlCommands.h = RobotSketches\libraries\ZukiMotors\gMotorControlCommands.h
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Source Files", "Source Files", "{4845CAEB-C390-4058-8931-DB7578A12A3D}"
+	ProjectSection(SolutionItems) = preProject
+		RobotSketches\libraries\ZukiMotors\gMotor.cpp = RobotSketches\libraries\ZukiMotors\gMotor.cpp
+		RobotSketches\libraries\ZukiMotors\gMotorControl.cpp = RobotSketches\libraries\ZukiMotors\gMotorControl.cpp
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -498,7 +520,7 @@ Global
 		{F92CF8C3-C84B-4693-941B-B4AFE3E48C4C} = {08CB754A-F9D2-4F56-8744-250470A6115B}
 		{641335E6-5FB9-4262-84BD-856D7498214F} = {9744E0B8-0B49-4DF6-8A3F-327FD9BF1493}
 		{9D85AA06-B3CF-4F54-92AA-3AC4025A8F41} = {9744E0B8-0B49-4DF6-8A3F-327FD9BF1493}
-		{A9E5E57E-C0DE-4994-B368-71A19C76F6BF} = {9744E0B8-0B49-4DF6-8A3F-327FD9BF1493}
+		{83AD712B-4FD8-41B5-883A-A8A0F3B355C6} = {9744E0B8-0B49-4DF6-8A3F-327FD9BF1493}
 		{A5C8264C-34A8-4318-8C37-9BBF3788BBA6} = {641335E6-5FB9-4262-84BD-856D7498214F}
 		{6022918F-D103-4FC5-AEB7-370EF65D818A} = {641335E6-5FB9-4262-84BD-856D7498214F}
 		{BEAFDF77-F1FA-4079-9FCA-11237CCDBA3E} = {641335E6-5FB9-4262-84BD-856D7498214F}
@@ -530,5 +552,12 @@ Global
 		{58E6A118-293E-4DC5-B592-72D216BA4A2F} = {A9E5E57E-C0DE-4994-B368-71A19C76F6BF}
 		{7B3E249F-345F-45E7-9985-47557157E290} = {8E0915CD-705D-455F-835D-0F226B0F7AAB}
 		{4539C8AA-65FD-4DDB-A0C4-0CC3E4574244} = {8E0915CD-705D-455F-835D-0F226B0F7AAB}
+		{A9E5E57E-C0DE-4994-B368-71A19C76F6BF} = {83AD712B-4FD8-41B5-883A-A8A0F3B355C6}
+		{1897E05C-2E38-4D44-9CCD-D2EEFD5AE1EB} = {83AD712B-4FD8-41B5-883A-A8A0F3B355C6}
+		{156A4ADD-6DE6-4124-B485-DAEB2FF606F1} = {83AD712B-4FD8-41B5-883A-A8A0F3B355C6}
+		{53254422-CCA3-4E4A-B087-817BAFDC120D} = {1897E05C-2E38-4D44-9CCD-D2EEFD5AE1EB}
+		{03C0F7F2-2A9A-4686-ACE3-F7E241C6A75D} = {1897E05C-2E38-4D44-9CCD-D2EEFD5AE1EB}
+		{0F646163-14D0-4676-84D0-44A8081594A0} = {156A4ADD-6DE6-4124-B485-DAEB2FF606F1}
+		{4845CAEB-C390-4058-8931-DB7578A12A3D} = {156A4ADD-6DE6-4124-B485-DAEB2FF606F1}
 	EndGlobalSection
 EndGlobal

@@ -145,6 +145,7 @@ namespace ZukiCnC
                                         switch (cmdObj.commandID)
                                         {
                                             case Godzuki.ZukiCommands.COMMAND_ID_GLOBAL_REQUEST_STATUS:
+                                                isConnected = true;
                                                 LogText("ACK for Global Status");
                                                 ConnectToRobotButton.Text = "Connected";
                                                 if (currentGoalCommand == "Platform/Connect")
@@ -217,7 +218,6 @@ namespace ZukiCnC
                 if (gz.SelectPort((string)availablePorts.SelectedItem))
                 {
                     ConnectToRobotButton.Text = "Connecting";
-                    isConnected = true;
                     Godzuki.gCommandObject cmdObj = new Godzuki.gCommandObject(
                         Godzuki.ZukiCommands.CNC_APP_DEVICE_ID, 1,
                         Godzuki.ZukiCommands.GODZUKI_SENSOR_PLATFORM_DEVICE_ID, 1,

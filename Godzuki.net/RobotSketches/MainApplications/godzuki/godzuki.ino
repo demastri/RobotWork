@@ -1,16 +1,9 @@
-// don't include it here...
-#include <Adafruit_VC0706.h>
-#include <SoftwareSerial.h>         
-#include <ZukiLib.h>
-#include <gComms.h>
-#include <gCommandObject.h>
+#include <Servo.h>
+
 #include <PinChangeInt.h>
 #include <Wire.h>
 #include <Adafruit_MotorShield.h>
-#include <Servo.h>
 #include "utility/Adafruit_PWMServoDriver.h"
-#include <SdFat.h>
-
 
 ////////////////////
 

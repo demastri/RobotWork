@@ -1,10 +1,20 @@
 #include <Arduino.h>
 
+#undef USB_MONITOR_CMDS
+#undef RADIO_MONITOR_CMDS
+
 #include "gRoutingDeviceIDs.h"
 #include "gServoCommands.h"
 #include "gHBStatusCommands.h"
+
+#ifdef USB_MONITOR_CMDS
 #include "gMotorControlCommands.h"
 #include "gDistanceSensorCommands.h"
+#endif
+#ifdef RADIO_MONITOR_CMDS
+#include "gMotorControlCommands.h"
+#include "gDistanceSensorCommands.h"
+#endif
 
 const int gButtonMappingCmds[] = {COMMAND_ID_SERVO_SWEEP_ONCE,	COMMAND_ID_SERVO_SWEEP_STOP,	COMMAND_ID_SERVO_CENTER,	COMMAND_ID_SERVO_SWEEP_CONTINUOUS,	COMMAND_ID_SERVO_READ_POSITION };
 const int gButtonMappingDevs[] = {SERVO_DEVICE_ID,				SERVO_DEVICE_ID,				SERVO_DEVICE_ID,			SERVO_DEVICE_ID,					SERVO_DEVICE_ID };
