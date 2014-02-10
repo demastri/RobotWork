@@ -182,7 +182,7 @@ void gCommandRouter::HandleCommandResponses() {
 			pHandler->thisHandler( pHandler->objRef, commandResponses );
 		} else {
 			// broadcast over network for remote target
-			gMonitor.BroadcastCommand( commandResponses, 0 );
+			//gMonitor.BroadcastCommand( commandResponses, 0 );
 			gMonitor.BroadcastCommand( commandResponses, 1 );
 		}
 		DequeueCommand( &commandResponses, commandResponses );

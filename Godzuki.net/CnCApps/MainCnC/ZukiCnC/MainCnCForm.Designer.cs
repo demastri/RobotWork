@@ -32,6 +32,8 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.sessionLog = new System.Windows.Forms.TextBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.IgnoreStepFails = new System.Windows.Forms.CheckBox();
+            this.UseGoalDefaults = new System.Windows.Forms.CheckBox();
             this.GoalCurrentStep = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
             this.availableInstances = new System.Windows.Forms.ComboBox();
@@ -80,8 +82,8 @@
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.MessageLoopTimer = new System.Windows.Forms.Timer(this.components);
             this.ClearCmdLogButton = new System.Windows.Forms.Button();
-            this.UseGoalDefaults = new System.Windows.Forms.CheckBox();
-            this.IgnoreStepFails = new System.Windows.Forms.CheckBox();
+            this.LeftTickCount = new System.Windows.Forms.Label();
+            this.RightTickCount = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.MotorSelectGroup.SuspendLayout();
@@ -139,6 +141,26 @@
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Connection";
+            // 
+            // IgnoreStepFails
+            // 
+            this.IgnoreStepFails.AutoSize = true;
+            this.IgnoreStepFails.Location = new System.Drawing.Point(139, 74);
+            this.IgnoreStepFails.Name = "IgnoreStepFails";
+            this.IgnoreStepFails.Size = new System.Drawing.Size(75, 17);
+            this.IgnoreStepFails.TabIndex = 18;
+            this.IgnoreStepFails.Text = "Ignore Fail";
+            this.IgnoreStepFails.UseVisualStyleBackColor = true;
+            // 
+            // UseGoalDefaults
+            // 
+            this.UseGoalDefaults.AutoSize = true;
+            this.UseGoalDefaults.Location = new System.Drawing.Point(239, 74);
+            this.UseGoalDefaults.Name = "UseGoalDefaults";
+            this.UseGoalDefaults.Size = new System.Drawing.Size(87, 17);
+            this.UseGoalDefaults.TabIndex = 17;
+            this.UseGoalDefaults.Text = "Use Defaults";
+            this.UseGoalDefaults.UseVisualStyleBackColor = true;
             // 
             // GoalCurrentStep
             // 
@@ -242,6 +264,8 @@
             // 
             // MotorSelectGroup
             // 
+            this.MotorSelectGroup.Controls.Add(this.RightTickCount);
+            this.MotorSelectGroup.Controls.Add(this.LeftTickCount);
             this.MotorSelectGroup.Controls.Add(this.RightMotorSpeed);
             this.MotorSelectGroup.Controls.Add(this.GoButton);
             this.MotorSelectGroup.Controls.Add(this.LeftMotorSpeed);
@@ -659,25 +683,23 @@
             this.ClearCmdLogButton.UseVisualStyleBackColor = true;
             this.ClearCmdLogButton.Click += new System.EventHandler(this.ClearCmdLogButton_Click);
             // 
-            // UseGoalDefaults
+            // LeftTickCount
             // 
-            this.UseGoalDefaults.AutoSize = true;
-            this.UseGoalDefaults.Location = new System.Drawing.Point(239, 74);
-            this.UseGoalDefaults.Name = "UseGoalDefaults";
-            this.UseGoalDefaults.Size = new System.Drawing.Size(87, 17);
-            this.UseGoalDefaults.TabIndex = 17;
-            this.UseGoalDefaults.Text = "Use Defaults";
-            this.UseGoalDefaults.UseVisualStyleBackColor = true;
+            this.LeftTickCount.AutoSize = true;
+            this.LeftTickCount.Location = new System.Drawing.Point(4, 121);
+            this.LeftTickCount.Name = "LeftTickCount";
+            this.LeftTickCount.Size = new System.Drawing.Size(35, 13);
+            this.LeftTickCount.TabIndex = 17;
+            this.LeftTickCount.Text = "label5";
             // 
-            // IgnoreStepFails
+            // RightTickCount
             // 
-            this.IgnoreStepFails.AutoSize = true;
-            this.IgnoreStepFails.Location = new System.Drawing.Point(139, 74);
-            this.IgnoreStepFails.Name = "IgnoreStepFails";
-            this.IgnoreStepFails.Size = new System.Drawing.Size(75, 17);
-            this.IgnoreStepFails.TabIndex = 18;
-            this.IgnoreStepFails.Text = "Ignore Fail";
-            this.IgnoreStepFails.UseVisualStyleBackColor = true;
+            this.RightTickCount.AutoSize = true;
+            this.RightTickCount.Location = new System.Drawing.Point(144, 121);
+            this.RightTickCount.Name = "RightTickCount";
+            this.RightTickCount.Size = new System.Drawing.Size(35, 13);
+            this.RightTickCount.TabIndex = 18;
+            this.RightTickCount.Text = "label5";
             // 
             // MainCnCForm
             // 
@@ -769,6 +791,8 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.CheckBox IgnoreStepFails;
         private System.Windows.Forms.CheckBox UseGoalDefaults;
+        private System.Windows.Forms.Label RightTickCount;
+        private System.Windows.Forms.Label LeftTickCount;
     }
 }
 

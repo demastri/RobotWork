@@ -1,7 +1,15 @@
-<Goal Name="Read Ranger" Parameters="COMPORT" DefaultValues="COM2">
+<Goal Name="Move Straight" Parameters="" DefaultValues="">
   <Step Name="Connect to Robot" Device="Platform" Instance="2" Command="Connect" Timeout="2000">
-    <Parameter Name="COMPORT"/>
+    <Parameter Name="COMPORT" Value="COM2"/>
   </Step>
 
-  <Step Name="Disconnect From Robot" Device="Platform" Instance="2" Command="Disconnect" Timeout="2000"/>
+  <Step Name="Read Tick Count" Device="Motors" Instance="1" Command="GetTicks" Timeout="2000"/>
+
+  <Step Name="Move ahead 50cm" Device="Motors" Instance="1" Command="MoveTo" Timeout="20000">
+    <Parameter Name="Direction" Value="Forward"/>
+    <Parameter Name="Target" Value="50"/>
+    <Parameter Name="Speed" Value="70"/>
+  </Step>
+  <Step Name="Read Tick Count" Device="Motors" Instance="1" Command="GetTicks" Timeout="2000"/>
+
 </Goal>

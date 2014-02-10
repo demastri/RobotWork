@@ -4,22 +4,40 @@
   </Step>
   <Step Name="Read Tick Count" Device="Motors" Instance="1" Command="GetTicks" Timeout="2000"/>
   <Step Name="Move Ahead" Device="Motors" Instance="1" Command="Go" Timeout="2000">
-    <Parameter Name="Direction" Value="Ahead"/>
-    <Parameter Name="Speed" Value="1000"/>
-    <Parameter Name="MidWaitTime"/>
+    <Parameter Name="Direction" Value="Forward"/>
+    <Parameter Name="Speed" Value="100"/>
   </Step>
   <Step Name="Wait" Device="Platform" Instance="1" Command="Delay" Timeout="2000">
     <Parameter Name="StepTime" Value="2000"/>
   </Step>
-  <Step Name="Move Ahead" Device="Motors" Instance="1" Command="Go" Timeout="2000">
-    <Parameter Name="Direction" Value="Back"/>
-    <Parameter Name="Speed" Value="1000"/>
-    <Parameter Name="MidWaitTime"/>
+  <Step Name="Stop" Device="Motors" Instance="1" Command="Stop" Timeout="2000"/>
+  <Step Name="Read Tick Count" Device="Motors" Instance="1" Command="GetTicks" Timeout="2000"/>
+  <Step Name="Wait" Device="Platform" Instance="1" Command="Delay" Timeout="2000">
+    <Parameter Name="StepTime" Value="2000"/>
+  </Step>
+  <Step Name="Move Back" Device="Motors" Instance="1" Command="Go" Timeout="2000">
+    <Parameter Name="Direction" Value="Backward"/>
+    <Parameter Name="Speed" Value="100"/>
   </Step>
   <Step Name="Wait" Device="Platform" Instance="1" Command="Delay" Timeout="2000">
     <Parameter Name="StepTime" Value="2000"/>
   </Step>
-  <Step Name="Disconnect From Robot" Device="Platform" Instance="2" Command="Disconnect" Timeout="2000">
-    <Parameter Name="ChildGoal"/>
+  <Step Name="Stop" Device="Motors" Instance="1" Command="Stop" Timeout="2000"/>
+  <Step Name="Read Tick Count" Device="Motors" Instance="1" Command="GetTicks" Timeout="2000"/>
+
+  <Step Name="Move ahead a 15cm" Device="Motors" Instance="1" Command="MoveTo" Timeout="20000">
+    <Parameter Name="Direction" Value="Forward"/>
+    <Parameter Name="Target" Value="15"/>
+    <Parameter Name="Speed" Value="70"/>
   </Step>
+  <Step Name="Read Tick Count" Device="Motors" Instance="1" Command="GetTicks" Timeout="2000"/>
+  <Step Name="Move back 15cm" Device="Motors" Instance="1" Command="MoveTo" Timeout="20000">
+    <Parameter Name="Direction" Value="Backward"/>
+    <Parameter Name="Target" Value="15"/>
+    <Parameter Name="Speed" Value="70"/>
+  </Step>
+
+
+
+  <Step Name="Disconnect From Robot" Device="Platform" Instance="2" Command="Disconnect" Timeout="2000"/>
 </Goal>

@@ -21,6 +21,7 @@ public:
 	void setup(int thisID, gCommandRouter *router, int leftEncoderPin, int rightEncoderPin );
 	CMD_METHOD_DEFINE(processCommand);
 	CMD_METHOD_DEFINE(calculateSpeeds);
+	CMD_METHOD_DEFINE(checkEncoderTarget);
 
 private:
 	gCommandRouter *pRouter;
@@ -30,17 +31,18 @@ private:
 	int currentSpeed;
 
 	const static int maxMotors = 4;
-	gMotor *(myMotors[4]);
+	static gMotor *(myMotors[4]);
 	void setSpeed( int thisSpeed, int motorID);
 	void setSpeeds( int thisSpeed );
 	void setDirection(int thisDir, int motorID);
 	void setDirections( int thisDir );
 	void start(int motorID);
 	void startAll();
-	void stop(int motorID);
-	void stopAll();
+	static void stop(int motorID);
+	static void stopAll();
 	
 	uint8_t rtnSpdBfr[9];
+	uint8_t rtnClkBfr[11];
 	double mmsPerClick;  // 204mm/rev (65mm dia), 10 blades = 20 int = 10.2 mm/click
 
 	static volatile unsigned long leftTotalClicks;
@@ -50,6 +52,12 @@ private:
 	long instSpeedUpdateTime;
 	double leftInstantaneousSpeed;
 	double rightInstantaneousSpeed;
+	static bool encoderTargetsSet;
+	static bool encoderTargetsMet;
+	gCommandObject *leftTargetCmd;
+	gCommandObject *rightTargetCmd;
+	static long leftTarget;
+	static long rightTarget;
 	static volatile long leftAggregateClicks;
 	static volatile long rightAggregateClicks;
 	volatile long leftLastAggregateClicks;

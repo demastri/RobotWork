@@ -18,12 +18,17 @@ extern bool itsCrayCray;
 #include "gComms.h"
 extern gComms gMonitor;
 
+bool gMotorControl::encoderTargetsSet = false;
+bool gMotorControl::encoderTargetsMet = false;
+long gMotorControl::leftTarget = -1;
+long gMotorControl::rightTarget = -1;
 volatile unsigned long gMotorControl::leftTotalClicks = 0;
 volatile unsigned long gMotorControl::rightTotalClicks = 0;
 volatile long gMotorControl::leftAggregateClicks = 0;
 volatile long gMotorControl::rightAggregateClicks = 0;
 int gMotorControl::leftDir = 0;
 int gMotorControl::rightDir = 0;
+gMotor *(gMotorControl::myMotors[4]);
 
 gMotorControl::gMotorControl() {
 	// TODO Auto-generated constructor stub
@@ -34,6 +39,8 @@ gMotorControl::gMotorControl() {
 	leftLastAggregateClicks=rightLastAggregateClicks=0;
 	lastSpeedCalcTime=0;
 	leftDir=rightDir=FORWARD;
+
+	leftTargetCmd = rightTargetCmd = 0;
 }
 
 void gMotorControl::setup(int thisID, gCommandRouter *router, int leftEncoderPin, int rightEncoderPin ) {
@@ -69,6 +76,7 @@ gMotorControl::~gMotorControl() {
 }
 
 CMD_METHOD_IMPLEMENT(gMotorControl,processCommand) {
+	gCommandRouter &router = *pRouter;
 	int outLeft;
 	int outRight;
 	switch( cmdObj->commandID ) {
@@ -102,8 +110,8 @@ CMD_METHOD_IMPLEMENT(gMotorControl,processCommand) {
 		if( cmdObj->parameter > 0 ) { // embed everything into one command
 			// 6 characters
 			//  3 chars for motor control
-				// first is 1-fwd,2-back,3-left,4-right, 5-stop
-				// next 2 are 1 bit for each motor, bit 0 => motor 1..bit 3 => motor 4
+			// first is 1-fwd,2-back,3-left,4-right, 5-stop
+			// next 2 are 1 bit for each motor, bit 0 => motor 1..bit 3 => motor 4
 			//  3 for speed - 0-255
 			int paramDir = cmdObj->parameter / 100000;
 			int paramMask = (cmdObj->parameter / 1000) % 100;
@@ -138,11 +146,67 @@ CMD_METHOD_IMPLEMENT(gMotorControl,processCommand) {
 		gCommandObject::PlaceInStrBfr( rtnSpdBfr, "\0",  1, 8 );
 		ROUTE_REPLY(GLOBAL_COMMAND_STATUS_OK,8,rtnSpdBfr);
 		break;
-	case COMMAND_ID_MOTORCONTROL_PULL_LOCATION:
+	case COMMAND_ID_MOTORCONTROL_GET_ENCODER:
+		gCommandObject::PlaceInStrBfr( rtnClkBfr, leftAggregateClicks,  5, 0 );
+		gCommandObject::PlaceInStrBfr( rtnClkBfr, rightAggregateClicks,  5, 5 );
+		gCommandObject::PlaceInStrBfr( rtnClkBfr, "\0",  1, 10 );
+		ROUTE_REPLY(GLOBAL_COMMAND_STATUS_OK,10,rtnClkBfr);
+		break;
+	case COMMAND_ID_MOTORCONTROL_SET_LEFT_TARGET:
+		leftTarget = cmdObj->parameter;
+		if( leftTargetCmd )
+			delete leftTargetCmd;
+		leftTargetCmd = new gCommandObject( cmdObj );
+		if( !encoderTargetsSet ) {
+			encoderTargetsSet = true;
+			CMD_METHOD_REGISTER_TIMER(gMotorControl,COMMAND_ID_MOTORCONTROL_CHECK_TARGETS,checkEncoderTarget,200);
+		}
+		encoderTargetsMet = false;
 		ROUTE_REPLY(GLOBAL_COMMAND_STATUS_OK,0,0);
 		break;
+	case COMMAND_ID_MOTORCONTROL_SET_RIGHT_TARGET:
+		rightTarget = cmdObj->parameter;
+		if( rightTargetCmd )
+			delete rightTargetCmd;
+		rightTargetCmd = new gCommandObject( cmdObj );
+		if( !encoderTargetsSet ) {
+			encoderTargetsSet = true;
+			CMD_METHOD_REGISTER_TIMER(gMotorControl,COMMAND_ID_MOTORCONTROL_CHECK_TARGETS,checkEncoderTarget,200);
+		}
+		encoderTargetsMet = false;
+		ROUTE_REPLY(GLOBAL_COMMAND_STATUS_OK,0,0);
+		break;
+	case COMMAND_ID_MOTORCONTROL_CLEAR_TARGETS:
+		encoderTargetsSet = false;
+		break;
+
 	}
 }
+
+CMD_METHOD_IMPLEMENT(gMotorControl, checkEncoderTarget) {
+	gCommandRouter &router = *pRouter;
+	if( encoderTargetsMet ) {
+		encoderTargetsSet = false;
+		encoderTargetsMet = false;
+		CMD_METHOD_DEREGISTER_TIMER(COMMAND_ID_MOTORCONTROL_CHECK_TARGETS,200);
+		if( leftTargetCmd )
+		{
+			stopAll();
+			gCommandObject *cmdObj = leftTargetCmd;
+			cmdObj->commandID = COMMAND_ID_MOTORCONTROL_TARGET_REACHED;
+			ROUTE_REPLY(GLOBAL_COMMAND_STATUS_OK,0,0);
+		}
+		else if( rightTargetCmd )
+		{
+			stopAll();
+			gCommandObject *cmdObj = rightTargetCmd;
+			cmdObj->commandID = COMMAND_ID_MOTORCONTROL_TARGET_REACHED;
+			ROUTE_REPLY(GLOBAL_COMMAND_STATUS_OK,0,0);
+		}
+		// else noone was asking...
+	}
+}
+
 
 void gMotorControl::setSpeeds(int thisSpeed) {
 	currentSpeed = thisSpeed;
@@ -188,12 +252,18 @@ void gMotorControl::updateLeft()
 {
 	leftTotalClicks++;
 	leftAggregateClicks += (leftDir==FORWARD ? 1 : -1);
+	if( encoderTargetsSet && ((leftDir==FORWARD && leftAggregateClicks >= leftTarget) || (leftDir==BACKWARD && leftAggregateClicks <= leftTarget)) ) {
+		encoderTargetsMet = true;
+	}
 }
 
 void gMotorControl::updateRight()
 {
 	rightTotalClicks++;
 	rightAggregateClicks += (rightDir==FORWARD ? 1 : -1);
+	if( encoderTargetsSet && ((rightDir==FORWARD && rightAggregateClicks >= rightTarget) || (rightDir==BACKWARD && rightAggregateClicks <= rightTarget)) ) {
+		encoderTargetsMet = true;
+	}
 }
 CMD_METHOD_IMPLEMENT(gMotorControl,calculateSpeeds) {
 	unsigned long now = millis();

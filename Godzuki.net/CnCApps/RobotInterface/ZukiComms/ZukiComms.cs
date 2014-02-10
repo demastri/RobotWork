@@ -118,17 +118,23 @@ namespace Godzuki
                 int cmdEnd = r.localBfr.IndexOfAny(new char[] { '#', '\n' },  (cmdStart < 0 ? 0 : cmdStart) );
                 if (cmdEnd >= 0 )
                 {
-                    if (cmdStart < 0 )  // spin it off for display anyway...
-                        if( !displayOnlyCommandObjects )
-                            r.curData.Add(r.localBfr);
-                    if (cmdStart >= 0)
+                    //displayOnlyCommandObjects             f = display anything that comes through, t = display only valid command objects !& -> #\n
+                    //displayOnlyResponseStrings            if above is f, doesn't matter, if t, then only display response objects  & -> #
+                    if (!displayOnlyCommandObjects)
                     {
-                        if (!displayOnlyCommandObjects)
-                            r.curData.Add(r.localBfr.Substring(0, cmdStart));
-                        if( !displayOnlyResponseStrings || r.localBfr[cmdStart] == '&' )
-                            r.curData.Add(r.localBfr.Substring(cmdStart, (cmdEnd - cmdStart) + 1) );
+                        if (cmdStart >= 0)
+                        {
+                            if (cmdStart > 0)
+                                r.curData.Add(r.localBfr.Substring(0, cmdStart));
+                            r.curData.Add(r.localBfr.Substring(cmdStart, (cmdEnd - cmdStart) + 1));
+                        }
+                        else
+                            r.curData.Add(r.localBfr);
                     }
-
+                    else
+                        if(cmdStart >= 0 && (!displayOnlyResponseStrings || r.localBfr[cmdStart] == '&'))
+                            r.curData.Add(r.localBfr.Substring(cmdStart, (cmdEnd - cmdStart) + 1));
+                
                     if( cmdEnd+1 == r.localBfr.Length )
                         r.localBfr = "";
                     else

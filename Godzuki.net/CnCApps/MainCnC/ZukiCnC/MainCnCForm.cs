@@ -27,8 +27,12 @@ namespace ZukiCnC
         int currentGoalIndex = -1;
         bool currentGoalStepMet;
         DateTime currentStepTimeout = DateTime.MinValue;
-        Dictionary<string, string> goalParamTokens;
+        Dictionary<string, string> goalParamDefaultTokens;
         string currentGoalCommand = "";
+
+        long currentLeftEncoderPosition = 0;
+        long currentRightEncoderPosition = 0;
+
         #endregion
 
         #region initialization
@@ -81,6 +85,7 @@ namespace ZukiCnC
                 Godzuki.gCommandObject cmdObj = Godzuki.gCommandObject.FromString(gz.curData[0]);
                 if (cmdObj != null)
                 {
+                    //LogText("{{ " + gz.curData[0]);
                     if (cmdObj.isReply)
                     {
                         UpdateGoalState(cmdObj);
@@ -100,17 +105,18 @@ namespace ZukiCnC
                                 break;  // ok, got it
                             }
                         }
-                        if (thisKey != DateTime.MinValue)
+                        if (openCmd == null || thisKey != DateTime.MinValue)
                         {
                             LogText("<< " + gz.curData[0]);
-                            openCommands.Remove(thisKey);
+                            if( openCmd != null )
+                                openCommands.Remove(thisKey);
                             if (cmdObj.rtnStatus != Godzuki.ZukiCommands.GLOBAL_COMMAND_STATUS_OK)
                             {
                                 string outString = cmdObj.rtnStatus.ToString();
                                 if (cmdObj.payloadSize > 0) // ok - we got a status message as well;
                                     outString += " " + new string(cmdObj.payloadData);
                                 MessageLoopTimer.Stop();
-                                MessageBox.Show("Command " + openCmd.ToString() + " failed with status code <" + outString + ">");
+                                MessageBox.Show("Command reply " + cmdObj.ToString() + " shows failed with status code <" + outString + ">");
                                 MessageLoopTimer.Start();
                             }
                             else
@@ -161,11 +167,30 @@ namespace ZukiCnC
                                                 LeftMotorSpeed.Text = new string(cmdObj.payloadData).Substring(0, 4) + " mm/s";
                                                 RightMotorSpeed.Text = new string(cmdObj.payloadData).Substring(4, 4) + " mm/s";
                                                 break;
+                                            case Godzuki.ZukiCommands.COMMAND_ID_MOTORCONTROL_GET_ENCODER:
+                                                LogText("ACK for GetTicks");
+                                                currentLeftEncoderPosition = Convert.ToInt32(new string(cmdObj.payloadData).Substring(0, 5));
+                                                currentRightEncoderPosition = Convert.ToInt32(new string(cmdObj.payloadData).Substring(5, 5));
+                                                LeftTickCount.Text = currentLeftEncoderPosition.ToString() + " tix";
+                                                RightTickCount.Text = currentRightEncoderPosition.ToString() + " tix";
+                                                if (currentGoalCommand == "Motors/GetTicks")
+                                                    currentGoalStepMet = true;
+                                                break;
+                                            case Godzuki.ZukiCommands.COMMAND_ID_MOTORCONTROL_TARGET_REACHED:
+                                                LogText("ACK for Reached Position Target");
+                                                if (currentGoalCommand == "Motors/MoveTo")
+                                                    currentGoalStepMet = true;
+                                                break;
+                                            case Godzuki.ZukiCommands.COMMAND_ID_MOTORCONTROL_START:
+                                                LogText("ACK for Go/Stop");
+                                                if (currentGoalCommand == "Motors/Go" || currentGoalCommand == "Motors/Stop" )
+                                                    currentGoalStepMet = true;
+                                                break;
                                         }
                                         break;
                                     default:
                                         // don't have to do anything, just consume the ack...
-                                        LogText("ACK for " + openCmd.ToString());  // issue read command
+                                        LogText("Unexpected ACK reply " + cmdObj.ToString());  // issue read command
                                         //LogText("don't quite know how to handle this response");
                                         break;
                                 }
@@ -192,16 +217,32 @@ namespace ZukiCnC
                     MessageLoopTimer.Start();
                     break;
                 }
-            if (isConnected && (++tickCount % 4) == 3)
+            if (isConnected && (++tickCount % 6) == 3)
             {
-                Godzuki.gCommandObject newCmdObj = new Godzuki.gCommandObject(
-                    Godzuki.ZukiCommands.CNC_APP_DEVICE_ID, 1,
-                    Godzuki.ZukiCommands.MOTOR_CONTROL_DEVICE_ID, 1,
-                    Godzuki.ZukiCommands.COMMAND_ID_MOTORCONTROL_PULL_SPEEDS);
+                Godzuki.gCommandObject newCmdObj = null;
+                if (false)
+                {
+                    newCmdObj = new Godzuki.gCommandObject(
+                        Godzuki.ZukiCommands.CNC_APP_DEVICE_ID, 1,
+                        Godzuki.ZukiCommands.MOTOR_CONTROL_DEVICE_ID, 1,
+                        Godzuki.ZukiCommands.COMMAND_ID_MOTORCONTROL_PULL_SPEEDS);
 
-                // stringification is back into the comms object
-                if (gz.PostCommand(newCmdObj))
-                    openCommands.Add(DateTime.Now.Add(new TimeSpan(0, 0, 2)), newCmdObj);
+                    // stringification is back into the comms object
+                    if (gz.PostCommand(newCmdObj))
+                        openCommands.Add(DateTime.Now.Add(new TimeSpan(0, 0, 2)), newCmdObj);
+                }
+
+                if (false)
+                {
+                    newCmdObj = new Godzuki.gCommandObject(
+                        Godzuki.ZukiCommands.CNC_APP_DEVICE_ID, 1,
+                        Godzuki.ZukiCommands.MOTOR_CONTROL_DEVICE_ID, 1,
+                        Godzuki.ZukiCommands.COMMAND_ID_MOTORCONTROL_GET_ENCODER);
+
+                    // stringification is back into the comms object
+                    if (gz.PostCommand(newCmdObj))
+                        openCommands.Add(DateTime.Now.Add(new TimeSpan(0, 0, 2,1)), newCmdObj);
+                }
             }
             // and, finally, manage goal state here
             ManageGoalState();
@@ -341,15 +382,19 @@ namespace ZukiCnC
         #region motor commands
         private void SendMotorCommand(int cmd, int speed)
         {
+            SendMotorCommand(cmd, speed, -1);
+        }
+        private void SendMotorCommand(int cmd, int speed, int motorOverride)
+        {
             // read the motor select checks
             int motorMask = 0;
-            if (motorCheckFL.Checked)
+            if ((motorOverride >= 0 && (motorOverride & 1) > 0) || (motorOverride < 0 && motorCheckFL.Checked))
                 motorMask += Godzuki.ZukiCommands.COMMAND_CONST_MOTORCONTROL_MOTOR1;
-            if (motorCheckRL.Checked)
+            if ((motorOverride >= 0 && (motorOverride & 2) > 0) || (motorOverride < 0 && motorCheckRL.Checked))
                 motorMask += Godzuki.ZukiCommands.COMMAND_CONST_MOTORCONTROL_MOTOR2;
-            if (motorCheckFR.Checked)
+            if ((motorOverride >= 0 && (motorOverride & 4) > 0) || (motorOverride < 0 && motorCheckFR.Checked))
                 motorMask += Godzuki.ZukiCommands.COMMAND_CONST_MOTORCONTROL_MOTOR4;
-            if (motorCheckRR.Checked)
+            if ((motorOverride >= 0 && (motorOverride & 8) > 0) || (motorOverride < 0 && motorCheckRR.Checked))
                 motorMask += Godzuki.ZukiCommands.COMMAND_CONST_MOTORCONTROL_MOTOR3;
             // build the right command 
             long parameter = cmd * 100000 + (motorMask * 1000) + speed;
@@ -406,6 +451,15 @@ namespace ZukiCnC
                 openCommands.Add(DateTime.Now.Add(new TimeSpan(0, 0, 5, 2)), cmdObj);
 
         }
+        private void GetEncoderTicks()
+        {
+            Godzuki.gCommandObject cmdObj = new Godzuki.gCommandObject(
+            Godzuki.ZukiCommands.CNC_APP_DEVICE_ID, 1,
+            Godzuki.ZukiCommands.MOTOR_CONTROL_DEVICE_ID, 1,
+            Godzuki.ZukiCommands.COMMAND_ID_MOTORCONTROL_GET_ENCODER);
+            if (gz.PostCommand(cmdObj))
+                openCommands.Add(DateTime.Now.Add(new TimeSpan(0, 0, 5, 2)), cmdObj);
+        }
 
         #endregion
 
@@ -430,7 +484,7 @@ namespace ZukiCnC
 
             if (currentGoalNode.Name == "Goal") // check for scripting parameters, then mark as met
             {
-                InitGoalParamList();
+                InitDefaultGoalParamList();
                 allGoalNodes = goalDoc.SelectNodes("Goal/Step");
                 currentGoalIndex = -1;
                 currentGoalStepMet = true;
@@ -448,6 +502,8 @@ namespace ZukiCnC
                 {
                     LogText("Goal Completed");
                     currentGoalNode = null;
+                    currentGoalCommand = "";
+                    goalDoc = null;
                 }
             }
             else
@@ -461,6 +517,8 @@ namespace ZukiCnC
                     {
                         currentGoalNode = null;
                         currentGoalStepMet = false;
+                        currentGoalCommand = "";
+                        goalDoc = null;
                     }
                     else
                     {
@@ -482,12 +540,19 @@ namespace ZukiCnC
         private void ExecuteGoalStep()
         {
             string newStepName = currentGoalNode.Attributes["Name"].Value;
+            GoalCurrentStep.Text = "Running " + newStepName;
             LogText("Goal Step: " + newStepName);
             currentGoalStepMet = false;
             long timeoutMS = Convert.ToInt64(currentGoalNode.Attributes["Timeout"].Value);
             currentStepTimeout = DateTime.Now.AddMilliseconds(timeoutMS);
             List<long> param = new List<long>();
             currentGoalCommand = currentGoalNode.Attributes["Device"].Value + "/" + currentGoalNode.Attributes["Command"].Value;
+
+            int possDir = Godzuki.ZukiCommands.COMMAND_CONST_MOTORCONTROL_FORWARD;
+            long targetClicks = 0;
+            double mmsPerClick = 10.2;
+            Godzuki.gCommandObject cmdObj;
+
             switch (currentGoalCommand)
             {
                 case "Platform/Connect":  // first parameter is the COM port...
@@ -510,13 +575,54 @@ namespace ZukiCnC
                     }
                     break;
                 case "Platform/Delay":  // first parameter is the delay amount...
-                    currentStepTimeout = DateTime.Now.AddMilliseconds( getLongGoalParam(0) );
+                    currentStepTimeout = DateTime.Now.AddMilliseconds(getLongGoalParam(0));
                     break;
                 case "Platform/UpdateMap":
                     LogText("...ok - start mapping");
                     break;
                 case "Ranger/Read":
                     ReadRangerButton_Click(null, null);
+                    break;
+                case "Motors/GetTicks":
+                    GetEncoderTicks();
+                    break;
+                case "Motors/Go":
+                    SendMotorCommand(
+                        (getStringGoalParam(0) == "Backward" ? Godzuki.ZukiCommands.COMMAND_CONST_MOTORCONTROL_BACKWARD : Godzuki.ZukiCommands.COMMAND_CONST_MOTORCONTROL_FORWARD),
+                        Convert.ToInt32(getStringGoalParam(1)),
+                        Godzuki.ZukiCommands.COMMAND_CONST_MOTORCONTROL_MOTORS_ALL);
+                    break;
+                case "Motors/Stop":
+                    SendMotorCommand(Godzuki.ZukiCommands.COMMAND_CONST_MOTORCONTROL_STOP, 0, Godzuki.ZukiCommands.COMMAND_CONST_MOTORCONTROL_MOTORS_ALL);
+                    break;
+                case "Motors/MoveTo":
+                    // find targets
+                    LogText("Setting Left Encoder Target");
+                    possDir = (getStringGoalParam(0) == "Forward" ? 1 : -1);
+                    targetClicks = currentLeftEncoderPosition + possDir * (long)(getLongGoalParam(1) * 10.0 / mmsPerClick);
+                    // send targets
+                    cmdObj = new Godzuki.gCommandObject(
+                    Godzuki.ZukiCommands.CNC_APP_DEVICE_ID, 1,
+                    Godzuki.ZukiCommands.MOTOR_CONTROL_DEVICE_ID, 1,
+                    Godzuki.ZukiCommands.COMMAND_ID_MOTORCONTROL_SET_LEFT_TARGET, targetClicks);
+                    if (gz.PostCommand(cmdObj))
+                        openCommands.Add(DateTime.Now.Add(new TimeSpan(0, 0, 5, 1)), cmdObj);
+
+                    LogText("Setting Right Encoder Target");
+                    targetClicks = currentRightEncoderPosition + possDir * (long)(getLongGoalParam(1) * 10.0 / mmsPerClick);
+                    cmdObj = new Godzuki.gCommandObject(
+                    Godzuki.ZukiCommands.CNC_APP_DEVICE_ID, 1,
+                    Godzuki.ZukiCommands.MOTOR_CONTROL_DEVICE_ID, 1,
+                    Godzuki.ZukiCommands.COMMAND_ID_MOTORCONTROL_SET_RIGHT_TARGET, targetClicks);
+                    if (gz.PostCommand(cmdObj))
+                        openCommands.Add(DateTime.Now.Add(new TimeSpan(0, 0, 5, 1)), cmdObj);
+
+                    // go
+                    LogText("Moving to Target Position");
+                    SendMotorCommand(
+                        (getStringGoalParam(0) == "Backward" ? Godzuki.ZukiCommands.COMMAND_CONST_MOTORCONTROL_BACKWARD : Godzuki.ZukiCommands.COMMAND_CONST_MOTORCONTROL_FORWARD),
+                        Convert.ToInt32(getStringGoalParam(2)),
+                        Godzuki.ZukiCommands.COMMAND_CONST_MOTORCONTROL_MOTORS_ALL);
                     break;
                 default:
                     LogText("...no idea what this is...skipping");
@@ -528,7 +634,9 @@ namespace ZukiCnC
         {
             System.Xml.XmlNode thisParam = currentGoalNode.ChildNodes[index];
             string thisParamName = thisParam.Attributes["Name"].Value;
-            return goalParamTokens[thisParamName];
+            if (goalParamDefaultTokens.Keys.Contains(thisParamName))
+                return goalParamDefaultTokens[thisParamName];
+            return thisParam.Attributes["Value"].Value;
         }
         private long getLongGoalParam(int index)
         {
@@ -536,12 +644,12 @@ namespace ZukiCnC
         }
         private void UpdateGoalState(Godzuki.gCommandObject updObj)   // called for any rec'd reply objects
         {
-            if (goalDoc == null)
+            if (goalDoc == null || currentGoalNode == null)
                 return;
             // if this cmd obj satisfies the currentky open goal state, take an appropriate action
             if (currentGoalNode.Name == "Goal") // check for scripting parameters, then mark as met
             {
-                InitGoalParamList();
+                InitDefaultGoalParamList();
                 currentGoalStepMet = true;
             }
             else
@@ -552,8 +660,11 @@ namespace ZukiCnC
         }
         private void InitGoalParamList()
         {
+        }
+        private void InitDefaultGoalParamList()
+        {
             MessageLoopTimer.Stop();
-            goalParamTokens = new Dictionary<string, string>();
+            goalParamDefaultTokens = new Dictionary<string, string>();
             string s;
             List<string> paramNames = Tokenize(currentGoalNode.Attributes["Parameters"].Value, ",");
             List<string> paramValues = Tokenize(currentGoalNode.Attributes["DefaultValues"].Value, ",");
@@ -561,7 +672,7 @@ namespace ZukiCnC
             {
                 if (UseGoalDefaults.Checked)
                 {
-                    goalParamTokens.Add(paramNames[i], paramValues[i]);
+                    goalParamDefaultTokens.Add(paramNames[i], paramValues[i]);
                 }
                 else
                 {
@@ -571,11 +682,11 @@ namespace ZukiCnC
                     pc.ValueDisplay.Text = paramValues[i];
                     if (pc.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                     {
-                        goalParamTokens.Add(paramNames[i], pc.ValueDisplay.Text);
+                        goalParamDefaultTokens.Add(paramNames[i], pc.ValueDisplay.Text);
                     }
                     else
                     {
-                        goalParamTokens.Add(paramNames[i], paramValues[i]);
+                        goalParamDefaultTokens.Add(paramNames[i], paramValues[i]);
                     }
                 }
             }

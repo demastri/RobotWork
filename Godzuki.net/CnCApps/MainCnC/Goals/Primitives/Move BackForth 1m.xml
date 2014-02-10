@@ -1,0 +1,24 @@
+<Goal Name="move a meter" Parameters="" DefaultValues="">
+  <Step Name="Connect to Robot" Device="Platform" Instance="2" Command="Connect" Timeout="2000">
+    <Parameter Name="COMPORT" Value="COM2"/>
+  </Step>
+
+  <Step Name="Read Tick Count" Device="Motors" Instance="1" Command="GetTicks" Timeout="2000"/>
+  <Step Name="Move ahead a 1m" Device="Motors" Instance="1" Command="MoveTo" Timeout="20000">
+    <Parameter Name="Direction" Value="Forward"/>
+    <Parameter Name="Target" Value="100"/>
+    <Parameter Name="Speed" Value="70"/>
+  </Step>
+
+  <Step Name="Wait" Device="Platform" Instance="1" Command="Delay" Timeout="5000">
+    <Parameter Name="StepTime" Value="5000"/>
+  </Step>
+
+  <Step Name="Read Tick Count" Device="Motors" Instance="1" Command="GetTicks" Timeout="2000"/>
+  <Step Name="Move back 1m" Device="Motors" Instance="1" Command="MoveTo" Timeout="20000">
+    <Parameter Name="Direction" Value="Backward"/>
+    <Parameter Name="Target" Value="100"/>
+    <Parameter Name="Speed" Value="70"/>
+  </Step>
+
+</Goal>

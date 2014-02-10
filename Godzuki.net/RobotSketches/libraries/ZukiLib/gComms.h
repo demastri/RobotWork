@@ -46,6 +46,8 @@ private:
 	int instanceID;
 	void setupCommandListener( gCommandRouter &router );
 
+	void printToRadio( const uint8_t *s, size_t t );
+	void printToUSB( const uint8_t *s, size_t t );
 	void printToRadio( char *s );
 	void printlnToRadio( char *s );
 	void printToUSB( char *s );

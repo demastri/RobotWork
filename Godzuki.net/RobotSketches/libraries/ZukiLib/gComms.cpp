@@ -68,8 +68,10 @@ void gComms::BroadcastCommand( gCommandObject *cmdObj, int dest ) {
 	size_t outSize;
 	uint8_t *cmdString = cmdObj->ToCommandString( &outSize );
 
-	print( cmdString, outSize );
-//###
+	if( dest == 0 )
+		printToUSB( cmdString, outSize );
+	else if( dest == 1 )
+		printToRadio( cmdString, outSize );
 }
 
 gCommandObject *gComms::UnpackCommandString( char *s, int src ) {
@@ -104,9 +106,19 @@ CMD_METHOD_IMPLEMENT(gComms,processCommand) {
 void gComms::print( const uint8_t *s, size_t t ) {
 #ifndef WIN32
 	if( writeToRadio )
-		Serial1.write(s, t);
+		printToRadio( s, t );
 	else
-		Serial.write(s, t);
+		printToUSB( s, t );
+#endif
+}
+void gComms::printToRadio( const uint8_t *s, size_t t ) {
+#ifndef WIN32
+	Serial1.write(s, t);
+#endif
+}
+void gComms::printToUSB( const uint8_t *s, size_t t ) {
+#ifndef WIN32
+	Serial.write(s, t);
 #endif
 }
 
