@@ -65,36 +65,48 @@ gCommandObject *gCommandObject::InitReply( unsigned char status, long paySize, v
 	outObj->isReply = true; 
 	return outObj;
 }
-uint8_t cmdStrBfr[100];
+
+#define OUT_BFR_SIZE 100
+uint8_t cmdStrBfr[OUT_BFR_SIZE];
+int currentStartPointer = 0;
 uint8_t *gCommandObject::ToCommandString( size_t *t ) {
+	int startPoint=currentStartPointer;
 	//   !ssiimmxxyyzzzzzz#  - look in the evernote blog, but it's pretty self evident...
 	if( !isReply ) {
-		*t = 17;
-		PlaceInStrBfr( cmdStrBfr, "!",              1,  0 );
-		PlaceInStrBfr( cmdStrBfr, sourceDeviceID,   2,  1 );
-		PlaceInStrBfr( cmdStrBfr, sourceInstanceID, 2,  3 );
-		PlaceInStrBfr( cmdStrBfr, targetDeviceID,   2,  5 );
-		PlaceInStrBfr( cmdStrBfr, targetInstanceID, 2,  7 );
-		PlaceInStrBfr( cmdStrBfr, commandID,        2,  9 );
-		PlaceInStrBfr( cmdStrBfr, parameter,        6, 11 );
-		PlaceInStrBfr( cmdStrBfr, "#",              1, 17 );
-		PlaceInStrBfr( cmdStrBfr, "\0",             1, 18 );
+		if( currentStartPointer + 18 >=  OUT_BFR_SIZE )
+			startPoint = currentStartPointer = 0;
+		*t = 18;
+		PlaceInStrBfr( &(cmdStrBfr[currentStartPointer]), "!",              1, 0 );
+		PlaceInStrBfr( &(cmdStrBfr[currentStartPointer]), sourceDeviceID,   2, 1 );
+		PlaceInStrBfr( &(cmdStrBfr[currentStartPointer]), sourceInstanceID, 2, 3 );
+		PlaceInStrBfr( &(cmdStrBfr[currentStartPointer]), targetDeviceID,   2, 5 );
+		PlaceInStrBfr( &(cmdStrBfr[currentStartPointer]), targetInstanceID, 2, 7 );
+		PlaceInStrBfr( &(cmdStrBfr[currentStartPointer]), commandID,        2, 9 );
+		PlaceInStrBfr( &(cmdStrBfr[currentStartPointer]), parameter,        6, 11 );
+		PlaceInStrBfr( &(cmdStrBfr[currentStartPointer]), "#",              1, 17 );
+		PlaceInStrBfr( &(cmdStrBfr[currentStartPointer]), "\0",             1, 18 );
+		currentStartPointer += 18;
+		return( &(cmdStrBfr[startPoint]) );
 	} else { // &ssiimmxxyyccSSZZDDDDDDD# similar - repl param w/status, add size and data
+		if( currentStartPointer + 18+payloadSize >=  OUT_BFR_SIZE )
+			startPoint = currentStartPointer = 0;
 		*t = 17+payloadSize+1;
-		PlaceInStrBfr( cmdStrBfr, "&",              1,  0 );
-		PlaceInStrBfr( cmdStrBfr, sourceDeviceID,   2,  1 );
-		PlaceInStrBfr( cmdStrBfr, sourceInstanceID, 2,  3 );
-		PlaceInStrBfr( cmdStrBfr, targetDeviceID,   2,  5 );
-		PlaceInStrBfr( cmdStrBfr, targetInstanceID, 2,  7 );
-		PlaceInStrBfr( cmdStrBfr, commandID,        2,  9 );
-		PlaceInStrBfr( cmdStrBfr, rtnStatus,        2, 11 );
-		PlaceInStrBfr( cmdStrBfr, payloadSize,      4, 13 );
-		PlaceInStrBfr( cmdStrBfr, (char *)payloadData, payloadSize, 17 );
-		PlaceInStrBfr( cmdStrBfr, "#",              1, 17+payloadSize );
-		PlaceInStrBfr( cmdStrBfr, "\0",             1, 17+payloadSize+1 );
+		PlaceInStrBfr( &(cmdStrBfr[currentStartPointer]), "&",					1,				0 );
+		PlaceInStrBfr( &(cmdStrBfr[currentStartPointer]), sourceDeviceID,		2,				1 );
+		PlaceInStrBfr( &(cmdStrBfr[currentStartPointer]), sourceInstanceID,		2,				3 );
+		PlaceInStrBfr( &(cmdStrBfr[currentStartPointer]), targetDeviceID,		2,				5 );
+		PlaceInStrBfr( &(cmdStrBfr[currentStartPointer]), targetInstanceID,		2,				7 );
+		PlaceInStrBfr( &(cmdStrBfr[currentStartPointer]), commandID,				2,				9 );
+		PlaceInStrBfr( &(cmdStrBfr[currentStartPointer]), rtnStatus,				2,				11 );
+		PlaceInStrBfr( &(cmdStrBfr[currentStartPointer]), payloadSize,			4,				13 );
+		PlaceInStrBfr( &(cmdStrBfr[currentStartPointer]), (char *)payloadData,	payloadSize,	17 );
+		PlaceInStrBfr( &(cmdStrBfr[currentStartPointer]), "#",					1,				17+payloadSize );
+		PlaceInStrBfr( &(cmdStrBfr[currentStartPointer]), "\0",					1,				17+payloadSize+1 );
+		currentStartPointer += 18+payloadSize;
+		return( &(cmdStrBfr[startPoint]) );
 	}
 
-	return cmdStrBfr;
+	return 0;
 }
 void gCommandObject::PlaceInStrBfr( uint8_t *s, char *ss, int size, int loc ) {
 	for( int i=0; i<size; i++ )

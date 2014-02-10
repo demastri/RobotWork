@@ -67,6 +67,8 @@ void gMotorControl::setup(int thisID, gCommandRouter *router, int leftEncoderPin
 void gMotorControl::setupCommandListener( gCommandRouter &router ) {
 	CMD_METHOD_REGISTER_DEFAULT(gMotorControl, processCommand);
 	CMD_METHOD_REGISTER_TIMER(gMotorControl, COMMAND_ID_MOTORCONTROL_UPDATE_SPEEDS, calculateSpeeds, instSpeedUpdateTime);
+	CMD_METHOD_REGISTER_TIMER(gMotorControl, COMMAND_ID_MOTORCONTROL_GET_ENCODER, processCommand, instSpeedUpdateTime);
+	CMD_METHOD_REGISTER_TIMER(gMotorControl, COMMAND_ID_MOTORCONTROL_PULL_SPEEDS, processCommand, instSpeedUpdateTime);
 
 	pRouter = &router;
 }

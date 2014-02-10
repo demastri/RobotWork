@@ -212,6 +212,7 @@ namespace ZukiCnC
                 {
                     string cmd = openCommands[dt].ToString();
                     openCommands.Remove(dt);
+                    LogText("Command Timeout: " + cmd);
                     MessageLoopTimer.Stop();
                     MessageBox.Show("Command Timeout: " + cmd);
                     MessageLoopTimer.Start();
@@ -500,6 +501,7 @@ namespace ZukiCnC
                 }
                 else
                 {
+                    GoalCurrentStep.Text = "Goal Completed";
                     LogText("Goal Completed");
                     currentGoalNode = null;
                     currentGoalCommand = "";
@@ -513,6 +515,7 @@ namespace ZukiCnC
                 {
                     bool failthrough = IgnoreStepFails.Checked;
                     LogText("Goal Failed");
+                    GoalCurrentStep.Text = "Goal Failed!!";
                     if (!failthrough)
                     {
                         currentGoalNode = null;

@@ -78,6 +78,8 @@ namespace Godzuki
 
             if (serial != null && serial.IsOpen)
             {
+                if (cmdString.Length >= serial.WriteBufferSize - serial.BytesToWrite)
+                    curData.Add("Overflow Here!!");
                 serial.Write(cmdString);
                 return true;
             }
@@ -98,8 +100,8 @@ namespace Godzuki
                     object sender,
                     SerialDataReceivedEventArgs e)
         {
-            bool displayOnlyCommandObjects = true;
-            bool displayOnlyResponseStrings = true;
+            bool displayOnlyCommandObjects = false;
+            bool displayOnlyResponseStrings = false;
 
             SerialPort sp = (SerialPort)sender;
             string indata = sp.ReadExisting();

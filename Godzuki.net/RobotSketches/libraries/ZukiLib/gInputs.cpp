@@ -48,13 +48,21 @@ void gInputs::setup(int thisID, gCommandRouter *router ) {
 
 void gInputs::setupCommandListener( gCommandRouter &router ) {
 	CMD_METHOD_REGISTER_DEFAULT(gInputs, processCommand);
-	router.AddCommandHandler( GODZUKI_SENSOR_PLATFORM_DEVICE_ID, 1, this, -1,  (gInputs::processCommandProxy), -1 );
+	router.AddCommandHandler( GODZUKI_SENSOR_PLATFORM_DEVICE_ID, 1, this, COMMAND_ID_GLOBAL_REQUEST_STATUS,  (gInputs::processCommandProxy), -1 );
 	pRouter = &router;
 }
 CMD_METHOD_IMPLEMENT(gInputs,processCommand) {
 	switch( cmdObj->commandID ) {
 	case COMMAND_ID_GLOBAL_REQUEST_STATUS:
-		ROUTE_REPLY( GLOBAL_COMMAND_STATUS_OK, 0, 0 );
+		if( Serial1.bfrSize() == 64 ) {
+			ROUTE_REPLY( GLOBAL_COMMAND_STATUS_OK, 2, (void *)"64" );
+		}
+		else if( Serial1.bfrSize() == 256 ) {
+			ROUTE_REPLY( GLOBAL_COMMAND_STATUS_OK, 3, (void *)"256" );
+		}
+		else {
+			ROUTE_REPLY( GLOBAL_COMMAND_STATUS_OK, 2, (void *)"-1" );
+		}
 		break;
 	}
 }
@@ -176,8 +184,11 @@ int gInputs::ReadCommand(int &param) {
 					break;
 			}
 			serialCmd[cmdSize++] = '\0';
-			Serial1.print( "Remote Command String..." );
-			Serial1.println( serialCmd );
+			Serial1.print( "RCS" );
+			Serial1.print( serialCmd[05] );
+			Serial1.print( serialCmd[06] );
+			Serial1.print( serialCmd[9] );
+			Serial1.println( serialCmd[10] );
 			if( kbdKey == '#' ) {
 				pRouter->RouteCommand( gComms::UnpackCommandString(serialCmd, 1) );
 			}
