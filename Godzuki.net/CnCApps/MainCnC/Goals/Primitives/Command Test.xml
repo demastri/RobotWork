@@ -29,12 +29,14 @@
     <Parameter Name="Direction" Value="Forward"/>
     <Parameter Name="Target" Value="15"/>
     <Parameter Name="Speed" Value="70"/>
+    <Parameter Name="Reference" Value="Absolute"/>
   </Step>
   <Step Name="Read Tick Count" Device="Motors" Instance="1" Command="GetTicks" Timeout="2000"/>
   <Step Name="Move back 15cm" Device="Motors" Instance="1" Command="MoveTo" Timeout="20000">
     <Parameter Name="Direction" Value="Backward"/>
     <Parameter Name="Target" Value="15"/>
     <Parameter Name="Speed" Value="70"/>
+    <Parameter Name="Reference" Value="Absolute"/>
   </Step>
 
 

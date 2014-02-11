@@ -154,7 +154,7 @@ CMD_METHOD_IMPLEMENT(gMotorControl,processCommand) {
 		gCommandObject::PlaceInStrBfr( rtnClkBfr, "\0",  1, 10 );
 		ROUTE_REPLY(GLOBAL_COMMAND_STATUS_OK,10,rtnClkBfr);
 		break;
-	case COMMAND_ID_MOTORCONTROL_SET_LEFT_TARGET:
+	case COMMAND_ID_MOTORCONTROL_SET_LEFT_TARGET_ABS:
 		leftTarget = cmdObj->parameter;
 		if( leftTargetCmd )
 			delete leftTargetCmd;
@@ -166,8 +166,32 @@ CMD_METHOD_IMPLEMENT(gMotorControl,processCommand) {
 		encoderTargetsMet = false;
 		ROUTE_REPLY(GLOBAL_COMMAND_STATUS_OK,0,0);
 		break;
-	case COMMAND_ID_MOTORCONTROL_SET_RIGHT_TARGET:
+	case COMMAND_ID_MOTORCONTROL_SET_RIGHT_TARGET_ABS:
 		rightTarget = cmdObj->parameter;
+		if( rightTargetCmd )
+			delete rightTargetCmd;
+		rightTargetCmd = new gCommandObject( cmdObj );
+		if( !encoderTargetsSet ) {
+			encoderTargetsSet = true;
+			CMD_METHOD_REGISTER_TIMER(gMotorControl,COMMAND_ID_MOTORCONTROL_CHECK_TARGETS,checkEncoderTarget,200);
+		}
+		encoderTargetsMet = false;
+		ROUTE_REPLY(GLOBAL_COMMAND_STATUS_OK,0,0);
+		break;
+	case COMMAND_ID_MOTORCONTROL_SET_LEFT_TARGET_REL:
+		leftTarget = leftAggregateClicks + cmdObj->parameter;
+		if( leftTargetCmd )
+			delete leftTargetCmd;
+		leftTargetCmd = new gCommandObject( cmdObj );
+		if( !encoderTargetsSet ) {
+			encoderTargetsSet = true;
+			CMD_METHOD_REGISTER_TIMER(gMotorControl,COMMAND_ID_MOTORCONTROL_CHECK_TARGETS,checkEncoderTarget,200);
+		}
+		encoderTargetsMet = false;
+		ROUTE_REPLY(GLOBAL_COMMAND_STATUS_OK,0,0);
+		break;
+	case COMMAND_ID_MOTORCONTROL_SET_RIGHT_TARGET_REL:
+		rightTarget = rightAggregateClicks + cmdObj->parameter;
 		if( rightTargetCmd )
 			delete rightTargetCmd;
 		rightTargetCmd = new gCommandObject( cmdObj );

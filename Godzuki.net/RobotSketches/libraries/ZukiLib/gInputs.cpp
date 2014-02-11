@@ -2,6 +2,7 @@
 
 #undef USB_MONITOR_CMDS
 #undef RADIO_MONITOR_CMDS
+#undef REPORT_BFR_SIZE
 
 #include "gRoutingDeviceIDs.h"
 #include "gServoCommands.h"
@@ -54,6 +55,7 @@ void gInputs::setupCommandListener( gCommandRouter &router ) {
 CMD_METHOD_IMPLEMENT(gInputs,processCommand) {
 	switch( cmdObj->commandID ) {
 	case COMMAND_ID_GLOBAL_REQUEST_STATUS:
+#ifdef REPORT_BFR_SIZE
 		if( Serial1.bfrSize() == 64 ) {
 			ROUTE_REPLY( GLOBAL_COMMAND_STATUS_OK, 2, (void *)"64" );
 		}
@@ -63,6 +65,9 @@ CMD_METHOD_IMPLEMENT(gInputs,processCommand) {
 		else {
 			ROUTE_REPLY( GLOBAL_COMMAND_STATUS_OK, 2, (void *)"-1" );
 		}
+#else
+		ROUTE_REPLY( GLOBAL_COMMAND_STATUS_OK, 0, 0);
+#endif
 		break;
 	}
 }

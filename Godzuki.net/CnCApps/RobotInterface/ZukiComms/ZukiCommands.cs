@@ -55,11 +55,13 @@ namespace Godzuki
         public const int COMMAND_ID_MOTORCONTROL_PULL_SPEEDS    =  9;
         public const int COMMAND_ID_MOTORCONTROL_UPDATE_SPEEDS  = 10;
         public const int COMMAND_ID_MOTORCONTROL_GET_ENCODER    = 11;
-        public const int COMMAND_ID_MOTORCONTROL_SET_LEFT_TARGET    = 12;
-        public const int COMMAND_ID_MOTORCONTROL_SET_RIGHT_TARGET   = 13;
-        public const int COMMAND_ID_MOTORCONTROL_CLEAR_TARGETS = 14;
-        public const int COMMAND_ID_MOTORCONTROL_CHECK_TARGETS = 15;
-        public const int COMMAND_ID_MOTORCONTROL_TARGET_REACHED = 16;
+        public const int COMMAND_ID_MOTORCONTROL_SET_LEFT_TARGET_ABS        = 12;
+        public const int COMMAND_ID_MOTORCONTROL_SET_RIGHT_TARGET_ABS       = 13;
+        public const int COMMAND_ID_MOTORCONTROL_SET_LEFT_TARGET_REL        = 14;
+        public const int COMMAND_ID_MOTORCONTROL_SET_RIGHT_TARGET_REL       = 15;
+        public const int COMMAND_ID_MOTORCONTROL_CLEAR_TARGETS  = 16;
+        public const int COMMAND_ID_MOTORCONTROL_CHECK_TARGETS  = 17;
+        public const int COMMAND_ID_MOTORCONTROL_TARGET_REACHED = 18;
 
         public const int COMMAND_CONST_MOTORCONTROL_FORWARD     = 0x01;
         public const int COMMAND_CONST_MOTORCONTROL_BACKWARD    = 0x02;

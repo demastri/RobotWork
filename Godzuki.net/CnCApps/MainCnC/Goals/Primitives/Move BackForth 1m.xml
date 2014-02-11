@@ -8,6 +8,7 @@
     <Parameter Name="Direction" Value="Forward"/>
     <Parameter Name="Target" Value="100"/>
     <Parameter Name="Speed" Value="70"/>
+    <Parameter Name="Reference" Value="Relative"/>
   </Step>
 
   <Step Name="Wait" Device="Platform" Instance="1" Command="Delay" Timeout="5000">
@@ -19,6 +20,8 @@
     <Parameter Name="Direction" Value="Backward"/>
     <Parameter Name="Target" Value="100"/>
     <Parameter Name="Speed" Value="70"/>
+    <Parameter Name="Reference" Value="Relative"/>
+
   </Step>
 
 </Goal>
