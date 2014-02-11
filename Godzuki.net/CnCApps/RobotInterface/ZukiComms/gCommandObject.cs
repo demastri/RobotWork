@@ -54,7 +54,7 @@ namespace Godzuki
 
         public static gCommandObject FromString(string s)
         {
-            if (s.Length == 18 && s[0] == '!' && s[17] == '#')
+            if (s.Length == 20 && s[0] == '!' && s[19] == '#')
             {
                 gCommandObject possCmd = new gCommandObject();
                 possCmd.sourceDeviceID      = Convert.ToInt16( s.Substring(1,2) );
@@ -63,7 +63,7 @@ namespace Godzuki
                 possCmd.targetInstanceID    = Convert.ToInt16( s.Substring(7,2) );
                 possCmd.commandID           = Convert.ToInt16( s.Substring(9,2) );
                 possCmd.rtnStatus = 0;
-                possCmd.parameter = Convert.ToInt64(s.Substring(11, 6));
+                possCmd.parameter = Convert.ToInt64(s.Substring(11, 8));
                 possCmd.payloadSize = 0;
                 possCmd.payloadData = null;
                 possCmd.isReply = false;
@@ -115,7 +115,7 @@ namespace Godzuki
                     targetDeviceID.ToString("D2") +
                     targetInstanceID.ToString("D2") +
                     commandID.ToString("D2") +
-                    parameter.ToString("D6") +
+                    parameter.ToString("D8") +
                     "#";
             return "&" +
                 sourceDeviceID.ToString("D2") +

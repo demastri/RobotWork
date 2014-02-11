@@ -110,14 +110,19 @@ CMD_METHOD_IMPLEMENT(gMotorControl,processCommand) {
 		break;
 	case COMMAND_ID_MOTORCONTROL_START:
 		if( cmdObj->parameter > 0 ) { // embed everything into one command
-			// 6 characters
+			// 7 characters
+			//  1 character for linear or pwm speed
 			//  3 chars for motor control
 			// first is 1-fwd,2-back,3-left,4-right, 5-stop
 			// next 2 are 1 bit for each motor, bit 0 => motor 1..bit 3 => motor 4
 			//  3 for speed - 0-255
-			int paramDir = cmdObj->parameter / 100000;
+			int linear = cmdObj->parameter / 1000000;
+			int paramDir = (cmdObj->parameter / 100000) % 10;
 			int paramMask = (cmdObj->parameter / 1000) % 100;
-			int paramSpeed = cmdObj->parameter % 1000;
+			int paramSpeed = cmdObj->parameter % 1000;		// either 0-255 (linear==0) or 0-999 mm/s (linear==1)
+
+			int leftSpeed  = linear ? findActSpeed( paramSpeed, 0 ) : paramSpeed;
+			int rightSpeed = linear ? findActSpeed( paramSpeed, 1 ) : paramSpeed;
 
 			leftDir = ((paramDir == COMMAND_CONST_MOTORCONTROL_FORWARD || paramDir == COMMAND_CONST_MOTORCONTROL_TURNRIGHT) ? FORWARD : BACKWARD);
 			rightDir = ((paramDir == COMMAND_CONST_MOTORCONTROL_FORWARD || paramDir == COMMAND_CONST_MOTORCONTROL_TURNLEFT) ? FORWARD : BACKWARD);
@@ -128,7 +133,7 @@ CMD_METHOD_IMPLEMENT(gMotorControl,processCommand) {
 					(paramDir == COMMAND_CONST_MOTORCONTROL_TURNLEFT ? (i<2 ? BACKWARD : FORWARD) : (i<2 ? FORWARD : BACKWARD) )));
 				if( (paramMask & (1<<i)) ) {
 					setDirection( thisDir, i );
-					setSpeed( paramSpeed, i );
+					setSpeed( (i<2 ? leftSpeed : rightSpeed), i );
 					start( i );
 				}
 			}
@@ -205,6 +210,14 @@ CMD_METHOD_IMPLEMENT(gMotorControl,processCommand) {
 	case COMMAND_ID_MOTORCONTROL_CLEAR_TARGETS:
 		encoderTargetsSet = false;
 		break;
+	case COMMAND_ID_MOTORCONTROL_CLEAR_CALIBRATION:
+		clearSpeedVectors();
+		ROUTE_REPLY(GLOBAL_COMMAND_STATUS_OK,0,0);
+		break;
+	case COMMAND_ID_MOTORCONTROL_SET_CALIBRATION:
+		updateSpeedVectors(cmdObj->parameter);
+		ROUTE_REPLY(GLOBAL_COMMAND_STATUS_OK,0,0);
+		break;
 
 	}
 }
@@ -233,6 +246,57 @@ CMD_METHOD_IMPLEMENT(gMotorControl, checkEncoderTarget) {
 	}
 }
 
+int nbrCalSpeeds[2]		= { 0, 0 };
+int pwmSpeed[2][10]		= {{ 0,0,0,0,0,0,0,0,0,0 }, { 0,0,0,0,0,0,0,0,0,0 }};
+int linearSpeed[2][10]	= {{ 0,0,0,0,0,0,0,0,0,0 }, { 0,0,0,0,0,0,0,0,0,0 }};
+
+int gMotorControl::findActSpeed( int mmPerSec, int isLeft ) {
+	int outSpeed = 0;
+	int i;
+	for( i=0; i<nbrCalSpeeds[isLeft]; i++ )
+		if( linearSpeed[isLeft][i] > mmPerSec )
+			break;
+	if( i==0 ) // first entry's too big...
+	{
+		if( nbrCalSpeeds[isLeft] == 0 )
+			return 0;
+		outSpeed = (pwmSpeed[isLeft][i]*mmPerSec) / linearSpeed[isLeft][i];
+	}
+	else if( i == nbrCalSpeeds[isLeft] ) // last one's still too small...
+	{
+		if( i == 1 )// there's only one value...
+			outSpeed = pwmSpeed[isLeft][0] + ((pwmSpeed[isLeft][0]-0) * (mmPerSec - linearSpeed[isLeft][0])) / (linearSpeed[isLeft][0]-0);
+		else
+			outSpeed = pwmSpeed[isLeft][i-1] + ((pwmSpeed[isLeft][i-1]-pwmSpeed[isLeft][i-2]) * (mmPerSec - linearSpeed[isLeft][i-1])) / (linearSpeed[isLeft][i-1]-linearSpeed[isLeft][i-2]);
+		if( outSpeed > 255 )
+			outSpeed = 255;
+	} 
+	else 
+	{ // middle value...
+		outSpeed = pwmSpeed[isLeft][i-1] + ((pwmSpeed[isLeft][i]-pwmSpeed[isLeft][i-1]) * (mmPerSec - linearSpeed[isLeft][i-1])) / (linearSpeed[isLeft][i]-linearSpeed[isLeft][i-1]);
+	}
+	return outSpeed;
+}
+
+void gMotorControl::clearSpeedVectors() {
+	for( int i=0; i<2; i++ ) {
+		nbrCalSpeeds[i] = 0;
+		for( int j=0; j<10; j++ )
+			pwmSpeed[i][j] = linearSpeed[i][j] = 0;
+	}
+
+}
+void gMotorControl::updateSpeedVectors(long param) {
+	bool isNeg = ( param < 0 );
+	if( isNeg )
+		param = -param;
+	int isLeft = param / 10000000;
+	int thisPwmSpeed = (param / 1000) % 1000;	// 0-255
+	int thisActSpeed = param % 1000;	// mm/sec
+	pwmSpeed[isLeft][ nbrCalSpeeds[isLeft] ] = thisPwmSpeed;
+	linearSpeed[isLeft][ nbrCalSpeeds[isLeft] ] = thisActSpeed;
+	nbrCalSpeeds[isLeft]++;
+}
 
 void gMotorControl::setSpeeds(int thisSpeed) {
 	currentSpeed = thisSpeed;

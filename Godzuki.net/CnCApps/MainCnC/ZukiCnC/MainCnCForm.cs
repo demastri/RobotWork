@@ -14,6 +14,30 @@ namespace ZukiCnC
 {
     public partial class MainCnCForm : Form
     {
+        // open items
+        //  for CnC:
+        //   nested goals
+        //   allow marking of particular steps as ignore fail or to expect fail...
+        //*  extend incoming/outgoing command parameter to 8 wide
+        //*  add command to request motion at a particular linear speed
+        //*  add command for update_speeds - still need to distinguish l/r
+        //*  add command to explicitly clear calibration data
+        //  for vehicle:
+        //*  extend incoming/outgoing command parameter to 8 wide
+        //*  add handler for update_speeds
+        //*  add vector to store current calibration data
+        //*  add command to explicitly clear calibration data
+        //*  add handler for command to request motion at a particular speed
+        //*   include case where no calibration data is available
+
+        //  eventual test for all of this will be 
+        //   master script
+        //    call clear calib data (primitive)
+        //    request move at particular speed (fail - no data)
+        //    call calib (nested script)
+        //    call move back/forth at requested speed (nested script)
+        //   complete!
+
         #region variable initialization
         Dictionary<DateTime, Godzuki.gCommandObject> openCommands;
 
@@ -36,6 +60,8 @@ namespace ZukiCnC
         long markedRightEncoderPosition = 0;
         double markedLeftEncoderSpeed = 0.0;
         double markedRightEncoderSpeed = 0.0;
+        int openSpeedUpdates = 0;
+        long msForCalibration = 5000;
 
         double wheelDiamMM = 65.0;
         int clicksPerRev = 20;
@@ -191,12 +217,22 @@ namespace ZukiCnC
                                                 break;
                                             case Godzuki.ZukiCommands.COMMAND_ID_MOTORCONTROL_TARGET_REACHED:
                                                 LogText("ACK for Reached Position Target");
-                                                if (currentGoalCommand == "Motors/MoveTo")
+                                                if (currentGoalCommand == "Motors/MoveTo" || currentGoalCommand == "Motors/MoveTo@")
                                                     currentGoalStepMet = true;
                                                 break;
                                             case Godzuki.ZukiCommands.COMMAND_ID_MOTORCONTROL_START:
                                                 LogText("ACK for Go/Stop");
-                                                if (currentGoalCommand == "Motors/Go" || currentGoalCommand == "Motors/Stop" )
+                                                if (currentGoalCommand == "Motors/Go" || currentGoalCommand == "Motors/Go@" || currentGoalCommand == "Motors/Stop")
+                                                    currentGoalStepMet = true;
+                                                break;
+                                            case Godzuki.ZukiCommands.COMMAND_ID_MOTORCONTROL_CLEAR_CALIBRATION:
+                                                LogText("ACK for Clear Speed Vector");
+                                                if (currentGoalCommand == "Motors/UpdateSpeedVector" )
+                                                    currentGoalStepMet = true;
+                                                break;
+                                            case Godzuki.ZukiCommands.COMMAND_ID_MOTORCONTROL_SET_CALIBRATION:
+                                                LogText("ACK for Update Speed Vector");
+                                                if (currentGoalCommand == "Motors/UpdateSpeedVector" && --openSpeedUpdates <= 0 )
                                                     currentGoalStepMet = true;
                                                 break;
                                         }
@@ -400,8 +436,14 @@ namespace ZukiCnC
         }
         private void SendMotorCommand(int cmd, double speed, int motorOverride) // double -> cm/sec abs speed
         {
+            // cmd > 10 implies move at linear speed, provided as mm/s
+            SendMotorCommand(10+cmd, (int)(10*speed), motorOverride, Godzuki.ZukiCommands.COMMAND_ID_MOTORCONTROL_START);
         }
         private void SendMotorCommand(int cmd, int speed, int motorOverride)    // int -> 0-255 speed
+        {
+            SendMotorCommand(cmd, speed, motorOverride, Godzuki.ZukiCommands.COMMAND_ID_MOTORCONTROL_START);
+        }
+        private void SendMotorCommand(int cmd, int speed, int motorOverride, int actCnd)    // int -> 0-255 speed
         {
             // read the motor select checks
             int motorMask = 0;
@@ -578,6 +620,8 @@ namespace ZukiCnC
             bool absoluteTarget;
             string dir;
             int possSpeed;
+            double possDblSpeed;
+            long outParam;
 
             switch (currentGoalCommand)
             {
@@ -611,25 +655,6 @@ namespace ZukiCnC
                     markedRightEncoderPosition = currentRightEncoderPosition;
                     currentGoalStepMet = true;
                     break;
-                case "Platform/UpdateSpeedVector":
-                    markedLeftEncoderSpeed = (currentLeftEncoderPosition - markedLeftEncoderPosition) / 5.0 * mmsPerClick;
-                    markedRightEncoderSpeed = (currentRightEncoderPosition - markedRightEncoderPosition) / 5.0 * mmsPerClick;
-                    // ### send the current encoder actual speeds for this pwm rate to the vehicle
-                    // something like set encoder speed with "dddmmm"
-                    cmdObj = new Godzuki.gCommandObject(
-                    Godzuki.ZukiCommands.CNC_APP_DEVICE_ID, 1,
-                    Godzuki.ZukiCommands.MOTOR_CONTROL_DEVICE_ID, 1,
-                    Godzuki.ZukiCommands.COMMAND_ID_MOTORCONTROL_UPDATE_SPEEDS,  /*###*/(long)markedLeftEncoderSpeed);
-                    if (gz.PostCommand(cmdObj))
-                        openCommands.Add(DateTime.Now.Add(new TimeSpan(0, 0, 5, 2)), cmdObj);
-                    cmdObj = new Godzuki.gCommandObject(
-                    Godzuki.ZukiCommands.CNC_APP_DEVICE_ID, 1,
-                    Godzuki.ZukiCommands.MOTOR_CONTROL_DEVICE_ID, 1,
-                    Godzuki.ZukiCommands.COMMAND_ID_MOTORCONTROL_UPDATE_SPEEDS,  /*###*/(long)markedRightEncoderSpeed);
-                    if (gz.PostCommand(cmdObj))
-                        openCommands.Add(DateTime.Now.Add(new TimeSpan(0, 0, 5, 2)), cmdObj);
-                    openSpeedUpdates = 2;
-                    break;
 
                 case "Ranger/Read":
                     ReadRangerButton_Click(null, null);
@@ -641,6 +666,12 @@ namespace ZukiCnC
                     SendMotorCommand(
                         (getStringGoalParam(0) == "Backward" ? Godzuki.ZukiCommands.COMMAND_CONST_MOTORCONTROL_BACKWARD : Godzuki.ZukiCommands.COMMAND_CONST_MOTORCONTROL_FORWARD),
                         Convert.ToInt32(getStringGoalParam(1)),
+                        Godzuki.ZukiCommands.COMMAND_CONST_MOTORCONTROL_MOTORS_ALL);
+                    break;
+                case "Motors/Go@":
+                    SendMotorCommand(
+                        (getStringGoalParam(0) == "Backward" ? Godzuki.ZukiCommands.COMMAND_CONST_MOTORCONTROL_BACKWARD : Godzuki.ZukiCommands.COMMAND_CONST_MOTORCONTROL_FORWARD),
+                        getDoubleGoalParam(1),
                         Godzuki.ZukiCommands.COMMAND_CONST_MOTORCONTROL_MOTORS_ALL);
                     break;
                 case "Motors/Stop":
@@ -690,6 +721,79 @@ namespace ZukiCnC
                         possSpeed,
                         Godzuki.ZukiCommands.COMMAND_CONST_MOTORCONTROL_MOTORS_ALL);
                     break;
+                case "Motors/MoveTo@":
+                    dir = getStringGoalParam(0);
+                    absoluteTarget = (getStringGoalParam(3) == "Absolute");
+                    possDblSpeed = getDoubleGoalParam(2);
+                    if (dir == "Left" || dir == "Right") // it's a turn, param 1 is the degrees
+                    {
+                        thisDir = (dir == "Left" ? Godzuki.ZukiCommands.COMMAND_CONST_MOTORCONTROL_TURNLEFT : Godzuki.ZukiCommands.COMMAND_CONST_MOTORCONTROL_TURNRIGHT);
+                        possDir = (dir == "Left" ? -1 : 1);
+                        leftTargetClicks = (absoluteTarget ? currentLeftEncoderPosition : 0) + possDir * (long)(getLongGoalParam(1) / DegreesPerClick);
+                        rightTargetClicks = (absoluteTarget ? currentRightEncoderPosition : 0) + (-possDir) * (long)(getLongGoalParam(1) / DegreesPerClick);
+                    }
+                    else
+                    {
+                        thisDir = (dir == "Forward" ? Godzuki.ZukiCommands.COMMAND_CONST_MOTORCONTROL_FORWARD : Godzuki.ZukiCommands.COMMAND_CONST_MOTORCONTROL_BACKWARD);
+                        possDir = (dir == "Forward" ? 1 : -1);
+                        leftTargetClicks = (absoluteTarget ? currentLeftEncoderPosition : 0) + possDir * (long)(getLongGoalParam(1) * 10.0 / mmsPerClick);
+                        rightTargetClicks = (absoluteTarget ? currentRightEncoderPosition : 0) + possDir * (long)(getLongGoalParam(1) * 10.0 / mmsPerClick);
+                    }
+                    // find and send targets
+                    LogText("Setting Left Encoder Target");
+                    thisCmd = (absoluteTarget ? Godzuki.ZukiCommands.COMMAND_ID_MOTORCONTROL_SET_LEFT_TARGET_ABS : Godzuki.ZukiCommands.COMMAND_ID_MOTORCONTROL_SET_LEFT_TARGET_REL);
+                    cmdObj = new Godzuki.gCommandObject(
+                    Godzuki.ZukiCommands.CNC_APP_DEVICE_ID, 1,
+                    Godzuki.ZukiCommands.MOTOR_CONTROL_DEVICE_ID, 1,
+                    thisCmd, leftTargetClicks);
+                    if (gz.PostCommand(cmdObj))
+                        openCommands.Add(DateTime.Now.Add(new TimeSpan(0, 0, 5, 1)), cmdObj);
+
+                    LogText("Setting Right Encoder Target");
+                    thisCmd = (absoluteTarget ? Godzuki.ZukiCommands.COMMAND_ID_MOTORCONTROL_SET_RIGHT_TARGET_ABS : Godzuki.ZukiCommands.COMMAND_ID_MOTORCONTROL_SET_RIGHT_TARGET_REL);
+                    cmdObj = new Godzuki.gCommandObject(
+                    Godzuki.ZukiCommands.CNC_APP_DEVICE_ID, 1,
+                    Godzuki.ZukiCommands.MOTOR_CONTROL_DEVICE_ID, 1,
+                    thisCmd, rightTargetClicks);
+                    if (gz.PostCommand(cmdObj))
+                        openCommands.Add(DateTime.Now.Add(new TimeSpan(0, 0, 5, 2)), cmdObj);
+
+                    // go
+                    LogText("Moving to Target Position");
+                    SendMotorCommand(
+                        thisDir,
+                        possDblSpeed,
+                        Godzuki.ZukiCommands.COMMAND_CONST_MOTORCONTROL_MOTORS_ALL);
+                    break;
+                case "Motors/ClearSpeedVector":  
+                    cmdObj = new Godzuki.gCommandObject(
+                    Godzuki.ZukiCommands.CNC_APP_DEVICE_ID, 1,
+                    Godzuki.ZukiCommands.MOTOR_CONTROL_DEVICE_ID, 1,
+                    Godzuki.ZukiCommands.COMMAND_ID_MOTORCONTROL_CLEAR_CALIBRATION, -1);
+                    if (gz.PostCommand(cmdObj))
+                        openCommands.Add(DateTime.Now.Add(new TimeSpan(0, 0, 5, 2)), cmdObj);
+                    break;
+                case "Motors/UpdateSpeedVector":  
+                    markedLeftEncoderSpeed = ((currentLeftEncoderPosition - markedLeftEncoderPosition) / (msForCalibration/1000.0)) * mmsPerClick;
+                    markedRightEncoderSpeed = ((currentRightEncoderPosition - markedRightEncoderPosition) / (msForCalibration / 1000.0)) * mmsPerClick;
+                    // send the current encoder actual speeds for this pwm rate to the vehicle
+                    // something like set encoder speed with "dddmmm" - if I had +/-dddmmm, I'd be ok - really just 7 chars is ok rather than 6
+                    outParam = (getStringGoalParam(1) == "Forward" ? 1 : -1) * (1000000 * 1 + 1000 * getLongGoalParam(0) + (int)markedLeftEncoderSpeed);
+                    cmdObj = new Godzuki.gCommandObject(
+                    Godzuki.ZukiCommands.CNC_APP_DEVICE_ID, 1,
+                    Godzuki.ZukiCommands.MOTOR_CONTROL_DEVICE_ID, 1,
+                    Godzuki.ZukiCommands.COMMAND_ID_MOTORCONTROL_SET_CALIBRATION, outParam);
+                    if (gz.PostCommand(cmdObj))
+                        openCommands.Add(DateTime.Now.Add(new TimeSpan(0, 0, 5, 1)), cmdObj);
+                    outParam = (getStringGoalParam(1) == "Forward" ? 1 : -1) * (1000000 * 0 + 1000 * getLongGoalParam(0) + (int)markedRightEncoderSpeed);
+                    cmdObj = new Godzuki.gCommandObject(
+                    Godzuki.ZukiCommands.CNC_APP_DEVICE_ID, 1,
+                    Godzuki.ZukiCommands.MOTOR_CONTROL_DEVICE_ID, 1,
+                    Godzuki.ZukiCommands.COMMAND_ID_MOTORCONTROL_SET_CALIBRATION, outParam);
+                    if (gz.PostCommand(cmdObj))
+                        openCommands.Add(DateTime.Now.Add(new TimeSpan(0, 0, 5, 2)), cmdObj);
+                    openSpeedUpdates = 2;
+                    break;
                 default:
                     LogText("...no idea what this is...skipping");
                     currentGoalStepMet = true;
@@ -707,6 +811,10 @@ namespace ZukiCnC
         private long getLongGoalParam(int index)
         {
             return Convert.ToInt64(getStringGoalParam(index));
+        }
+        private double getDoubleGoalParam(int index)
+        {
+            return Convert.ToDouble(getStringGoalParam(index));
         }
         private void UpdateGoalState(Godzuki.gCommandObject updObj)   // called for any rec'd reply objects
         {

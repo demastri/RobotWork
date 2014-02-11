@@ -195,6 +195,7 @@ int gInputs::ReadCommand(int &param) {
 			Serial1.print( serialCmd[9] );
 			Serial1.println( serialCmd[10] );
 			if( kbdKey == '#' ) {
+				gMonitor.writeToRadio = 1;   // 1 = radio, 0 = usb
 				pRouter->RouteCommand( gComms::UnpackCommandString(serialCmd, 1) );
 			}
 			break;

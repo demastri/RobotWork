@@ -70,6 +70,9 @@ private:
 	static void updateLeft();
 	static void updateRight();
 
+	int findActSpeed( int mmPerSec, int isLeft );
+	void clearSpeedVectors();
+	void updateSpeedVectors(long param);
 };
 
 #endif /* GMOTORCONTROL_H_ */

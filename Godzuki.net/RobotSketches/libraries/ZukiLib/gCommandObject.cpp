@@ -73,7 +73,7 @@ uint8_t *gCommandObject::ToCommandString( size_t *t ) {
 	int startPoint=currentStartPointer;
 	//   !ssiimmxxyyzzzzzz#  - look in the evernote blog, but it's pretty self evident...
 	if( !isReply ) {
-		if( currentStartPointer + 18 >=  OUT_BFR_SIZE )
+		if( currentStartPointer + 20 >=  OUT_BFR_SIZE )
 			startPoint = currentStartPointer = 0;
 		*t = 18;
 		PlaceInStrBfr( &(cmdStrBfr[currentStartPointer]), "!",              1, 0 );
@@ -82,10 +82,10 @@ uint8_t *gCommandObject::ToCommandString( size_t *t ) {
 		PlaceInStrBfr( &(cmdStrBfr[currentStartPointer]), targetDeviceID,   2, 5 );
 		PlaceInStrBfr( &(cmdStrBfr[currentStartPointer]), targetInstanceID, 2, 7 );
 		PlaceInStrBfr( &(cmdStrBfr[currentStartPointer]), commandID,        2, 9 );
-		PlaceInStrBfr( &(cmdStrBfr[currentStartPointer]), parameter,        6, 11 );
-		PlaceInStrBfr( &(cmdStrBfr[currentStartPointer]), "#",              1, 17 );
-		PlaceInStrBfr( &(cmdStrBfr[currentStartPointer]), "\0",             1, 18 );
-		currentStartPointer += 18;
+		PlaceInStrBfr( &(cmdStrBfr[currentStartPointer]), parameter,        8, 11 );
+		PlaceInStrBfr( &(cmdStrBfr[currentStartPointer]), "#",              1, 19 );
+		PlaceInStrBfr( &(cmdStrBfr[currentStartPointer]), "\0",             1, 20 );
+		currentStartPointer += 20;
 		return( &(cmdStrBfr[startPoint]) );
 	} else { // &ssiimmxxyyccSSZZDDDDDDD# similar - repl param w/status, add size and data
 		if( currentStartPointer + 18+payloadSize >=  OUT_BFR_SIZE )

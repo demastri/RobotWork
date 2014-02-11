@@ -81,11 +81,11 @@ gCommandObject *gComms::UnpackCommandString( char *s, int src ) {
 	cmdObj->targetDeviceID		= (s[5]-'0')*10 + (s[6]-'0');
 	cmdObj->targetInstanceID	= (s[7]-'0')*10 + (s[8]-'0');
 	cmdObj->commandID			= (s[9]-'0')*10 + (s[10]-'0');
-	cmdObj->parameter			= (s[12]-'0')*10000 + (s[13]-'0')*1000 +(s[14]-'0')*100 + (s[15]-'0')*10 +(s[16]-'0');
+	cmdObj->parameter			= (s[12]-'0')*1000000 + (s[13]-'0')*100000 +(s[14]-'0')*10000 + (s[15]-'0')*1000 +(s[16]-'0')*100+(s[17]-'0')*10+(s[18]-'0');
 	if( s[11] == '-' )
 		cmdObj->parameter = -cmdObj->parameter;
 	else
-		cmdObj->parameter += (s[11]-'0')*100000;
+		cmdObj->parameter += (s[11]-'0')*10000000;
 	cmdObj->cmdSrc = src;
 
 	return cmdObj;
