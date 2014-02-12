@@ -30,6 +30,11 @@ int gMotorControl::leftDir = 0;
 int gMotorControl::rightDir = 0;
 gMotor *(gMotorControl::myMotors[4]);
 
+int nbrCalSpeeds[2]		= { 0, 0 };
+int pwmSpeed[2][10]		= {{ 0,0,0,0,0,0,0,0,0,0 }, { 0,0,0,0,0,0,0,0,0,0 }};
+int linearSpeed[2][10]	= {{ 0,0,0,0,0,0,0,0,0,0 }, { 0,0,0,0,0,0,0,0,0,0 }};
+uint8_t spdVecBfr[30];
+
 gMotorControl::gMotorControl() {
 	// TODO Auto-generated constructor stub
 	mmsPerClick = 10.2;
@@ -67,8 +72,8 @@ void gMotorControl::setup(int thisID, gCommandRouter *router, int leftEncoderPin
 void gMotorControl::setupCommandListener( gCommandRouter &router ) {
 	CMD_METHOD_REGISTER_DEFAULT(gMotorControl, processCommand);
 	CMD_METHOD_REGISTER_TIMER(gMotorControl, COMMAND_ID_MOTORCONTROL_UPDATE_SPEEDS, calculateSpeeds, instSpeedUpdateTime);
-	CMD_METHOD_REGISTER_TIMER(gMotorControl, COMMAND_ID_MOTORCONTROL_GET_ENCODER, processCommand, instSpeedUpdateTime);
-	CMD_METHOD_REGISTER_TIMER(gMotorControl, COMMAND_ID_MOTORCONTROL_PULL_SPEEDS, processCommand, instSpeedUpdateTime);
+	//CMD_METHOD_REGISTER_TIMER(gMotorControl, COMMAND_ID_MOTORCONTROL_GET_ENCODER, processCommand, 1980);
+	//CMD_METHOD_REGISTER_TIMER(gMotorControl, COMMAND_ID_MOTORCONTROL_PULL_SPEEDS, processCommand, 1520);
 
 	pRouter = &router;
 }
@@ -218,7 +223,10 @@ CMD_METHOD_IMPLEMENT(gMotorControl,processCommand) {
 		updateSpeedVectors(cmdObj->parameter);
 		ROUTE_REPLY(GLOBAL_COMMAND_STATUS_OK,0,0);
 		break;
-
+	case COMMAND_ID_MOTORCONTROL_CHECK_CALIBRATION :
+				int outSize=0;
+		uint8_t *outStr = showCalibData(&outSize, cmdObj->parameter/1000, cmdObj->parameter%1000);
+		ROUTE_REPLY(GLOBAL_COMMAND_STATUS_OK,outSize,outStr);
 	}
 }
 
@@ -245,10 +253,6 @@ CMD_METHOD_IMPLEMENT(gMotorControl, checkEncoderTarget) {
 		// else noone was asking...
 	}
 }
-
-int nbrCalSpeeds[2]		= { 0, 0 };
-int pwmSpeed[2][10]		= {{ 0,0,0,0,0,0,0,0,0,0 }, { 0,0,0,0,0,0,0,0,0,0 }};
-int linearSpeed[2][10]	= {{ 0,0,0,0,0,0,0,0,0,0 }, { 0,0,0,0,0,0,0,0,0,0 }};
 
 int gMotorControl::findActSpeed( int mmPerSec, int isLeft ) {
 	int outSpeed = 0;
@@ -290,12 +294,42 @@ void gMotorControl::updateSpeedVectors(long param) {
 	bool isNeg = ( param < 0 );
 	if( isNeg )
 		param = -param;
-	int isLeft = param / 10000000;
-	int thisPwmSpeed = (param / 1000) % 1000;	// 0-255
-	int thisActSpeed = param % 1000;	// mm/sec
-	pwmSpeed[isLeft][ nbrCalSpeeds[isLeft] ] = thisPwmSpeed;
-	linearSpeed[isLeft][ nbrCalSpeeds[isLeft] ] = thisActSpeed;
+	int isLeft = param / 1000000L;
+	int thisPwmSpeed = (param / 1000L) % 1000;	// 0-255
+	int thisActSpeed = param % 1000L;	// mm/sec
+	pwmSpeed[isLeft][ nbrCalSpeeds[isLeft] ] = (isNeg ? -1 : 1)*thisPwmSpeed;
+	linearSpeed[isLeft][ nbrCalSpeeds[isLeft] ] = (isNeg ? -1 : 1)*thisActSpeed;
 	nbrCalSpeeds[isLeft]++;
+
+	gMonitor.print(param);
+	gMonitor.print(".");
+	gMonitor.print(isLeft);
+	gMonitor.print(".");
+	gMonitor.print(thisPwmSpeed);
+	gMonitor.print(".");
+	gMonitor.print(thisActSpeed);
+}
+
+uint8_t *gMotorControl::showCalibData(int *outSize, int i, int j) {
+	if( i<0 || j<0 || i>2 || j >= nbrCalSpeeds[i] ) {
+		*outSize = 2;
+		gCommandObject::PlaceInStrBfr( spdVecBfr, "-1",  2, 0 );
+	} else {
+		*outSize = 0;
+		gCommandObject::PlaceInStrBfr( spdVecBfr, nbrCalSpeeds[i],  2, *outSize );
+		*outSize += 2;
+		gCommandObject::PlaceInStrBfr( spdVecBfr, (char *)(i==0?"<":"{"),  1, *outSize );
+		*outSize += 1;
+		gCommandObject::PlaceInStrBfr( spdVecBfr, pwmSpeed[i][j],  4, *outSize );
+		*outSize += 4;
+		gCommandObject::PlaceInStrBfr( spdVecBfr, ",",  1, *outSize );
+		*outSize += 1;
+		gCommandObject::PlaceInStrBfr( spdVecBfr, linearSpeed[i][j],  4, *outSize );
+		*outSize += 4;
+		gCommandObject::PlaceInStrBfr( spdVecBfr, (char *)(i==0?">":"}"),  1, *outSize );
+		*outSize += 1;
+	}
+	return spdVecBfr;
 }
 
 void gMotorControl::setSpeeds(int thisSpeed) {

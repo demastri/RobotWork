@@ -32,6 +32,7 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.sessionLog = new System.Windows.Forms.TextBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.CheckCalibrationButton = new System.Windows.Forms.Button();
             this.IgnoreStepFails = new System.Windows.Forms.CheckBox();
             this.UseGoalDefaults = new System.Windows.Forms.CheckBox();
             this.GoalCurrentStep = new System.Windows.Forms.TextBox();
@@ -45,6 +46,8 @@
             this.availablePorts = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
             this.MotorSelectGroup = new System.Windows.Forms.GroupBox();
+            this.RightTickCount = new System.Windows.Forms.Label();
+            this.LeftTickCount = new System.Windows.Forms.Label();
             this.RightMotorSpeed = new System.Windows.Forms.Label();
             this.GoButton = new System.Windows.Forms.Button();
             this.LeftMotorSpeed = new System.Windows.Forms.Label();
@@ -82,8 +85,8 @@
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.MessageLoopTimer = new System.Windows.Forms.Timer(this.components);
             this.ClearCmdLogButton = new System.Windows.Forms.Button();
-            this.LeftTickCount = new System.Windows.Forms.Label();
-            this.RightTickCount = new System.Windows.Forms.Label();
+            this.CalibLR = new System.Windows.Forms.ComboBox();
+            this.CalibIndex = new System.Windows.Forms.ComboBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.MotorSelectGroup.SuspendLayout();
@@ -123,6 +126,9 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.CalibIndex);
+            this.groupBox2.Controls.Add(this.CalibLR);
+            this.groupBox2.Controls.Add(this.CheckCalibrationButton);
             this.groupBox2.Controls.Add(this.IgnoreStepFails);
             this.groupBox2.Controls.Add(this.UseGoalDefaults);
             this.groupBox2.Controls.Add(this.GoalCurrentStep);
@@ -141,6 +147,16 @@
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Connection";
+            // 
+            // CheckCalibrationButton
+            // 
+            this.CheckCalibrationButton.Location = new System.Drawing.Point(6, 167);
+            this.CheckCalibrationButton.Name = "CheckCalibrationButton";
+            this.CheckCalibrationButton.Size = new System.Drawing.Size(64, 23);
+            this.CheckCalibrationButton.TabIndex = 19;
+            this.CheckCalibrationButton.Text = "Check Cal";
+            this.CheckCalibrationButton.UseVisualStyleBackColor = true;
+            this.CheckCalibrationButton.Click += new System.EventHandler(this.CheckCalibrationButton_Click);
             // 
             // IgnoreStepFails
             // 
@@ -286,6 +302,24 @@
             this.MotorSelectGroup.TabIndex = 2;
             this.MotorSelectGroup.TabStop = false;
             this.MotorSelectGroup.Text = "Motion Control";
+            // 
+            // RightTickCount
+            // 
+            this.RightTickCount.AutoSize = true;
+            this.RightTickCount.Location = new System.Drawing.Point(144, 121);
+            this.RightTickCount.Name = "RightTickCount";
+            this.RightTickCount.Size = new System.Drawing.Size(35, 13);
+            this.RightTickCount.TabIndex = 18;
+            this.RightTickCount.Text = "label5";
+            // 
+            // LeftTickCount
+            // 
+            this.LeftTickCount.AutoSize = true;
+            this.LeftTickCount.Location = new System.Drawing.Point(4, 121);
+            this.LeftTickCount.Name = "LeftTickCount";
+            this.LeftTickCount.Size = new System.Drawing.Size(35, 13);
+            this.LeftTickCount.TabIndex = 17;
+            this.LeftTickCount.Text = "label5";
             // 
             // RightMotorSpeed
             // 
@@ -683,23 +717,35 @@
             this.ClearCmdLogButton.UseVisualStyleBackColor = true;
             this.ClearCmdLogButton.Click += new System.EventHandler(this.ClearCmdLogButton_Click);
             // 
-            // LeftTickCount
+            // CalibLR
             // 
-            this.LeftTickCount.AutoSize = true;
-            this.LeftTickCount.Location = new System.Drawing.Point(4, 121);
-            this.LeftTickCount.Name = "LeftTickCount";
-            this.LeftTickCount.Size = new System.Drawing.Size(35, 13);
-            this.LeftTickCount.TabIndex = 17;
-            this.LeftTickCount.Text = "label5";
+            this.CalibLR.FormattingEnabled = true;
+            this.CalibLR.Items.AddRange(new object[] {
+            "0",
+            "1"});
+            this.CalibLR.Location = new System.Drawing.Point(8, 140);
+            this.CalibLR.Name = "CalibLR";
+            this.CalibLR.Size = new System.Drawing.Size(35, 21);
+            this.CalibLR.TabIndex = 20;
+            this.CalibLR.Text = "0";
             // 
-            // RightTickCount
+            // CalibIndex
             // 
-            this.RightTickCount.AutoSize = true;
-            this.RightTickCount.Location = new System.Drawing.Point(144, 121);
-            this.RightTickCount.Name = "RightTickCount";
-            this.RightTickCount.Size = new System.Drawing.Size(35, 13);
-            this.RightTickCount.TabIndex = 18;
-            this.RightTickCount.Text = "label5";
+            this.CalibIndex.FormattingEnabled = true;
+            this.CalibIndex.Items.AddRange(new object[] {
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7"});
+            this.CalibIndex.Location = new System.Drawing.Point(49, 140);
+            this.CalibIndex.Name = "CalibIndex";
+            this.CalibIndex.Size = new System.Drawing.Size(34, 21);
+            this.CalibIndex.TabIndex = 21;
+            this.CalibIndex.Text = "0";
             // 
             // MainCnCForm
             // 
@@ -793,6 +839,9 @@
         private System.Windows.Forms.CheckBox UseGoalDefaults;
         private System.Windows.Forms.Label RightTickCount;
         private System.Windows.Forms.Label LeftTickCount;
+        private System.Windows.Forms.Button CheckCalibrationButton;
+        private System.Windows.Forms.ComboBox CalibIndex;
+        private System.Windows.Forms.ComboBox CalibLR;
     }
 }
 

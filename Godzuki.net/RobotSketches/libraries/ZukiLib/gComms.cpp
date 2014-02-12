@@ -81,11 +81,11 @@ gCommandObject *gComms::UnpackCommandString( char *s, int src ) {
 	cmdObj->targetDeviceID		= (s[5]-'0')*10 + (s[6]-'0');
 	cmdObj->targetInstanceID	= (s[7]-'0')*10 + (s[8]-'0');
 	cmdObj->commandID			= (s[9]-'0')*10 + (s[10]-'0');
-	cmdObj->parameter			= (s[12]-'0')*1000000 + (s[13]-'0')*100000 +(s[14]-'0')*10000 + (s[15]-'0')*1000 +(s[16]-'0')*100+(s[17]-'0')*10+(s[18]-'0');
+	cmdObj->parameter			= (s[12]-'0')*1000000L + (s[13]-'0')*100000L +(s[14]-'0')*10000L + (s[15]-'0')*1000L +(s[16]-'0')*100L+(s[17]-'0')*10+(s[18]-'0');
 	if( s[11] == '-' )
 		cmdObj->parameter = -cmdObj->parameter;
 	else
-		cmdObj->parameter += (s[11]-'0')*10000000;
+		cmdObj->parameter += (s[11]-'0')*10000000L;
 	cmdObj->cmdSrc = src;
 
 	return cmdObj;
@@ -129,7 +129,7 @@ void gComms::print( char *s ) {
 		printToUSB( s );
 }
 
-void gComms::print( int i ) {
+void gComms::print( long i ) {
 	if( writeToRadio )
 		printToRadio( intToStr(i) );
 	else
@@ -142,7 +142,7 @@ void gComms::println( char *s ) {
 		printlnToUSB( s );
 }
 
-void gComms::println( int i ) {
+void gComms::println( long i ) {
 	if( writeToRadio )
 		printlnToRadio( intToStr(i) );
 	else
@@ -179,7 +179,7 @@ void gComms::printlnToUSB( char *s ) {
 	Serial.println(s);
 #endif
 }
-char *gComms::intToStr( int i ) {
+char *gComms::intToStr( long i ) {
 	bool isNeg = (i<0);
 	int nextChar=0;
 	if( isNeg )
@@ -187,7 +187,7 @@ char *gComms::intToStr( int i ) {
 	while( i > 0 ) {
 		int convChar = i % 10;
 		refString[nextChar++] = (convChar+'0');
-		i = i / 10;
+		i = i / 10L;
 	}
 	if( isNeg ) {
 		refString[nextChar++] = '-';

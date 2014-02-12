@@ -64,6 +64,7 @@ namespace Godzuki
         public const int COMMAND_ID_MOTORCONTROL_TARGET_REACHED = 18;
         public const int COMMAND_ID_MOTORCONTROL_CLEAR_CALIBRATION = 19;
         public const int COMMAND_ID_MOTORCONTROL_SET_CALIBRATION = 20;
+        public const int COMMAND_ID_MOTORCONTROL_CHECK_CALIBRATION = 21;
 
         public const int COMMAND_CONST_MOTORCONTROL_FORWARD     = 0x01;
         public const int COMMAND_CONST_MOTORCONTROL_BACKWARD    = 0x02;

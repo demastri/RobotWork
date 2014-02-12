@@ -115,7 +115,7 @@ namespace Godzuki
                     targetDeviceID.ToString("D2") +
                     targetInstanceID.ToString("D2") +
                     commandID.ToString("D2") +
-                    parameter.ToString("D8") +
+                    parameter.ToString(parameter < 0 ? "D7" :"D8") +
                     "#";
             return "&" +
                 sourceDeviceID.ToString("D2") +

@@ -34,10 +34,10 @@ public:
 	void print( const uint8_t *s, size_t t );
 	void print( char *s );
 	void println( char *s );
-	void print( int i );
-	void println( int i );
+	void print( long i );
+	void println( long i );
 
-	static char *intToStr( int i );
+	static char *intToStr( long i );
 	static char refString[20];
 	static unsigned int strlen( char *s ) { int i=0; while( *(s+i) != '\0') i++; return i; };
 

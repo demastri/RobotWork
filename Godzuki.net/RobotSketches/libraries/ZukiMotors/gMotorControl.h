@@ -73,6 +73,7 @@ private:
 	int findActSpeed( int mmPerSec, int isLeft );
 	void clearSpeedVectors();
 	void updateSpeedVectors(long param);
+	uint8_t *showCalibData(int *outSize, int i, int j);
 };
 
 #endif /* GMOTORCONTROL_H_ */

@@ -227,7 +227,7 @@ namespace ZukiCnC
                                                 break;
                                             case Godzuki.ZukiCommands.COMMAND_ID_MOTORCONTROL_CLEAR_CALIBRATION:
                                                 LogText("ACK for Clear Speed Vector");
-                                                if (currentGoalCommand == "Motors/UpdateSpeedVector" )
+                                                if (currentGoalCommand == "Motors/ClearSpeedVector" )
                                                     currentGoalStepMet = true;
                                                 break;
                                             case Godzuki.ZukiCommands.COMMAND_ID_MOTORCONTROL_SET_CALIBRATION:
@@ -773,25 +773,28 @@ namespace ZukiCnC
                     if (gz.PostCommand(cmdObj))
                         openCommands.Add(DateTime.Now.Add(new TimeSpan(0, 0, 5, 2)), cmdObj);
                     break;
-                case "Motors/UpdateSpeedVector":  
-                    markedLeftEncoderSpeed = ((currentLeftEncoderPosition - markedLeftEncoderPosition) / (msForCalibration/1000.0)) * mmsPerClick;
-                    markedRightEncoderSpeed = ((currentRightEncoderPosition - markedRightEncoderPosition) / (msForCalibration / 1000.0)) * mmsPerClick;
+                case "Motors/UpdateSpeedVector":
+                    markedLeftEncoderSpeed = (getStringGoalParam(0) == "Forward" ? 1 : -1) * ((currentLeftEncoderPosition - markedLeftEncoderPosition) / (msForCalibration / 1000.0)) * mmsPerClick;
+                    markedRightEncoderSpeed = (getStringGoalParam(0) == "Forward" ? 1 : -1) * ((currentRightEncoderPosition - markedRightEncoderPosition) / (msForCalibration / 1000.0)) * mmsPerClick;
                     // send the current encoder actual speeds for this pwm rate to the vehicle
                     // something like set encoder speed with "dddmmm" - if I had +/-dddmmm, I'd be ok - really just 7 chars is ok rather than 6
-                    outParam = (getStringGoalParam(1) == "Forward" ? 1 : -1) * (1000000 * 1 + 1000 * getLongGoalParam(0) + (int)markedLeftEncoderSpeed);
+                    outParam = (getStringGoalParam(0) == "Forward" ? 1 : -1) * (1000000 * 1 + 1000 * getLongGoalParam(1) + (int)markedLeftEncoderSpeed);
                     cmdObj = new Godzuki.gCommandObject(
                     Godzuki.ZukiCommands.CNC_APP_DEVICE_ID, 1,
                     Godzuki.ZukiCommands.MOTOR_CONTROL_DEVICE_ID, 1,
                     Godzuki.ZukiCommands.COMMAND_ID_MOTORCONTROL_SET_CALIBRATION, outParam);
+                    LogText("<" + outParam.ToString() + ",");
+
                     if (gz.PostCommand(cmdObj))
                         openCommands.Add(DateTime.Now.Add(new TimeSpan(0, 0, 5, 1)), cmdObj);
-                    outParam = (getStringGoalParam(1) == "Forward" ? 1 : -1) * (1000000 * 0 + 1000 * getLongGoalParam(0) + (int)markedRightEncoderSpeed);
+                    outParam = (getStringGoalParam(0) == "Forward" ? 1 : -1) * (1000000 * 0 + 1000 * getLongGoalParam(1) + (int)markedRightEncoderSpeed);
                     cmdObj = new Godzuki.gCommandObject(
                     Godzuki.ZukiCommands.CNC_APP_DEVICE_ID, 1,
                     Godzuki.ZukiCommands.MOTOR_CONTROL_DEVICE_ID, 1,
                     Godzuki.ZukiCommands.COMMAND_ID_MOTORCONTROL_SET_CALIBRATION, outParam);
                     if (gz.PostCommand(cmdObj))
                         openCommands.Add(DateTime.Now.Add(new TimeSpan(0, 0, 5, 2)), cmdObj);
+                    LogText(outParam.ToString() + ">");
                     openSpeedUpdates = 2;
                     break;
                 default:
@@ -923,5 +926,15 @@ namespace ZukiCnC
             return "../../../Goals/" + item.Replace('-', '/') + ".xml";
         }
         #endregion
+
+        private void CheckCalibrationButton_Click(object sender, EventArgs e)
+        {
+            Godzuki.gCommandObject cmdObj = new Godzuki.gCommandObject(
+            Godzuki.ZukiCommands.CNC_APP_DEVICE_ID, 1,
+            Godzuki.ZukiCommands.MOTOR_CONTROL_DEVICE_ID, 1,
+            Godzuki.ZukiCommands.COMMAND_ID_MOTORCONTROL_CHECK_CALIBRATION, 1000 * Convert.ToInt32(CalibLR.SelectedItem) + Convert.ToInt32(CalibIndex.SelectedItem));
+            if (gz.PostCommand(cmdObj))
+                openCommands.Add(DateTime.Now.Add(new TimeSpan(0, 0, 5, 0)), cmdObj);
+        }
     }
 }

@@ -3,6 +3,8 @@
     <Parameter Name="COMPORT" Value="COM2"/>
   </Step>
 
+  <Step Name="Clear Speed Vector" Device="Motors" Instance="1" Command="ClearSpeedVector" Timeout="2000"/>
+
   <Step Name="Read Tick Count" Device="Motors" Instance="1" Command="GetTicks" Timeout="2000"/>
   <Step Name="Mark Speed Vector" Device="Platform" Instance="1" Command="MarkSpeedVector" Timeout="2000">
     <Parameter Name="Direction" Value="Forward"/>
@@ -28,7 +30,7 @@
     <Parameter Name="Direction" Value="Backward"/>
     <Parameter Name="Speed" Value="30"/>
   </Step>
-  <Step Name="Move Ahead" Device="Motors" Instance="1" Command="Go" Timeout="2000">
+  <Step Name="Move Back" Device="Motors" Instance="1" Command="Go" Timeout="2000">
     <Parameter Name="Direction" Value="Backward"/>
     <Parameter Name="Speed" Value="30"/>
   </Step>
@@ -70,7 +72,7 @@
     <Parameter Name="Direction" Value="Backward"/>
     <Parameter Name="Speed" Value="50"/>
   </Step>
-  <Step Name="Move Ahead" Device="Motors" Instance="1" Command="Go" Timeout="2000">
+  <Step Name="Move Back" Device="Motors" Instance="1" Command="Go" Timeout="2000">
     <Parameter Name="Direction" Value="Backward"/>
     <Parameter Name="Speed" Value="50"/>
   </Step>
@@ -112,7 +114,7 @@
     <Parameter Name="Direction" Value="Backward"/>
     <Parameter Name="Speed" Value="70"/>
   </Step>
-  <Step Name="Move Ahead" Device="Motors" Instance="1" Command="Go" Timeout="2000">
+  <Step Name="Move Back" Device="Motors" Instance="1" Command="Go" Timeout="2000">
     <Parameter Name="Direction" Value="Backward"/>
     <Parameter Name="Speed" Value="70"/>
   </Step>
@@ -154,7 +156,7 @@
     <Parameter Name="Direction" Value="Backward"/>
     <Parameter Name="Speed" Value="90"/>
   </Step>
-  <Step Name="Move Ahead" Device="Motors" Instance="1" Command="Go" Timeout="2000">
+  <Step Name="Move Back" Device="Motors" Instance="1" Command="Go" Timeout="2000">
     <Parameter Name="Direction" Value="Backward"/>
     <Parameter Name="Speed" Value="90"/>
   </Step>
@@ -170,6 +172,5 @@
     <Parameter Name="Direction" Value="Backward"/>
     <Parameter Name="Speed" Value="90"/>
   </Step>
-
 
 </Goal>
