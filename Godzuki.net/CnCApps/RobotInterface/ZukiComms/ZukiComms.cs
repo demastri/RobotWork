@@ -27,8 +27,13 @@ namespace Godzuki
             curData.Add("ZukiBot local object alive and well\n");
         }
 
-        public bool SelectPort( string portName ) {
+        public bool SelectPort(string portName)
+        {
             return SelectPort(portName, 9600, Parity.None, StopBits.One, 8, Handshake.None);
+        }
+        public bool SelectPort(string portName, int rate )
+        {
+            return SelectPort(portName, rate, Parity.None, StopBits.One, 8, Handshake.None);
         }
         public bool SelectPort(string portName, int baud, Parity parity, StopBits sb, int bits, Handshake hs)
         {

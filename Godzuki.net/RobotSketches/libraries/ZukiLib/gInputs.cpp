@@ -28,9 +28,6 @@ extern gComms gMonitor;
 
 static const unsigned int adc_key_val[5] = { 30, 150, 360, 535, 760 };
 
-#undef USB_MONITOR_CMDS
-#undef RADIO_MONITOR_CMDS
-
 gInputs::gInputs() {
 	adc_key_in = 0;
 	NUM_KEYS = 5;

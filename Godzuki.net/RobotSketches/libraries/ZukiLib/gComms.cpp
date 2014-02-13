@@ -9,8 +9,8 @@ using namespace std;
 using namespace Godzuki;
 #endif
 
-const long RADIO_BAUD_RATE = 9600;
-const long USB_BAUD_RATE = 9600;		// 115200
+const long RADIO_BAUD_RATE = 19200;
+const long USB_BAUD_RATE = 115200;		// 115200
 const int MAX_SETUP_WAIT_TIME = 2000;
 char gComms::refString[20];
 

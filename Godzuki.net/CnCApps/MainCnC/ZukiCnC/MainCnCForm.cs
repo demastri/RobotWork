@@ -306,7 +306,7 @@ namespace ZukiCnC
         {
             if (!isConnected)
             {
-                if (gz.SelectPort((string)availablePorts.SelectedItem))
+                if (gz.SelectPort((string)availablePorts.SelectedItem, 19200) )
                 {
                     ConnectToRobotButton.Text = "Connecting";
                     Godzuki.gCommandObject cmdObj = new Godzuki.gCommandObject(

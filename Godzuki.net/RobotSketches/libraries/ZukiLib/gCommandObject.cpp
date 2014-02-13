@@ -75,7 +75,7 @@ uint8_t *gCommandObject::ToCommandString( size_t *t ) {
 	if( !isReply ) {
 		if( currentStartPointer + 20 >=  OUT_BFR_SIZE )
 			startPoint = currentStartPointer = 0;
-		*t = 18;
+		*t = 20;
 		PlaceInStrBfr( &(cmdStrBfr[currentStartPointer]), "!",              1, 0 );
 		PlaceInStrBfr( &(cmdStrBfr[currentStartPointer]), sourceDeviceID,   2, 1 );
 		PlaceInStrBfr( &(cmdStrBfr[currentStartPointer]), sourceInstanceID, 2, 3 );
