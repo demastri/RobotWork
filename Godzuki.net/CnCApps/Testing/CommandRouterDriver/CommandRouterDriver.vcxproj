@@ -84,6 +84,7 @@
     <ClInclude Include="..\..\..\RobotSketches\libraries\ZukiLib\gCommandObject.h" />
     <ClInclude Include="..\..\..\RobotSketches\libraries\ZukiLib\gCommandRouter.h" />
     <ClInclude Include="..\..\..\RobotSketches\libraries\ZukiLib\gComms.h" />
+    <ClInclude Include="..\..\..\RobotSketches\libraries\ZukiLib\gListNode.h" />
     <ClInclude Include="..\..\RobotSketches\godzuki\gRouteTableList.h" />
     <ClInclude Include="..\..\RobotSketches\godzuki\gRoutingDeviceIDs.h" />
     <ClInclude Include="SimpleObject.h" />
@@ -98,6 +99,9 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="..\..\..\RobotSketches\libraries\ZukiLib\gComms.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\..\RobotSketches\libraries\ZukiLib\gListNode.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="CommandRouterDriver.cpp" />
