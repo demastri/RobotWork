@@ -39,8 +39,6 @@ void gCommandObject::Init( int src, int srcdev, int srcinst, int dev, int inst, 
 	payloadData = payData;
 	isReply = false;
 	cmdSrc = src;
-
-	nextEntry = prevEntry = 0;
 }
 gCommandObject::gCommandObject( gCommandObject *rhs ) {
 	sourceDeviceID = rhs->sourceDeviceID;
@@ -53,17 +51,13 @@ gCommandObject::gCommandObject( gCommandObject *rhs ) {
 	payloadData = rhs->payloadData;
 	isReply = rhs->isReply;
 	cmdSrc = rhs->cmdSrc;
-
-	nextEntry = prevEntry = 0;
 }
 gCommandObject *gCommandObject::InitReply( unsigned char status, long paySize, void *payData ) { 
-	gCommandObject *outObj = new gCommandObject(this);
-
-	outObj->rtnStatus = status; 
-	outObj->payloadSize = paySize; 
-	outObj->payloadData = payData; 
-	outObj->isReply = true; 
-	return outObj;
+	rtnStatus = status; 
+	payloadSize = paySize; 
+	payloadData = payData; 
+	isReply = true; 
+	return this;
 }
 
 #define OUT_BFR_SIZE 100

@@ -87,9 +87,6 @@ public:
 	bool isReply;
 	int cmdSrc;
 
-	gCommandObject *nextEntry;
-	gCommandObject *prevEntry;
-
 	gCommandObject *InitReply( unsigned char status, long paySize, void *payData );
 	void print();
 

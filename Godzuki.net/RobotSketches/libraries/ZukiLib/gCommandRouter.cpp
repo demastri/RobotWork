@@ -2,8 +2,8 @@
 #include <Arduino.h>
 #endif
 
-
 #include "gCommandRouter.h"
+#include "gListNode.h"
 
 #include "gComms.h"
 #ifdef WIN32
@@ -19,13 +19,9 @@ int DEFAULT_DEVICE_ID = -1;
 int DEFAULT_INSTANCE_ID = -1;
 
 
-static RouteTableList *listBase = 0;
-static gCommandObject *commandList = 0;
-static gCommandObject *commandResponses = 0;
-//RouteTableList *gCommandRouter::listBase = 0;
-//gCommandObject *gCommandRouter::commandList = 0;
-//gCommandObject *gCommandRouter::commandResponses = 0;
-
+static gList handlerList;
+static gList commandList;
+static gList commandResponseList;
 
 gCommandRouter::gCommandRouter() {
 }
@@ -34,84 +30,36 @@ void gCommandRouter::setup() {
 }
 
 void gCommandRouter::AddCommandHandler( int deviceID, int instanceID, void *objRef, cmdHandler thisHandler ) {
-	RouteTableList *nextID = new RouteTableList( deviceID, instanceID, objRef, thisHandler );
-	nextID->nextEntry = listBase;
-	if( listBase != 0 )
-		listBase->prevEntry = nextID;
-	listBase = nextID;
+	gRouteTableEntry *nextID = new gRouteTableEntry( deviceID, instanceID, objRef, thisHandler );
+	handlerList.Add( nextID );
 }
 
 void gCommandRouter::AddCommandHandler( int deviceID, int instanceID, void *objRef, int cmdID, cmdHandler thisHandler, long timer ) {
-	RouteTableList *nextID = new RouteTableList( deviceID, instanceID, objRef, cmdID, thisHandler, timer, millis() );
-	nextID->nextEntry = listBase;
-	if( listBase != 0 )
-		listBase->prevEntry = nextID;
-	listBase = nextID;
+	gRouteTableEntry *nextID = new gRouteTableEntry( deviceID, instanceID, objRef, cmdID, thisHandler, timer, millis() );
+	handlerList.Add( nextID );
 }
 
-void gCommandRouter::RemoveAllCommandHandlers( int deviceID, int instanceID ) {
-	RouteTableList *curEntry = listBase;
-
-	while( curEntry != 0 ) {
-		if( deviceID == curEntry->deviceID && instanceID == curEntry->instanceID ) {
-			if( curEntry->prevEntry == 0 ) // first one
-				listBase = curEntry->nextEntry;
-			else
-				curEntry->prevEntry->nextEntry = curEntry->nextEntry;
-
-			if( curEntry->nextEntry != 0 ) // last one
-				curEntry->nextEntry->prevEntry = curEntry->prevEntry;
-
-			RouteTableList *delEntry = curEntry;
-			curEntry = curEntry->nextEntry;
-			delete delEntry;      
-		}
-		else
-			curEntry = curEntry->nextEntry;
+void gCommandRouter::RemoveAllCommandHandlers( int deviceID, int instanceID ) 
+{
+	while( !handlerList.isEmpty() ) {
+		delete (gRouteTableEntry *)handlerList.PopFirst();
 	}
 }
 
-void gCommandRouter::RemoveCommandHandler( int deviceID, int instanceID ) {
-	RouteTableList *curEntry = listBase;
-
-	while( curEntry != 0 ) {
-		if( deviceID == curEntry->deviceID && instanceID == curEntry->instanceID && curEntry->cmdID == -1) {
-			if( curEntry->prevEntry == 0 ) // first one
-				listBase = curEntry->nextEntry;
-			else
-				curEntry->prevEntry->nextEntry = curEntry->nextEntry;
-
-			if( curEntry->nextEntry != 0 ) // last one
-				curEntry->nextEntry->prevEntry = curEntry->prevEntry;
-
-			RouteTableList *delEntry = curEntry;
-			curEntry = curEntry->nextEntry;
-			delete delEntry;      
-		}
-		else
-			curEntry = curEntry->nextEntry;
-	}
+void gCommandRouter::RemoveCommandHandler( int deviceID, int instanceID ) 
+{
+	RemoveCommandHandler( deviceID, instanceID, -1, -1 );
 }
 
 void gCommandRouter::RemoveCommandHandler( int deviceID, int instanceID, int cmdID, long timer ) {
-	RouteTableList *curEntry = listBase;
-	RouteTableList *defEntry = 0;
-
-	while( curEntry != 0 ) {
-		if( deviceID == curEntry->deviceID && instanceID == curEntry->instanceID && cmdID == curEntry->cmdID && timer == curEntry->reTriggerInMills) {
-			if( curEntry->prevEntry == 0 ) // first one
-				listBase = curEntry->nextEntry;
-			else
-				curEntry->prevEntry->nextEntry = curEntry->nextEntry;
-
-			if( curEntry->nextEntry != 0 ) // last one
-				curEntry->nextEntry->prevEntry = curEntry->prevEntry;
-			RouteTableList *delEntry = curEntry;
-			curEntry = curEntry->nextEntry;
-			delete delEntry;      
+	for( gListNode *curNode=handlerList.First(); curNode != 0; curNode=handlerList.Next(curNode) ) {
+		gRouteTableEntry *curEntry = (gRouteTableEntry *)curNode->GetObject();
+		if( deviceID == curEntry->deviceID && instanceID == curEntry->instanceID && 
+			(cmdID == -1 || cmdID == curEntry->cmdID) && (timer == -1 || timer == curEntry->reTriggerInMills) ) {
+			handlerList.RemoveNode(curNode);
+			delete curEntry;
+			return;
 		}
-		else
-			curEntry = curEntry->nextEntry;
 	}
 }
 
@@ -123,78 +71,79 @@ void gCommandRouter::ScanCommands() {
 
 void gCommandRouter::ExecuteCommandQueue() {
 
-	while( commandList != 0 ) {
+	while( !commandList.isEmpty() ) {
+		gCommandObject *cmd = (gCommandObject *)commandList.PopFirst();
 		bool monitorMe = true;
 		for( int *pi=devicesNOTtoMonitor; *pi>=0; pi++ )
-			if( commandList->targetDeviceID == *pi )
+			if( cmd->targetDeviceID == *pi )
 				monitorMe = false;
 		for( int *pi=devicesNOTtoRoute; *pi>=0; pi++ ) {
-			if( commandList->targetDeviceID == *pi ) {
+			if( cmd->targetDeviceID == *pi ) {
 				//gMonitor.println( "Not Routing Command:" );
-				commandList->print();
+				cmd->print();
 				return;
 			}
 		}
 
-		RouteTableList *pHandler = FindRouteTable( commandList );
+		gRouteTableEntry *pHandler = FindRouteTable( cmd );
 		if( pHandler != 0 ) {
-			pHandler->thisHandler( pHandler->objRef, commandList );
+			pHandler->thisHandler( pHandler->objRef, cmd );
 		} else {
 			// broadcast over network for remote handler
-			if( commandList->cmdSrc == -1 ) {
+			if( cmd->cmdSrc == -1 ) {
 #ifdef WIN32
 				size_t thisSize;
-				uint8_t *cmdStr = commandList->ToCommandString(&thisSize);
-				commandList->commandID = COMMAND_ID_GLOBAL_BROADCAST;
-				commandList->isReply = true;
-				RouteReply( commandList, GLOBAL_COMMAND_STATUS_OK, gComms::strlen( (char *)cmdStr ), (void *)cmdStr );
+				uint8_t *cmdStr = cmd->ToCommandString(&thisSize);
+				cmd->commandID = COMMAND_ID_GLOBAL_BROADCAST;
+				cmd->isReply = true;
+				RouteReply( cmd, GLOBAL_COMMAND_STATUS_OK, gComms::strlen( (char *)cmdStr ), (void *)cmdStr );
 #else
-				gMonitor.BroadcastCommand( commandList, 0 );
-				gMonitor.BroadcastCommand( commandList, 1 );
+				gMonitor.BroadcastCommand( cmd, 0 );
+				gMonitor.BroadcastCommand( cmd, 1 );
 #endif
 			}
-			if( commandList->cmdSrc == 0 ) {
-				gMonitor.BroadcastCommand( commandList, 1 );
+			if( cmd->cmdSrc == 0 ) {
+				gMonitor.BroadcastCommand( cmd, 1 );
 			}
-			if( commandList->cmdSrc == 1 ) {
-				gMonitor.BroadcastCommand( commandList, 0 );
+			if( cmd->cmdSrc == 1 ) {
+				gMonitor.BroadcastCommand( cmd, 0 );
 			}
 		}
-		DequeueCommand( &commandList, commandList );
+		if( !cmd->isReply )
+			delete cmd;
 	}
 }
 void gCommandRouter::HandleCommandResponses() {
-	while( commandResponses != 0 ) {
+	while( !commandResponseList.isEmpty() ) {
+		gCommandObject *resp = (gCommandObject *)commandResponseList.PopFirst();
 		bool monitorMe = true;
 		for( int *pi=devicesNOTtoMonitor; *pi>=0; pi++ )
-			if( commandResponses->sourceDeviceID == *pi )
+			if( resp->sourceDeviceID == *pi )
 				monitorMe = false;
 		for( int *pi=devicesNOTtoRoute; *pi>=0; pi++ ) {
-			if( commandResponses->sourceDeviceID == *pi ) {
+			if( resp->sourceDeviceID == *pi ) {
 				//gMonitor.println( "Not Routing Command:" );
-				commandResponses->print();
+				resp->print();
 				return;
 			}
 		}
 
-		RouteTableList *pHandler = FindRouteTable( commandResponses );
+		gRouteTableEntry *pHandler = FindRouteTable( resp );
 		if( pHandler != 0 ) {
-			pHandler->thisHandler( pHandler->objRef, commandResponses );
+			pHandler->thisHandler( pHandler->objRef, resp );
 		} else {
 			// broadcast over network for remote target
 			//gMonitor.BroadcastCommand( commandResponses, 0 );
-			gMonitor.BroadcastCommand( commandResponses, 1 );
+			gMonitor.BroadcastCommand( resp, 1 );
 		}
-		DequeueCommand( &commandResponses, commandResponses );
+		delete resp;
 	}
 }
 
-RouteTableList *gCommandRouter::FindRouteTable( gCommandObject *commandObj ) {
-	RouteTableList *curEntry = listBase;
-	RouteTableList *defEntry = 0;
-	int handlerCount = 0;
-
-	while( curEntry != 0 && ++ handlerCount < 50 ) {
+gRouteTableEntry *gCommandRouter::FindRouteTable( gCommandObject *commandObj ) {
+	gRouteTableEntry *defEntry = 0;
+	for( gListNode *curNode=handlerList.First(); curNode != 0; curNode=handlerList.Next(curNode) ) {
+		gRouteTableEntry *curEntry = (gRouteTableEntry *)curNode->GetObject();
 		if( !commandObj->isReply && commandObj->targetDeviceID == curEntry->deviceID && commandObj->targetInstanceID == curEntry->instanceID && commandObj->commandID == curEntry->cmdID ) {
 			return curEntry;
 		}
@@ -207,72 +156,40 @@ RouteTableList *gCommandRouter::FindRouteTable( gCommandObject *commandObj ) {
 		if( commandObj->isReply && commandObj->sourceDeviceID == curEntry->deviceID && commandObj->sourceInstanceID == curEntry->instanceID && curEntry->cmdID == -1 ) {
 			defEntry = curEntry;
 		}
-		curEntry = curEntry->nextEntry;
 	}
 	return defEntry;
 }
 
 void gCommandRouter::HandleTimedCommands() {
-	RouteTableList *curEntry = listBase;
-	int handlerCount = 0;
-
 	long now = millis();
-	while( curEntry != 0 && ++handlerCount < 50 ) {
+	for( gListNode *curNode=handlerList.First(); curNode != 0; curNode=handlerList.Next(curNode) ) {
+		gRouteTableEntry *curEntry = (gRouteTableEntry *)curNode->GetObject();
 		if( curEntry->reTriggerInMills > 0 && curEntry->nextTrigger <= now ) {
 			// add timed command to the list for execution
-			QueueCommand( &commandList, new gCommandObject(-1, DEFAULT_DEVICE_ID, DEFAULT_INSTANCE_ID, curEntry->deviceID, curEntry->instanceID, curEntry->cmdID, now,0,0) );
+			commandList.Add( new gCommandObject(-1, DEFAULT_DEVICE_ID, DEFAULT_INSTANCE_ID, curEntry->deviceID, curEntry->instanceID, curEntry->cmdID, now,0,0) );
 			curEntry->nextTrigger += curEntry->reTriggerInMills;
 		}
-		curEntry = curEntry->nextEntry;
 	}
 }
 
-void gCommandRouter::QueueCommand( gCommandObject **head, gCommandObject *objData ) {
-	// add this to the end of the ringtailed command list
-	if( *head == 0 ) {
-		objData->nextEntry = objData->prevEntry = *head = objData;
-	} else {
-		objData->nextEntry = *head;
-		objData->prevEntry = (*head)->prevEntry;
-		(*head)->prevEntry->nextEntry = objData;
-		(*head)->prevEntry = objData;
-	}
-}
-
-void gCommandRouter::DequeueCommand( gCommandObject **head, gCommandObject *objData ) {
-	// pop this off of the ringtailed command list
-	if( objData->nextEntry == objData->prevEntry && objData->nextEntry == objData ) {
-		// last one in the queue
-		*head = 0;
-	} else {
-		objData->nextEntry->prevEntry = objData->prevEntry;
-		objData->prevEntry->nextEntry = objData->nextEntry;
-		*head = objData->nextEntry;
-	}
-	delete objData;
-}
 
 //void gCommandRouter::RouteCommand( int _deviceID, int _instanceID, int cmdID, long cmdParameter ) {
 void gCommandRouter::RouteCommand( gCommandObject *objData ) {
-	QueueCommand( &commandList, objData );
+	commandList.Add( objData );
 }
 void gCommandRouter::RouteReply( gCommandObject *objData, unsigned char status, unsigned int rtnDataSize, void *rtnData ) {
 	gCommandObject *respData = objData->InitReply( status, rtnDataSize, rtnData );
-	QueueCommand( &commandResponses, respData );
+	commandResponseList.Add( respData );
 }
 
 void gCommandRouter::DumpHandlerTree() {
-	RouteTableList *curEntry = listBase;
-	int handlerCount = 0;
-
-	long now = millis();
-	while( curEntry != 0 && ++handlerCount < 50 ) {
+	for( gListNode *curNode=handlerList.First(); curNode != 0; curNode=handlerList.Next(curNode) ) {
+		gRouteTableEntry *curEntry = (gRouteTableEntry *)curNode->GetObject();
 		PrintRouteList(curEntry);
-		curEntry = curEntry->nextEntry;
 	}
 }
 char *breakStr = "> - <";
-void gCommandRouter::PrintRouteList(RouteTableList *l) {
+void gCommandRouter::PrintRouteList(gRouteTableEntry *l) {
 	gMonitor.print("Dump <");
 	gMonitor.print( l->deviceID );
 	gMonitor.print(breakStr);

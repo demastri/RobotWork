@@ -105,7 +105,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Header Files", "Header File
 		RobotSketches\libraries\ZukiLib\gHBStatus.h = RobotSketches\libraries\ZukiLib\gHBStatus.h
 		RobotSketches\libraries\ZukiLib\gHBStatusCommands.h = RobotSketches\libraries\ZukiLib\gHBStatusCommands.h
 		RobotSketches\libraries\ZukiLib\gInputs.h = RobotSketches\libraries\ZukiLib\gInputs.h
-		RobotSketches\libraries\ZukiLib\gRouteTableList.h = RobotSketches\libraries\ZukiLib\gRouteTableList.h
+		RobotSketches\libraries\ZukiLib\gListNode.h = RobotSketches\libraries\ZukiLib\gListNode.h
+		RobotSketches\libraries\ZukiLib\gRouteTableEntry.h = RobotSketches\libraries\ZukiLib\gRouteTableEntry.h
 		RobotSketches\libraries\ZukiLib\gRoutingDeviceIDs.h = RobotSketches\libraries\ZukiLib\gRoutingDeviceIDs.h
 		RobotSketches\libraries\ZukiLib\gServo.h = RobotSketches\libraries\ZukiLib\gServo.h
 		RobotSketches\libraries\ZukiLib\gServoCommands.h = RobotSketches\libraries\ZukiLib\gServoCommands.h
@@ -120,6 +121,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Source Files", "Source File
 		RobotSketches\libraries\ZukiLib\gDistanceSensor.cpp = RobotSketches\libraries\ZukiLib\gDistanceSensor.cpp
 		RobotSketches\libraries\ZukiLib\gHBStatus.cpp = RobotSketches\libraries\ZukiLib\gHBStatus.cpp
 		RobotSketches\libraries\ZukiLib\gInputs.cpp = RobotSketches\libraries\ZukiLib\gInputs.cpp
+		RobotSketches\libraries\ZukiLib\gListNode.cpp = RobotSketches\libraries\ZukiLib\gListNode.cpp
 		RobotSketches\libraries\ZukiLib\gServo.cpp = RobotSketches\libraries\ZukiLib\gServo.cpp
 	EndProjectSection
 EndProject

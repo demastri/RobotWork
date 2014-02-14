@@ -3,7 +3,7 @@
 
 #include "gRoutingDeviceIDs.h"
 #include "gCommandObject.h"
-#include "gRouteTableList.h"
+#include "gRouteTableEntry.h"
 
 #define CMD_METHOD_DEFINE(M)                static void M##Proxy(void *thisObj, gCommandObject *cmdObj ); void M##Actually( gCommandObject *cmdObj )
 #define CMD_METHOD_IMPLEMENT(C,M)           void C::M##Proxy(void *thisObj, gCommandObject *cmdObj ) { ((C *)thisObj)->M##Actually( cmdObj ); } void C::M##Actually(gCommandObject *cmdObj)
@@ -39,20 +39,15 @@ public:
 	void RouteReply( gCommandObject *objData, unsigned char status, unsigned int rtnDataSize, void *rtnData );
 	
 	void DumpHandlerTree();
-	void PrintRouteList(RouteTableList *l);
+	void PrintRouteList(gRouteTableEntry *l);
 
 private:
 	void HandleTimedCommands();
 	void ExecuteCommandQueue();
 	void HandleCommandResponses();
 
-	RouteTableList *FindRouteTable( gCommandObject *commandObj );
-	void QueueCommand( gCommandObject **head, gCommandObject *objData );
-	void DequeueCommand( gCommandObject **head, gCommandObject *objData );
+	gRouteTableEntry *FindRouteTable( gCommandObject *commandObj );
 
-	//static RouteTableList *listBase;
-	//static gCommandObject *commandList;
-	//static gCommandObject *commandResponses;
 };
 
 #endif
