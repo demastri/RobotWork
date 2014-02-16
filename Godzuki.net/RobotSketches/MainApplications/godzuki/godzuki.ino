@@ -1,5 +1,3 @@
-#include <Servo.h>
-
 #include <PinChangeInt.h>
 #include <Wire.h>
 #include <Adafruit_MotorShield.h>
@@ -25,6 +23,13 @@ static gHBStatus myHBStatus;
 #include "gInputs.h"
 gInputs myInputs;
 
+//const int gButtonMappingCmds[] = {COMMAND_ID_SERVO_SWEEP_ONCE,	COMMAND_ID_SERVO_SWEEP_STOP,	COMMAND_ID_SERVO_CENTER,	COMMAND_ID_SERVO_SWEEP_CONTINUOUS,	COMMAND_ID_SERVO_READ_POSITION };
+//const int gButtonMappingDevs[] = {SERVO_DEVICE_ID,				SERVO_DEVICE_ID,				SERVO_DEVICE_ID,			SERVO_DEVICE_ID,					SERVO_DEVICE_ID };
+//const int gButtonMappingIDs[] =	 {1,							1,								1,							1,									1 };
+extern const int gButtonMappingCmds[]	= {COMMAND_ID_HBSTATUS_SET_STATUS,COMMAND_ID_HBSTATUS_SET_STATUS,COMMAND_ID_HBSTATUS_SET_STATUS,COMMAND_ID_HBSTATUS_SET_STATUS,COMMAND_ID_HBSTATUS_SET_STATUS};
+extern const int gButtonMappingDevs[]	= {HEARTBEAT_DEVICE_ID,           HEARTBEAT_DEVICE_ID,           HEARTBEAT_DEVICE_ID,           HEARTBEAT_DEVICE_ID,           HEARTBEAT_DEVICE_ID           };
+extern const int gButtonMappingIDs[]	= {1,                             1,                             1,                             1,                             1,                            };
+
 ///////  ultrasonic sensor definitions
 //#include "gDistanceSensor.h"
 //gDistanceSensor myDistanceSensor;
@@ -44,8 +49,6 @@ gMotorControl gMotors;
 extern int DEFAULT_DEVICE_ID;
 extern int DEFAULT_INSTANCE_ID;
 
-bool itsCrayCray = false;
-
 ////////////////////
 void setup() { 
 	DEFAULT_DEVICE_ID = GODZUKI_SENSOR_PLATFORM_DEVICE_ID;
@@ -55,6 +58,7 @@ void setup() {
 
 	gMonitor.setup(1, &myRouter, true);
 	myInputs.setup(1, &myRouter);
+	myInputs.showKeyStateOnLED = 1;
 	myHBStatus.setup(1, &myRouter);
 	//myServo.setup(9, 1, &myRouter);
 	gMotors.setup(1, &myRouter, 10, 11);
@@ -68,7 +72,8 @@ void loop() {
 
 	gCommandRouter *pRouter = &myRouter;
 
-	ROUTE_COMMAND( HEARTBEAT_DEVICE_ID, 1, COMMAND_ID_HBSTATUS_LOOP_INIT, -1 );
+	myHBStatus.loopInitActually(0);
+	//ROUTE_COMMAND( HEARTBEAT_DEVICE_ID, 1, COMMAND_ID_HBSTATUS_LOOP_INIT, -1 );
 
 	int kbdParam = -1;
 	int new_command_input = myInputs.ReadCommand( kbdParam );
@@ -77,6 +82,7 @@ void loop() {
 	myRouter.ScanCommands();
 
 	// handle maintenance stuff
-	ROUTE_COMMAND( HEARTBEAT_DEVICE_ID, 1, COMMAND_ID_HBSTATUS_LOOP_FINALLY, -1 );
-	delay( 50 );
+	myHBStatus.loopFinallyActually(0);
+	//ROUTE_COMMAND( HEARTBEAT_DEVICE_ID, 1, COMMAND_ID_HBSTATUS_LOOP_FINALLY, -1 );
+	//delay( 50 );
 }

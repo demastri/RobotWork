@@ -14,13 +14,10 @@ gSDCard::gSDCard() {
 
 void gSDCard::setup(int thisID, gCommandRouter *router, int chipSelect ) {
 	instanceID = thisID;
-	if(!itsCrayCray ) 
-	{
-		if( !sd.begin((CSPin=chipSelect), SPI_HALF_SPEED)) {
-			isReady = false;
-			gMonitor.println( "SDead" );
-			return;
-		}
+	if( !sd.begin((CSPin=chipSelect), SPI_HALF_SPEED)) {
+		isReady = false;
+		gMonitor.println( "SDead" );
+		return;
 	}
 	isReady = true;
 	if( router != 0 )

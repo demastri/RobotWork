@@ -26,16 +26,16 @@ namespace Godzuki
             localBfr = "";
             curData.Add("ZukiBot local object alive and well\n");
         }
-
+        public bool isConnected { get { return serial.IsOpen;  } }
         public bool SelectPort(string portName)
         {
-            return SelectPort(portName, 9600, Parity.None, StopBits.One, 8, Handshake.None);
+            return SelectPort(portName, 9600, Parity.None, StopBits.One, 8, Handshake.None, false);
         }
         public bool SelectPort(string portName, int rate )
         {
-            return SelectPort(portName, rate, Parity.None, StopBits.One, 8, Handshake.None);
+            return SelectPort(portName, rate, Parity.None, StopBits.One, 8, Handshake.None, false);
         }
-        public bool SelectPort(string portName, int baud, Parity parity, StopBits sb, int bits, Handshake hs)
+        public bool SelectPort(string portName, int baud, Parity parity, StopBits sb, int bits, Handshake hs, bool setdtr)
         {
             ShutDown();
             curData.Add("ZukiBot - opening serial port\n");
@@ -46,6 +46,7 @@ namespace Godzuki
             serial.StopBits = sb;
             serial.DataBits = bits;
             serial.Handshake = hs;
+            serial.DtrEnable = setdtr;
 
             try
             {
@@ -117,35 +118,42 @@ namespace Godzuki
                     r = z;
                     break;
                 }
-            if (r != null )
+            if (r != null)
             {
                 r.localBfr += indata;
-                // if some part of this signifies the end of the command, parse out everything else and add to list
-                int cmdStart = r.localBfr.IndexOfAny(new char[] { '!', '&' });
-                int cmdEnd = r.localBfr.IndexOfAny(new char[] { '#', '\n' },  (cmdStart < 0 ? 0 : cmdStart) );
-                if (cmdEnd >= 0 )
+
+                bool done = false;
+                while (!done)
                 {
-                    //displayOnlyCommandObjects             f = display anything that comes through, t = display only valid command objects !& -> #\n
-                    //displayOnlyResponseStrings            if above is f, doesn't matter, if t, then only display response objects  & -> #
-                    if (!displayOnlyCommandObjects)
+                    done = true;
+                    // if some part of this signifies the end of the command, parse out everything else and add to list
+                    int cmdStart = r.localBfr.IndexOfAny(new char[] { '!', '&' });
+                    int cmdEnd = r.localBfr.IndexOfAny(new char[] { '#', '\n' }, (cmdStart < 0 ? 0 : cmdStart));
+                    if (cmdEnd >= 0)
                     {
-                        if (cmdStart >= 0)
+                        done = false;
+                        //displayOnlyCommandObjects             f = display anything that comes through, t = display only valid command objects !& -> #\n
+                        //displayOnlyResponseStrings            if above is f, doesn't matter, if t, then only display response objects  & -> #
+                        if (!displayOnlyCommandObjects)
                         {
-                            if (cmdStart > 0)
-                                r.curData.Add(r.localBfr.Substring(0, cmdStart));
-                            r.curData.Add(r.localBfr.Substring(cmdStart, (cmdEnd - cmdStart) + 1));
+                            if (cmdStart >= 0)
+                            {
+                                if (cmdStart > 0)
+                                    r.curData.Add(r.localBfr.Substring(0, cmdStart));
+                                r.curData.Add(r.localBfr.Substring(cmdStart, (cmdEnd - cmdStart) + 1));
+                            }
+                            else
+                                r.curData.Add(r.localBfr);
                         }
                         else
-                            r.curData.Add(r.localBfr);
+                            if (cmdStart >= 0 && (!displayOnlyResponseStrings || r.localBfr[cmdStart] == '&'))
+                                r.curData.Add(r.localBfr.Substring(cmdStart, (cmdEnd - cmdStart) + 1));
+
+                        if (cmdEnd + 1 == r.localBfr.Length)
+                            r.localBfr = "";
+                        else
+                            r.localBfr = r.localBfr.Substring(cmdEnd + 1);
                     }
-                    else
-                        if(cmdStart >= 0 && (!displayOnlyResponseStrings || r.localBfr[cmdStart] == '&'))
-                            r.curData.Add(r.localBfr.Substring(cmdStart, (cmdEnd - cmdStart) + 1));
-                
-                    if( cmdEnd+1 == r.localBfr.Length )
-                        r.localBfr = "";
-                    else
-                        r.localBfr = r.localBfr.Substring(cmdEnd+1);
                 }
             }
         }

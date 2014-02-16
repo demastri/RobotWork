@@ -5,8 +5,6 @@
 *      Author: john
 */
 
-extern bool itsCrayCray;
-
 #ifndef PinChangeInt_h
 #define LIBCALL_PINCHANGEINT
 #include <PinChangeInt.h>
@@ -29,6 +27,8 @@ volatile long gMotorControl::rightAggregateClicks = 0;
 int gMotorControl::leftDir = 0;
 int gMotorControl::rightDir = 0;
 gMotor *(gMotorControl::myMotors[4]);
+int gMotorControl::leftTargetRequest = -1;
+int gMotorControl::rightTargetRequest = -1;
 
 int nbrCalSpeeds[2]		= { 0, 0 };
 int pwmSpeed[2][10]		= {{ 0,0,0,0,0,0,0,0,0,0 }, { 0,0,0,0,0,0,0,0,0,0 }};
@@ -45,7 +45,7 @@ gMotorControl::gMotorControl() {
 	lastSpeedCalcTime=0;
 	leftDir=rightDir=FORWARD;
 
-	leftTargetCmd = rightTargetCmd = 0;
+	leftTargetRequest = rightTargetRequest = -1;
 }
 
 void gMotorControl::setup(int thisID, gCommandRouter *router, int leftEncoderPin, int rightEncoderPin ) {
@@ -58,22 +58,20 @@ void gMotorControl::setup(int thisID, gCommandRouter *router, int leftEncoderPin
 	updateSpeeds = ( leftEncoderPin >= 0 ) || ( rightEncoderPin >= 0 );
 
 	currentSpeed = 0;	
-	if( !itsCrayCray ){
-		gMotor::AFMS.begin();
+	gMotor::AFMS.begin();
 
-		(myMotors[0] = new gMotor())->setup(1);
-		(myMotors[1] = new gMotor())->setup(2);
-		(myMotors[2] = new gMotor())->setup(3);
-		(myMotors[3] = new gMotor())->setup(4);
-	}
+	(myMotors[0] = new gMotor())->setup(1);
+	(myMotors[1] = new gMotor())->setup(2);
+	(myMotors[2] = new gMotor())->setup(3);
+	(myMotors[3] = new gMotor())->setup(4);
 	if( router != 0 )
 		setupCommandListener( *router );
 }
 void gMotorControl::setupCommandListener( gCommandRouter &router ) {
 	CMD_METHOD_REGISTER_DEFAULT(gMotorControl, processCommand);
 	CMD_METHOD_REGISTER_TIMER(gMotorControl, COMMAND_ID_MOTORCONTROL_UPDATE_SPEEDS, calculateSpeeds, instSpeedUpdateTime);
-	//CMD_METHOD_REGISTER_TIMER(gMotorControl, COMMAND_ID_MOTORCONTROL_GET_ENCODER, processCommand, 1980);
-	//CMD_METHOD_REGISTER_TIMER(gMotorControl, COMMAND_ID_MOTORCONTROL_PULL_SPEEDS, processCommand, 1520);
+	CMD_METHOD_REGISTER_TIMER(gMotorControl, COMMAND_ID_MOTORCONTROL_GET_ENCODER, processCommand, 1200);
+	CMD_METHOD_REGISTER_TIMER(gMotorControl, COMMAND_ID_MOTORCONTROL_PULL_SPEEDS, processCommand, 1400);
 
 	pRouter = &router;
 }
@@ -87,32 +85,6 @@ CMD_METHOD_IMPLEMENT(gMotorControl,processCommand) {
 	int outLeft;
 	int outRight;
 	switch( cmdObj->commandID ) {
-	case COMMAND_ID_MOTORCONTROL_SET_SPEED_FAST:
-		setSpeeds(150);
-		ROUTE_REPLY(GLOBAL_COMMAND_STATUS_OK,0,0);
-		break;
-	case COMMAND_ID_MOTORCONTROL_SET_SPEED_SLOW:
-		setSpeeds(50);
-		ROUTE_REPLY(GLOBAL_COMMAND_STATUS_OK,0,0);
-		break;
-	case COMMAND_ID_MOTORCONTROL_SET_SPEED:
-		setSpeeds(cmdObj->parameter);
-		ROUTE_REPLY(GLOBAL_COMMAND_STATUS_OK,0,0);
-		break;
-	case COMMAND_ID_MOTORCONTROL_SET_SPEED_BUMP:
-		currentSpeed += 50;
-		currentSpeed %= 256;
-		setSpeeds(currentSpeed);
-		ROUTE_REPLY(GLOBAL_COMMAND_STATUS_OK,0,0);
-		break;
-	case COMMAND_ID_MOTORCONTROL_SET_DIR_FWD:
-		setDirections(FORWARD);
-		ROUTE_REPLY(GLOBAL_COMMAND_STATUS_OK,0,0);
-		break;
-	case COMMAND_ID_MOTORCONTROL_SET_DIR_REV:
-		setDirections(BACKWARD);
-		ROUTE_REPLY(GLOBAL_COMMAND_STATUS_OK,0,0);
-		break;
 	case COMMAND_ID_MOTORCONTROL_START:
 		if( cmdObj->parameter > 0 ) { // embed everything into one command
 			// 7 characters
@@ -129,21 +101,26 @@ CMD_METHOD_IMPLEMENT(gMotorControl,processCommand) {
 			int leftSpeed  = linear ? findActSpeed( paramSpeed, 0 ) : paramSpeed;
 			int rightSpeed = linear ? findActSpeed( paramSpeed, 1 ) : paramSpeed;
 
-			leftDir = ((paramDir == COMMAND_CONST_MOTORCONTROL_FORWARD || paramDir == COMMAND_CONST_MOTORCONTROL_TURNRIGHT) ? FORWARD : BACKWARD);
-			rightDir = ((paramDir == COMMAND_CONST_MOTORCONTROL_FORWARD || paramDir == COMMAND_CONST_MOTORCONTROL_TURNLEFT) ? FORWARD : BACKWARD);
+			if( paramDir == COMMAND_CONST_MOTORCONTROL_STOP )
+				stopAll();
+			else
+			{
+				leftDir = ((paramDir == COMMAND_CONST_MOTORCONTROL_FORWARD || paramDir == COMMAND_CONST_MOTORCONTROL_TURNRIGHT) ? FORWARD : BACKWARD);
+				rightDir = ((paramDir == COMMAND_CONST_MOTORCONTROL_FORWARD || paramDir == COMMAND_CONST_MOTORCONTROL_TURNLEFT) ? FORWARD : BACKWARD);
 
-			for( int i=0; i<maxMotors; i++ ) {
-				int thisDir = (paramDir == COMMAND_CONST_MOTORCONTROL_FORWARD ? FORWARD : 
-					(paramDir == COMMAND_CONST_MOTORCONTROL_BACKWARD ? BACKWARD : 
-					(paramDir == COMMAND_CONST_MOTORCONTROL_TURNLEFT ? (i<2 ? BACKWARD : FORWARD) : (i<2 ? FORWARD : BACKWARD) )));
-				if( (paramMask & (1<<i)) ) {
-					setDirection( thisDir, i );
-					setSpeed( (i<2 ? leftSpeed : rightSpeed), i );
-					start( i );
+				for( int i=0; i<maxMotors; i++ ) {
+					int thisDir = (paramDir == COMMAND_CONST_MOTORCONTROL_FORWARD ? FORWARD : 
+						(paramDir == COMMAND_CONST_MOTORCONTROL_BACKWARD ? BACKWARD : 
+						(paramDir == COMMAND_CONST_MOTORCONTROL_TURNLEFT ? (i<2 ? BACKWARD : FORWARD) : (i<2 ? FORWARD : BACKWARD) )));
+					if( (paramMask & (1<<i)) ) {
+						setDirection( thisDir, i );
+						setSpeed( (i<2 ? leftSpeed : rightSpeed), i );
+						start( i );
+					}
 				}
+				startAll();
 			}
 		}
-		startAll();
 		ROUTE_REPLY(GLOBAL_COMMAND_STATUS_OK,0,0);
 		break;
 	case COMMAND_ID_MOTORCONTROL_STOP:
@@ -166,9 +143,7 @@ CMD_METHOD_IMPLEMENT(gMotorControl,processCommand) {
 		break;
 	case COMMAND_ID_MOTORCONTROL_SET_LEFT_TARGET_ABS:
 		leftTarget = cmdObj->parameter;
-		if( leftTargetCmd )
-			delete leftTargetCmd;
-		leftTargetCmd = new gCommandObject( cmdObj );
+		leftTargetRequest = 100*cmdObj->sourceDeviceID + cmdObj->sourceInstanceID;
 		if( !encoderTargetsSet ) {
 			encoderTargetsSet = true;
 			CMD_METHOD_REGISTER_TIMER(gMotorControl,COMMAND_ID_MOTORCONTROL_CHECK_TARGETS,checkEncoderTarget,200);
@@ -178,9 +153,7 @@ CMD_METHOD_IMPLEMENT(gMotorControl,processCommand) {
 		break;
 	case COMMAND_ID_MOTORCONTROL_SET_RIGHT_TARGET_ABS:
 		rightTarget = cmdObj->parameter;
-		if( rightTargetCmd )
-			delete rightTargetCmd;
-		rightTargetCmd = new gCommandObject( cmdObj );
+		rightTargetRequest = 100*cmdObj->sourceDeviceID + cmdObj->sourceInstanceID;
 		if( !encoderTargetsSet ) {
 			encoderTargetsSet = true;
 			CMD_METHOD_REGISTER_TIMER(gMotorControl,COMMAND_ID_MOTORCONTROL_CHECK_TARGETS,checkEncoderTarget,200);
@@ -190,9 +163,7 @@ CMD_METHOD_IMPLEMENT(gMotorControl,processCommand) {
 		break;
 	case COMMAND_ID_MOTORCONTROL_SET_LEFT_TARGET_REL:
 		leftTarget = leftAggregateClicks + cmdObj->parameter;
-		if( leftTargetCmd )
-			delete leftTargetCmd;
-		leftTargetCmd = new gCommandObject( cmdObj );
+		leftTargetRequest = 100*cmdObj->sourceDeviceID + cmdObj->sourceInstanceID;
 		if( !encoderTargetsSet ) {
 			encoderTargetsSet = true;
 			CMD_METHOD_REGISTER_TIMER(gMotorControl,COMMAND_ID_MOTORCONTROL_CHECK_TARGETS,checkEncoderTarget,200);
@@ -202,9 +173,7 @@ CMD_METHOD_IMPLEMENT(gMotorControl,processCommand) {
 		break;
 	case COMMAND_ID_MOTORCONTROL_SET_RIGHT_TARGET_REL:
 		rightTarget = rightAggregateClicks + cmdObj->parameter;
-		if( rightTargetCmd )
-			delete rightTargetCmd;
-		rightTargetCmd = new gCommandObject( cmdObj );
+		rightTargetRequest = 100*cmdObj->sourceDeviceID + cmdObj->sourceInstanceID;
 		if( !encoderTargetsSet ) {
 			encoderTargetsSet = true;
 			CMD_METHOD_REGISTER_TIMER(gMotorControl,COMMAND_ID_MOTORCONTROL_CHECK_TARGETS,checkEncoderTarget,200);
@@ -224,7 +193,7 @@ CMD_METHOD_IMPLEMENT(gMotorControl,processCommand) {
 		ROUTE_REPLY(GLOBAL_COMMAND_STATUS_OK,0,0);
 		break;
 	case COMMAND_ID_MOTORCONTROL_CHECK_CALIBRATION :
-				int outSize=0;
+		int outSize=0;
 		uint8_t *outStr = showCalibData(&outSize, cmdObj->parameter/1000, cmdObj->parameter%1000);
 		ROUTE_REPLY(GLOBAL_COMMAND_STATUS_OK,outSize,outStr);
 	}
@@ -236,19 +205,25 @@ CMD_METHOD_IMPLEMENT(gMotorControl, checkEncoderTarget) {
 		encoderTargetsSet = false;
 		encoderTargetsMet = false;
 		CMD_METHOD_DEREGISTER_TIMER(COMMAND_ID_MOTORCONTROL_CHECK_TARGETS,200);
-		if( leftTargetCmd )
+		if( leftTargetRequest >= 0 )
 		{
 			stopAll();
-			gCommandObject *cmdObj = leftTargetCmd;
-			cmdObj->commandID = COMMAND_ID_MOTORCONTROL_TARGET_REACHED;
+			gCommandObject *cmdObj = gCommandObject::gCommandObjectFactory( -1, 
+				leftTargetRequest/100, leftTargetRequest % 100, 
+				DEVICE_ID, instanceID, 
+				COMMAND_ID_MOTORCONTROL_TARGET_REACHED, 0, 0,0 );
 			ROUTE_REPLY(GLOBAL_COMMAND_STATUS_OK,0,0);
+			leftTargetRequest = -1;
 		}
-		else if( rightTargetCmd )
+		else if( rightTargetRequest >= 0 )
 		{
 			stopAll();
-			gCommandObject *cmdObj = rightTargetCmd;
-			cmdObj->commandID = COMMAND_ID_MOTORCONTROL_TARGET_REACHED;
+			gCommandObject *cmdObj = gCommandObject::gCommandObjectFactory( -1, 
+				leftTargetRequest/100, leftTargetRequest % 100, 
+				DEVICE_ID, instanceID, 
+				COMMAND_ID_MOTORCONTROL_TARGET_REACHED, 0, 0,0 );
 			ROUTE_REPLY(GLOBAL_COMMAND_STATUS_OK,0,0);
+			rightTargetRequest = -1;
 		}
 		// else noone was asking...
 	}
@@ -339,7 +314,7 @@ void gMotorControl::setSpeeds(int thisSpeed) {
 }
 void gMotorControl::setSpeed(int thisSpeed, int motorID) {
 	currentSpeed = thisSpeed;
-	if( !itsCrayCray && myMotors[motorID] != 0 ) 
+	if( myMotors[motorID] != 0 ) 
 		myMotors[motorID]->setSpeed(thisSpeed);
 }
 
@@ -349,7 +324,7 @@ void gMotorControl::setDirections(int thisDir) {
 		setDirection(thisDir, i);
 }
 void gMotorControl::setDirection(int thisDir, int motorID) {
-	if( !itsCrayCray && myMotors[motorID] != 0 ) 
+	if( myMotors[motorID] != 0 ) 
 		myMotors[motorID]->setDirection(thisDir);
 }
 
@@ -359,8 +334,7 @@ void gMotorControl::startAll() {
 }
 void gMotorControl::start(int motorID) {
 	if( myMotors[motorID] != 0 )
-		if( !itsCrayCray ) 
-			myMotors[motorID]->go();
+		myMotors[motorID]->go();
 }
 
 void gMotorControl::stopAll() {
@@ -368,7 +342,7 @@ void gMotorControl::stopAll() {
 		stop( i );
 }
 void gMotorControl::stop(int motorID) {
-	if( !itsCrayCray && myMotors[motorID] != 0 ) 
+	if( myMotors[motorID] != 0 ) 
 		myMotors[motorID]->stop();
 }
 

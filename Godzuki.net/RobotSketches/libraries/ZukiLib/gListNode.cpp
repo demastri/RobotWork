@@ -28,29 +28,24 @@ bool gListNode::Remove( void *o ) {
 	return RemoveNode( Find( o ) );
 }
 bool gListNode::RemoveNode( gListNode *l ) {
-	gListNode *cur = FindNode( l );
-	if( cur != 0 ) { // ensuring it's on the list...
-		cur->prev->next = next;
-		cur->next->prev = prev;
-		delete cur;
+	if( FindNode( l ) != 0 ) { // ensuring it's on the list...
+		l->prev->next = l->next;
+		l->next->prev = l->prev;
+		delete l;
 		return true;
 	}
 	return false;
 }
 gListNode *gListNode::Find( void *o ) {  // objects can be duped on the list -> first one wins...
-	gListNode *cur = this->next;
-	while( (cur=cur->next) != this ) {
-		if( cur->obj == o )
-			return cur;
-	} 
+	for( gListNode *n=First(); !isEmpty() && n != 0; n= Next(n) )
+		if( n->obj == o )
+			return n;
 	return 0;
 }
 gListNode *gListNode::FindNode( gListNode *l ) {  // objects can be duped on the list -> first one wins...
-	gListNode *cur = this->next;
-	while( (cur=cur->next) != this ) {
-		if( cur == l )
-			return cur;
-	} 
+	for( gListNode *n=First(); !isEmpty() && n != 0; n= Next(n) )
+		if( n == l )
+			return n;
 	return 0;
 }
 bool gListNode::isEmpty() {
@@ -59,11 +54,19 @@ bool gListNode::isEmpty() {
 
 void *gListNode::PopFirst() {
 	if( !isEmpty() ) {
-		gListNode *cur = this->next;
-		void *outObj = cur->obj;
-		Remove( outObj );
+		void *outObj = next->obj;
+		RemoveNode( next );
 		return outObj;
 	}
 	return 0;
 }
+
+int gListNode::Size() {
+	int i=0;
+	for( gListNode *n=First(); !isEmpty() && n != 0; n= Next(n) )
+		if( i++ > 50 )
+			break;
+	return i;
+}
+
 

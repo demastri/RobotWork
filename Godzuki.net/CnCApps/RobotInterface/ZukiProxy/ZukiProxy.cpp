@@ -22,11 +22,11 @@ void SensorBot::setup() {
 void SensorBot::routeCommand(int cmdID) {
 	gCommandObject *newObj;
 	if( cmdID == 1 )
-		newObj = new gCommandObject(99,1,99,1,cmdID );
+		newObj = gCommandObject::gCommandObjectFactory(-1, 99,1,99,1,cmdID, 0,0,0 );
 	else if( cmdID == 2 )
-		newObj = new gCommandObject(50,1,99,1,cmdID );
+		newObj = gCommandObject::gCommandObjectFactory(-1, 50,1,99,1,cmdID, 0,0,0 );
 	else if( cmdID == 3 )
-		newObj = new gCommandObject( 50,1,3,1,2 );	// should sweep once...
+		newObj = gCommandObject::gCommandObjectFactory(-1,  50,1,3,1,2, 0,0,0 );	// should sweep once...
 	myRouter.RouteCommand( newObj );
 }
 void SensorBot::loop() {

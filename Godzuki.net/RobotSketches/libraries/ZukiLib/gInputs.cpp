@@ -1,11 +1,11 @@
 #include <Arduino.h>
+#include "gHBStatus.h"
 
 #undef USB_MONITOR_CMDS
 #undef RADIO_MONITOR_CMDS
 #undef REPORT_BFR_SIZE
 
 #include "gRoutingDeviceIDs.h"
-#include "gServoCommands.h"
 #include "gHBStatusCommands.h"
 
 #ifdef USB_MONITOR_CMDS
@@ -17,9 +17,9 @@
 #include "gDistanceSensorCommands.h"
 #endif
 
-const int gButtonMappingCmds[] = {COMMAND_ID_SERVO_SWEEP_ONCE,	COMMAND_ID_SERVO_SWEEP_STOP,	COMMAND_ID_SERVO_CENTER,	COMMAND_ID_SERVO_SWEEP_CONTINUOUS,	COMMAND_ID_SERVO_READ_POSITION };
-const int gButtonMappingDevs[] = {SERVO_DEVICE_ID,				SERVO_DEVICE_ID,				SERVO_DEVICE_ID,			SERVO_DEVICE_ID,					SERVO_DEVICE_ID };
-const int gButtonMappingIDs[] =	 {1,							1,								1,							1,									1 };
+extern const int gButtonMappingCmds[];
+extern const int gButtonMappingDevs[];
+extern const int gButtonMappingIDs[];
 
 #include "gInputs.h"
 #include "gComms.h"
@@ -27,6 +27,7 @@ extern gComms gMonitor;
 #include "gCommandRouter.h"
 
 static const unsigned int adc_key_val[5] = { 30, 150, 360, 535, 760 };
+extern int DEFAULT_INSTANCE_ID;
 
 gInputs::gInputs() {
 	adc_key_in = 0;
@@ -46,7 +47,7 @@ void gInputs::setup(int thisID, gCommandRouter *router ) {
 
 void gInputs::setupCommandListener( gCommandRouter &router ) {
 	CMD_METHOD_REGISTER_DEFAULT(gInputs, processCommand);
-	router.AddCommandHandler( GODZUKI_SENSOR_PLATFORM_DEVICE_ID, 1, this, COMMAND_ID_GLOBAL_REQUEST_STATUS,  (gInputs::processCommandProxy), -1 );
+	router.AddCommandHandler( GODZUKI_SENSOR_PLATFORM_DEVICE_ID, DEFAULT_INSTANCE_ID, this, COMMAND_ID_GLOBAL_REQUEST_STATUS,  (gInputs::processCommandProxy), -1 );
 	pRouter = &router;
 }
 CMD_METHOD_IMPLEMENT(gInputs,processCommand) {
@@ -63,11 +64,21 @@ CMD_METHOD_IMPLEMENT(gInputs,processCommand) {
 			ROUTE_REPLY( GLOBAL_COMMAND_STATUS_OK, 2, (void *)"-1" );
 		}
 #else
-		ROUTE_REPLY( GLOBAL_COMMAND_STATUS_OK, 0, 0);
+		for( int i=0; i<1; i++ ) {
+			Serial1.print("-");
+			Serial1.print(i);
+			Serial1.print("-");
+			gCommandObject *newObj = gCommandObject::gCommandObjectFactory( cmdObj );
+			ROUTE_REPLY( GLOBAL_COMMAND_STATUS_OK, 0, 0);
+			cmdObj = newObj;
+		}
 #endif
 		break;
 	}
 }
+
+char ser1Cmd[30];
+int ser1cmdPtr = -1;
 
 int gInputs::ReadCommand(int &param) {
 	char serialCmd[20];
@@ -79,8 +90,8 @@ int gInputs::ReadCommand(int &param) {
 			//gMonitor.processCommand( FOLLOW_SERIAL, 0 );
 			serialCmd[cmdSize++] = (char)kbdKey;
 			delay(5);
-			while (Serial1.available()) {
-				kbdKey = Serial1.read();
+			while (Serial.available()) {
+				kbdKey = Serial.read();
 				serialCmd[cmdSize++] = (char)kbdKey;
 				delay(5);
 				if( kbdKey == '#' )
@@ -171,29 +182,36 @@ int gInputs::ReadCommand(int &param) {
 		}
 	}
 
+	while( ser1cmdPtr >= 0 && Serial1.available()) {
+		int kbdKey = Serial1.read();
+		ser1Cmd[ser1cmdPtr++] = (char)kbdKey;
+
+		if( kbdKey == '#' ) {
+			// done with command
+			gMonitor.writeToRadio = 1;   // 1 = radio, 0 = usb
+
+			gCommandObject *outObj = gComms::UnpackCommandString(ser1Cmd, 1);
+			ser1Cmd[ser1cmdPtr++] = '\0';
+
+			Serial1.print( "RCS" );
+			Serial1.println(ser1Cmd);
+			ser1cmdPtr = -1;
+
+			pRouter->RouteCommand( outObj );
+		}
+		if( cmdSize > 30 ) {
+			Serial1.print( "Unk" );
+			Serial1.println( ser1Cmd );
+			ser1cmdPtr = -1;
+		}
+	}
 	if (Serial1.available()) {
 		int kbdKey = Serial1.read();
 		switch (kbdKey) {
 		case '!':
-			//gMonitor.processCommand( FOLLOW_SERIAL, 1 );
-			serialCmd[cmdSize++] = (char)kbdKey;
-			delay(5);
-			while (Serial1.available()) {
-				kbdKey = Serial1.read();
-				serialCmd[cmdSize++] = (char)kbdKey;
-				delay(5);
-				if( kbdKey == '#' )
-					break;
-			}
-			serialCmd[cmdSize++] = '\0';
-			Serial1.print( "RCS" );
-			Serial1.print( serialCmd[05] );
-			Serial1.print( serialCmd[06] );
-			Serial1.print( serialCmd[9] );
-			Serial1.println( serialCmd[10] );
-			if( kbdKey == '#' ) {
-				gMonitor.writeToRadio = 1;   // 1 = radio, 0 = usb
-				pRouter->RouteCommand( gComms::UnpackCommandString(serialCmd, 1) );
+			if( ser1cmdPtr < 0 ) {
+				ser1cmdPtr = 0;
+				ser1Cmd[ser1cmdPtr++] = (char)kbdKey;
 			}
 			break;
 #ifdef RADIO_MONITOR_CMDS
@@ -293,9 +311,15 @@ int gInputs::ReadCommand(int &param) {
 	}
 	if (showKeyStateOnLED) {
 		if (key == -1)
-			ROUTE_COMMAND( HEARTBEAT_DEVICE_ID, 1, COMMAND_ID_HBSTATUS_CLEAR_STATUS, -1 );
+		{
+			gHBStatus::clearStatusProxy(0,0);
+			//ROUTE_COMMAND( HEARTBEAT_DEVICE_ID, 1, COMMAND_ID_HBSTATUS_CLEAR_STATUS, -1 );
+		}
 		else
-			ROUTE_COMMAND( HEARTBEAT_DEVICE_ID, 1, COMMAND_ID_HBSTATUS_SET_STATUS, -1 );
+		{
+			gHBStatus::setStatusProxy(0,0);
+			//ROUTE_COMMAND( HEARTBEAT_DEVICE_ID, 1, COMMAND_ID_HBSTATUS_SET_STATUS, -1 );
+		}
 	}
 	if (key == returnKey)
 		return ROUTER_NO_COMMAND;

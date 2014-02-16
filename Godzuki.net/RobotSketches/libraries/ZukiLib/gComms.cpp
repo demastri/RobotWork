@@ -9,12 +9,12 @@ using namespace std;
 using namespace Godzuki;
 #endif
 
-const long RADIO_BAUD_RATE = 19200;
+const long RADIO_BAUD_RATE = 9600;
 const long USB_BAUD_RATE = 115200;		// 115200
 const int MAX_SETUP_WAIT_TIME = 2000;
 char gComms::refString[20];
 
-char *welcomsString = "Godzuki alive and well...";
+char *welcomeString = "Godzuki alive and well...";
 
 
 gComms::gComms() {
@@ -45,11 +45,11 @@ void gComms::setup(int thisID, gCommandRouter *router, bool defaultToRadio, int 
 
 
 	if( Serial ) {
-		Serial.print(welcomsString);
+		Serial.print(welcomeString);
 		Serial.println((char *)(Serial1 ? "radio too" : "radio dead") );
 	}
 	if( Serial1 ) {
-		Serial1.print(welcomsString);
+		Serial1.print(welcomeString);
 		Serial1.println((char *)(Serial ? "USB too" : "USB dead") );
 	}
 #endif
@@ -68,14 +68,14 @@ void gComms::BroadcastCommand( gCommandObject *cmdObj, int dest ) {
 	size_t outSize;
 	uint8_t *cmdString = cmdObj->ToCommandString( &outSize );
 
-	if( dest == 0 )
+	if( dest == 0 || dest == -1 )
 		printToUSB( cmdString, outSize );
-	else if( dest == 1 )
+	if( dest == 1 || dest == -1 )
 		printToRadio( cmdString, outSize );
 }
 
 gCommandObject *gComms::UnpackCommandString( char *s, int src ) {
-	gCommandObject *cmdObj =  new gCommandObject();
+	gCommandObject *cmdObj =  gCommandObject::gCommandObjectFactory();
 	cmdObj->sourceDeviceID		= (s[1]-'0')*10 + (s[2]-'0');
 	cmdObj->sourceInstanceID	= (s[3]-'0')*10 + (s[4]-'0');
 	cmdObj->targetDeviceID		= (s[5]-'0')*10 + (s[6]-'0');

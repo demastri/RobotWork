@@ -4,6 +4,8 @@
 typedef unsigned int size_t;
 typedef unsigned char uint8_t;
 
+#define LOCAL_STORAGE_SIZE 3
+
 class gCommandObject {
 	// RouteCommand becomes -- 
 	//   void RouteCommand( CommandObject ) rather than
@@ -70,12 +72,14 @@ class gCommandObject {
 	//			if this gComms obj requested it, and it registers for the reply, the reply will eventually find its target on the mesh...
 	//			synchronous is easy - send back to the same port you're on.  It's the asynch ones that require any thought.
 public:
-	gCommandObject( int src, int srcdev, int srcinst, int dev, int inst, int cmd, int param, long paySize, void *payData );
-	gCommandObject( int src, int srcdev, int srcinst, int dev, int inst, int cmd );
-	gCommandObject( int src, int dev, int inst, int cmd, int param );
-	gCommandObject( int src, int dev, int inst, int cmd );
-	gCommandObject( gCommandObject *rhs);
-	gCommandObject();
+	static gCommandObject *gCommandObjectFactory( int src, int srcdev, int srcinst, int dev, int inst, int cmd, int param, long paySize, void *payData );
+	static gCommandObject *gCommandObjectFactory(gCommandObject *rhs);
+	static gCommandObject *gCommandObjectFactory();
+	static gCommandObject cmdStorage[LOCAL_STORAGE_SIZE];
+
+	static void gCommandObjectRelease( gCommandObject *rhs );
+
+	static int curCmdStorage;
 
 	int targetDeviceID;
 	int targetInstanceID;
@@ -100,6 +104,16 @@ public:
 	static int strcmp( char *s1, char *s2 );
 
 private:
+	static gCommandObject *NextObj();
+	gCommandObject( int src, int srcdev, int srcinst, int dev, int inst, int cmd, int param, long paySize, void *payData );
+	gCommandObject( int src, int srcdev, int srcinst, int dev, int inst, int cmd );
+	gCommandObject( int src, int dev, int inst, int cmd, int param );
+	gCommandObject( int src, int dev, int inst, int cmd );
+	gCommandObject( gCommandObject *rhs);
+	gCommandObject();
+
+	void Init();
+	void Init( gCommandObject *rhs);
 	void Init( int src, int srcdev, int srcinst, int dev, int inst, int cmd, int param, long paySize, void *payData );
 
 	//virtual char *Serialize();

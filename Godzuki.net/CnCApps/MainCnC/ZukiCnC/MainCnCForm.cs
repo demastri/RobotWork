@@ -62,6 +62,7 @@ namespace ZukiCnC
         double markedRightEncoderSpeed = 0.0;
         int openSpeedUpdates = 0;
         long msForCalibration = 5000;
+        int connectedInstance = 1;
 
         double wheelDiamMM = 65.0;
         int clicksPerRev = 20;
@@ -144,7 +145,7 @@ namespace ZukiCnC
                                 break;  // ok, got it
                             }
                         }
-                        if (openCmd == null || thisKey != DateTime.MinValue)
+                        if (true || thisKey != DateTime.MinValue)
                         {
                             LogText("<< " + gz.curData[0]);
                             if( openCmd != null )
@@ -279,7 +280,7 @@ namespace ZukiCnC
 
                     // stringification is back into the comms object
                     if (gz.PostCommand(newCmdObj))
-                        openCommands.Add(DateTime.Now.Add(new TimeSpan(0, 0, 2)), newCmdObj);
+                        openCommands.Add(DateTime.Now.Add(new TimeSpan(0, 0, 0, 0, 600)), newCmdObj);
                 }
 
                 if (false)
@@ -291,7 +292,7 @@ namespace ZukiCnC
 
                     // stringification is back into the comms object
                     if (gz.PostCommand(newCmdObj))
-                        openCommands.Add(DateTime.Now.Add(new TimeSpan(0, 0, 2,1)), newCmdObj);
+                        openCommands.Add(DateTime.Now.Add(new TimeSpan(0, 0, 0, 0, 600)), newCmdObj);
                 }
             }
             // and, finally, manage goal state here
@@ -306,16 +307,22 @@ namespace ZukiCnC
         {
             if (!isConnected)
             {
-                if (gz.SelectPort((string)availablePorts.SelectedItem, 19200) )
+                if (isUSB.Checked)
+                    gz.SelectPort((string)availablePorts.SelectedItem, 115200, System.IO.Ports.Parity.None, System.IO.Ports.StopBits.One, 8, System.IO.Ports.Handshake.None, true);
+                else
+                    gz.SelectPort((string)availablePorts.SelectedItem, 9600, System.IO.Ports.Parity.None, System.IO.Ports.StopBits.One, 8, System.IO.Ports.Handshake.None, false);
+
+                if (gz.isConnected )
                 {
+                    connectedInstance = Convert.ToInt32((string)availableInstances.SelectedItem);
                     ConnectToRobotButton.Text = "Connecting";
                     Godzuki.gCommandObject cmdObj = new Godzuki.gCommandObject(
                         Godzuki.ZukiCommands.CNC_APP_DEVICE_ID, 1,
-                        Godzuki.ZukiCommands.GODZUKI_SENSOR_PLATFORM_DEVICE_ID, 1,
+                        Godzuki.ZukiCommands.GODZUKI_SENSOR_PLATFORM_DEVICE_ID, connectedInstance,
                         Godzuki.ZukiCommands.COMMAND_ID_GLOBAL_REQUEST_STATUS);
                     gz.PostCommand(cmdObj);
                     // somehow we need to set a timer that expires and revokes the connectedness if we haven't gotten a reply
-                    openCommands.Add(DateTime.Now.Add(new TimeSpan(0, 0, 2)), cmdObj);
+                    openCommands.Add(DateTime.Now.Add(new TimeSpan(0, 0, 0, 0, 600)), cmdObj);
                 }
                 else
                 {
@@ -352,7 +359,7 @@ namespace ZukiCnC
 
             // stringification is back into the comms object
             if (gz.PostCommand(cmdObj))
-                openCommands.Add(DateTime.Now.Add(new TimeSpan(0, 0, 2)), cmdObj);
+                openCommands.Add(DateTime.Now.Add(new TimeSpan(0, 0, 0, 0, 600)), cmdObj);
         }
 
         private void SetServoButton_Click(object sender, EventArgs e)
@@ -370,7 +377,7 @@ namespace ZukiCnC
 
             // stringification is back into the comms object
             if (gz.PostCommand(cmdObj))
-                openCommands.Add(DateTime.Now.Add(new TimeSpan(0, 0, 2)), cmdObj);
+                openCommands.Add(DateTime.Now.Add(new TimeSpan(0, 0, 0, 0, 600)), cmdObj);
         }
 
         private void ServoTargetPos_DoubleClick(object sender, EventArgs e)
@@ -390,7 +397,7 @@ namespace ZukiCnC
 
             // stringification is back into the comms object
             if (gz.PostCommand(cmdObj))
-                openCommands.Add(DateTime.Now.Add(new TimeSpan(0, 0, 2)), cmdObj);
+                openCommands.Add(DateTime.Now.Add(new TimeSpan(0, 0, 0, 0, 600)), cmdObj);
 
             return;
 #if false
@@ -420,7 +427,7 @@ namespace ZukiCnC
 
             // stringification is back into the comms object
             if (gz.PostCommand(cmdObj))
-                openCommands.Add(DateTime.Now.Add(new TimeSpan(0, 0, 10)), cmdObj);
+                openCommands.Add(DateTime.Now.Add(new TimeSpan(0, 0, 0, 0, 600)), cmdObj);
         }
 
         private void ClearCmdLogButton_Click(object sender, EventArgs e)
@@ -464,7 +471,7 @@ namespace ZukiCnC
                 Godzuki.ZukiCommands.COMMAND_ID_MOTORCONTROL_START, parameter);
             // go
             if (gz.PostCommand(cmdObj))
-                openCommands.Add(DateTime.Now.Add(new TimeSpan(0, 0, 5)), cmdObj);
+                openCommands.Add(DateTime.Now.Add(new TimeSpan(0, 0, 0, 0, 600)), cmdObj);
         }
         private void MotorStop_Click(object sender, EventArgs e)
         {
@@ -493,21 +500,21 @@ namespace ZukiCnC
                 Godzuki.ZukiCommands.MOTOR_CONTROL_DEVICE_ID, 1,
                 Godzuki.ZukiCommands.COMMAND_ID_MOTORCONTROL_SET_SPEED_SLOW, -1);
             if (gz.PostCommand(cmdObj))
-                openCommands.Add(DateTime.Now.Add(new TimeSpan(0, 0, 5)), cmdObj);
+                openCommands.Add(DateTime.Now.Add(new TimeSpan(0, 0, 0, 0, 600)), cmdObj);
 
             cmdObj = new Godzuki.gCommandObject(
                 Godzuki.ZukiCommands.CNC_APP_DEVICE_ID, 1,
                 Godzuki.ZukiCommands.MOTOR_CONTROL_DEVICE_ID, 1,
                 Godzuki.ZukiCommands.COMMAND_ID_MOTORCONTROL_SET_DIR_FWD, -1);
             if (gz.PostCommand(cmdObj))
-                openCommands.Add(DateTime.Now.Add(new TimeSpan(0, 0, 5, 1)), cmdObj);
+                openCommands.Add(DateTime.Now.Add(new TimeSpan(0, 0, 0, 0, 601)), cmdObj);
 
             cmdObj = new Godzuki.gCommandObject(
                 Godzuki.ZukiCommands.CNC_APP_DEVICE_ID, 1,
                 Godzuki.ZukiCommands.MOTOR_CONTROL_DEVICE_ID, 1,
                 Godzuki.ZukiCommands.COMMAND_ID_MOTORCONTROL_START, -1);
             if (gz.PostCommand(cmdObj))
-                openCommands.Add(DateTime.Now.Add(new TimeSpan(0, 0, 5, 2)), cmdObj);
+                openCommands.Add(DateTime.Now.Add(new TimeSpan(0, 0, 0, 0, 602)), cmdObj);
 
         }
         private void GetEncoderTicks()
@@ -517,7 +524,7 @@ namespace ZukiCnC
             Godzuki.ZukiCommands.MOTOR_CONTROL_DEVICE_ID, 1,
             Godzuki.ZukiCommands.COMMAND_ID_MOTORCONTROL_GET_ENCODER);
             if (gz.PostCommand(cmdObj))
-                openCommands.Add(DateTime.Now.Add(new TimeSpan(0, 0, 5, 2)), cmdObj);
+                openCommands.Add(DateTime.Now.Add(new TimeSpan(0, 0, 0, 0, 600)), cmdObj);
         }
 
         #endregion
@@ -572,8 +579,8 @@ namespace ZukiCnC
                 if (DateTime.Now > currentStepTimeout)
                 {
                     bool failthrough = IgnoreStepFails.Checked;
-                    LogText("Goal Failed");
-                    GoalCurrentStep.Text = "Goal Failed!!";
+                    LogText("Goal Failed " + currentGoalNode.Attributes["Name"].Value);
+                    GoalCurrentStep.Text = "Goal Failed!! " + currentGoalNode.Attributes["Name"].Value;
                     if (!failthrough)
                     {
                         currentGoalNode = null;
@@ -661,6 +668,7 @@ namespace ZukiCnC
                     break;
                 case "Motors/GetTicks":
                     GetEncoderTicks();
+                    currentGoalStepMet = true;  // ###
                     break;
                 case "Motors/Go":
                     SendMotorCommand(
@@ -703,7 +711,7 @@ namespace ZukiCnC
                     Godzuki.ZukiCommands.MOTOR_CONTROL_DEVICE_ID, 1,
                     thisCmd, leftTargetClicks);
                     if (gz.PostCommand(cmdObj))
-                        openCommands.Add(DateTime.Now.Add(new TimeSpan(0, 0, 5, 1)), cmdObj);
+                        openCommands.Add(DateTime.Now.Add(new TimeSpan(0, 0, 0, 0, 600)), cmdObj);
 
                     LogText("Setting Right Encoder Target");
                     thisCmd = (absoluteTarget ? Godzuki.ZukiCommands.COMMAND_ID_MOTORCONTROL_SET_RIGHT_TARGET_ABS : Godzuki.ZukiCommands.COMMAND_ID_MOTORCONTROL_SET_RIGHT_TARGET_REL);
@@ -712,7 +720,7 @@ namespace ZukiCnC
                     Godzuki.ZukiCommands.MOTOR_CONTROL_DEVICE_ID, 1,
                     thisCmd, rightTargetClicks);
                     if (gz.PostCommand(cmdObj))
-                        openCommands.Add(DateTime.Now.Add(new TimeSpan(0, 0, 5, 2)), cmdObj);
+                        openCommands.Add(DateTime.Now.Add(new TimeSpan(0, 0, 0, 0, 601)), cmdObj);
 
                     // go
                     LogText("Moving to Target Position");
@@ -747,7 +755,7 @@ namespace ZukiCnC
                     Godzuki.ZukiCommands.MOTOR_CONTROL_DEVICE_ID, 1,
                     thisCmd, leftTargetClicks);
                     if (gz.PostCommand(cmdObj))
-                        openCommands.Add(DateTime.Now.Add(new TimeSpan(0, 0, 5, 1)), cmdObj);
+                        openCommands.Add(DateTime.Now.Add(new TimeSpan(0, 0, 0, 0, 600)), cmdObj);
 
                     LogText("Setting Right Encoder Target");
                     thisCmd = (absoluteTarget ? Godzuki.ZukiCommands.COMMAND_ID_MOTORCONTROL_SET_RIGHT_TARGET_ABS : Godzuki.ZukiCommands.COMMAND_ID_MOTORCONTROL_SET_RIGHT_TARGET_REL);
@@ -756,7 +764,7 @@ namespace ZukiCnC
                     Godzuki.ZukiCommands.MOTOR_CONTROL_DEVICE_ID, 1,
                     thisCmd, rightTargetClicks);
                     if (gz.PostCommand(cmdObj))
-                        openCommands.Add(DateTime.Now.Add(new TimeSpan(0, 0, 5, 2)), cmdObj);
+                        openCommands.Add(DateTime.Now.Add(new TimeSpan(0, 0, 0, 0, 601)), cmdObj);
 
                     // go
                     LogText("Moving to Target Position");
@@ -771,31 +779,36 @@ namespace ZukiCnC
                     Godzuki.ZukiCommands.MOTOR_CONTROL_DEVICE_ID, 1,
                     Godzuki.ZukiCommands.COMMAND_ID_MOTORCONTROL_CLEAR_CALIBRATION, -1);
                     if (gz.PostCommand(cmdObj))
-                        openCommands.Add(DateTime.Now.Add(new TimeSpan(0, 0, 5, 2)), cmdObj);
+                        openCommands.Add(DateTime.Now.Add(new TimeSpan(0, 0, 0, 0, 600)), cmdObj);
                     break;
                 case "Motors/UpdateSpeedVector":
-                    markedLeftEncoderSpeed = (getStringGoalParam(0) == "Forward" ? 1 : -1) * ((currentLeftEncoderPosition - markedLeftEncoderPosition) / (msForCalibration / 1000.0)) * mmsPerClick;
-                    markedRightEncoderSpeed = (getStringGoalParam(0) == "Forward" ? 1 : -1) * ((currentRightEncoderPosition - markedRightEncoderPosition) / (msForCalibration / 1000.0)) * mmsPerClick;
-                    // send the current encoder actual speeds for this pwm rate to the vehicle
-                    // something like set encoder speed with "dddmmm" - if I had +/-dddmmm, I'd be ok - really just 7 chars is ok rather than 6
-                    outParam = (getStringGoalParam(0) == "Forward" ? 1 : -1) * (1000000 * 1 + 1000 * getLongGoalParam(1) + (int)markedLeftEncoderSpeed);
-                    cmdObj = new Godzuki.gCommandObject(
-                    Godzuki.ZukiCommands.CNC_APP_DEVICE_ID, 1,
-                    Godzuki.ZukiCommands.MOTOR_CONTROL_DEVICE_ID, 1,
-                    Godzuki.ZukiCommands.COMMAND_ID_MOTORCONTROL_SET_CALIBRATION, outParam);
-                    LogText("<" + outParam.ToString() + ",");
+                    if (false)
+                        currentGoalStepMet = true;
+                    else
+                    {
+                        markedLeftEncoderSpeed = (getStringGoalParam(0) == "Forward" ? 1 : -1) * ((currentLeftEncoderPosition - markedLeftEncoderPosition) / (msForCalibration / 1000.0)) * mmsPerClick;
+                        markedRightEncoderSpeed = (getStringGoalParam(0) == "Forward" ? 1 : -1) * ((currentRightEncoderPosition - markedRightEncoderPosition) / (msForCalibration / 1000.0)) * mmsPerClick;
+                        // send the current encoder actual speeds for this pwm rate to the vehicle
+                        // something like set encoder speed with "dddmmm" - if I had +/-dddmmm, I'd be ok - really just 7 chars is ok rather than 6
+                        outParam = (getStringGoalParam(0) == "Forward" ? 1 : -1) * (1000000 * 1 + 1000 * getLongGoalParam(1) + (int)markedLeftEncoderSpeed);
+                        cmdObj = new Godzuki.gCommandObject(
+                        Godzuki.ZukiCommands.CNC_APP_DEVICE_ID, 1,
+                        Godzuki.ZukiCommands.MOTOR_CONTROL_DEVICE_ID, 1,
+                        Godzuki.ZukiCommands.COMMAND_ID_MOTORCONTROL_SET_CALIBRATION, outParam);
+                        LogText("<" + outParam.ToString() + ",");
 
-                    if (gz.PostCommand(cmdObj))
-                        openCommands.Add(DateTime.Now.Add(new TimeSpan(0, 0, 5, 1)), cmdObj);
-                    outParam = (getStringGoalParam(0) == "Forward" ? 1 : -1) * (1000000 * 0 + 1000 * getLongGoalParam(1) + (int)markedRightEncoderSpeed);
-                    cmdObj = new Godzuki.gCommandObject(
-                    Godzuki.ZukiCommands.CNC_APP_DEVICE_ID, 1,
-                    Godzuki.ZukiCommands.MOTOR_CONTROL_DEVICE_ID, 1,
-                    Godzuki.ZukiCommands.COMMAND_ID_MOTORCONTROL_SET_CALIBRATION, outParam);
-                    if (gz.PostCommand(cmdObj))
-                        openCommands.Add(DateTime.Now.Add(new TimeSpan(0, 0, 5, 2)), cmdObj);
-                    LogText(outParam.ToString() + ">");
-                    openSpeedUpdates = 2;
+                        if (gz.PostCommand(cmdObj))
+                            openCommands.Add(DateTime.Now.Add(new TimeSpan(0, 0, 0, 0, 600)), cmdObj);
+                        outParam = (getStringGoalParam(0) == "Forward" ? 1 : -1) * (1000000 * 0 + 1000 * getLongGoalParam(1) + (int)markedRightEncoderSpeed);
+                        cmdObj = new Godzuki.gCommandObject(
+                        Godzuki.ZukiCommands.CNC_APP_DEVICE_ID, 1,
+                        Godzuki.ZukiCommands.MOTOR_CONTROL_DEVICE_ID, 1,
+                        Godzuki.ZukiCommands.COMMAND_ID_MOTORCONTROL_SET_CALIBRATION, outParam);
+                        if (gz.PostCommand(cmdObj))
+                            openCommands.Add(DateTime.Now.Add(new TimeSpan(0, 0, 0, 0, 601)), cmdObj);
+                        LogText(outParam.ToString() + ">");
+                        openSpeedUpdates = 2;
+                    }
                     break;
                 default:
                     LogText("...no idea what this is...skipping");
@@ -934,7 +947,7 @@ namespace ZukiCnC
             Godzuki.ZukiCommands.MOTOR_CONTROL_DEVICE_ID, 1,
             Godzuki.ZukiCommands.COMMAND_ID_MOTORCONTROL_CHECK_CALIBRATION, 1000 * Convert.ToInt32(CalibLR.SelectedItem) + Convert.ToInt32(CalibIndex.SelectedItem));
             if (gz.PostCommand(cmdObj))
-                openCommands.Add(DateTime.Now.Add(new TimeSpan(0, 0, 5, 0)), cmdObj);
+                openCommands.Add(DateTime.Now.Add(new TimeSpan(0, 0, 0, 0, 600)), cmdObj);
         }
     }
 }

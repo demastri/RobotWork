@@ -2,6 +2,7 @@
 #define G_SERVO_H
 
 #include "gCommandRouter.h"
+#include <Servo.h>
 
 class gServo {
 public:

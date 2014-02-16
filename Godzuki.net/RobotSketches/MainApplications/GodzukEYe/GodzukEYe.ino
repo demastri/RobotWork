@@ -13,7 +13,8 @@ gCommandRouter myRouter;
 ///////  servo control definitions
 #include "gServo.h"
 #include "gServoCommands.h"
-static gServo myServo;  // initializes and attaches the servo on pin 9 to the servo object 
+static gServo myServoPan;  // initializes and attaches the servo on pin 9 to the servo object 
+static gServo myServoTilt;  // initializes and attaches the servo on pin 9 to the servo object 
 
 ///////  heartbeat and status control definitions
 #include "gHBStatus.h"
@@ -25,9 +26,9 @@ static gHBStatus myHBStatus;
 gInputs myInputs;
 
 ///////  ultrasonic sensor definitions
-#include "gDistanceSensor.h"
-gDistanceSensor myDistanceSensor;
-unsigned long lastDistanceTime=0;
+//#include "gDistanceSensor.h"
+//gDistanceSensor myDistanceSensor;1
+//unsigned long lastDistanceTime=0;
 
 ///////  communications control definitions
 #include "gComms.h"
@@ -43,7 +44,9 @@ gCamera myCamera;
 extern int DEFAULT_DEVICE_ID;
 extern int DEFAULT_INSTANCE_ID;
 
-bool itsCrayCray = false;
+extern const int gButtonMappingCmds[]	= {COMMAND_ID_HBSTATUS_SET_STATUS,COMMAND_ID_HBSTATUS_SET_STATUS,COMMAND_ID_HBSTATUS_SET_STATUS,COMMAND_ID_HBSTATUS_SET_STATUS,COMMAND_ID_HBSTATUS_SET_STATUS};
+extern const int gButtonMappingDevs[]	= {HEARTBEAT_DEVICE_ID,           HEARTBEAT_DEVICE_ID,           HEARTBEAT_DEVICE_ID,           HEARTBEAT_DEVICE_ID,           HEARTBEAT_DEVICE_ID           };
+extern const int gButtonMappingIDs[]	= {1,                             1,                             1,                             1,                             1,                            };
 
 ////////////////////
 void setup() { 
@@ -55,19 +58,19 @@ void setup() {
 	gMonitor.setup(1, &myRouter, true);
 	myInputs.setup(1, &myRouter);
 	myHBStatus.setup(1, &myRouter);
-	myServo.setup(9, 1, &myRouter);
+	myServoPan.setup(9, 1, &myRouter);
+	myServoTilt.setup(6, 2, &myRouter);
 	//gMotors.setup(1, &myRouter, 10, 11);
-	myDistanceSensor.setup(1, &myRouter, 5, 6, -1);
+	//myDistanceSensor.setup(1, &myRouter, 5, 6, -1);
 	myCamera.setup(1, &myRouter);
 } 
 
 void loop() {
-	int DEVICE_ID = -1;
-	int instanceID = 1;
 
 	gCommandRouter *pRouter = &myRouter;
 
-	ROUTE_COMMAND( HEARTBEAT_DEVICE_ID, 1, COMMAND_ID_HBSTATUS_LOOP_INIT, -1 );
+	myHBStatus.loopInitActually(0);
+	//ROUTE_COMMAND( HEARTBEAT_DEVICE_ID, 1, COMMAND_ID_HBSTATUS_LOOP_INIT, -1 );
 
 	int kbdParam = -1;
 	int new_command_input = myInputs.ReadCommand( kbdParam );
@@ -76,6 +79,7 @@ void loop() {
 	myRouter.ScanCommands();
 
 	// handle maintenance stuff
-	ROUTE_COMMAND( HEARTBEAT_DEVICE_ID, 1, COMMAND_ID_HBSTATUS_LOOP_FINALLY, -1 );
-	delay( 50 );
+	myHBStatus.loopFinallyActually(0);
+	//ROUTE_COMMAND( HEARTBEAT_DEVICE_ID, 1, COMMAND_ID_HBSTATUS_LOOP_FINALLY, -1 );
+	//delay( 50 );
 }

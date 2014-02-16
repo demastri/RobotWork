@@ -16,7 +16,8 @@ public:
 	
 	void *GetObject() { return obj; };
 	gListNode *First() { return isEmpty() ? 0 : next; };
-	gListNode *Next(gListNode *cur) { return cur->next == this ? 0 : cur->next; }
+	gListNode *Next(gListNode *cur) { return (cur == 0 || cur->next == 0 || cur->next == this) ? 0 : cur->next; }
+	int Size();
 
 private:
 	gListNode *next;

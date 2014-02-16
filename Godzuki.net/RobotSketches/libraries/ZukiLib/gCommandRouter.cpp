@@ -64,14 +64,28 @@ void gCommandRouter::RemoveCommandHandler( int deviceID, int instanceID, int cmd
 }
 
 void gCommandRouter::ScanCommands() {
-	HandleTimedCommands();
+	GenerateTimedCommands();
+	HandleCommandQueue();
 	HandleCommandResponses();
-	ExecuteCommandQueue();
 }
 
-void gCommandRouter::ExecuteCommandQueue() {
+void gCommandRouter::GenerateTimedCommands() {
+	long now = millis();
+	for( gListNode *curNode=handlerList.First(); curNode != 0; curNode=handlerList.Next(curNode) ) {
+		gRouteTableEntry *curEntry = (gRouteTableEntry *)curNode->GetObject();
+		if( curEntry->reTriggerInMills > 0 && curEntry->nextTrigger <= now ) {
+			// add timed command to the list for execution
+			commandList.Add( gCommandObject::gCommandObjectFactory(-1, DEFAULT_DEVICE_ID, DEFAULT_INSTANCE_ID, curEntry->deviceID, curEntry->instanceID, curEntry->cmdID, now,0,0) );
+			curEntry->nextTrigger += curEntry->reTriggerInMills;
+		}
+	}
+}
+void gCommandRouter::HandleCommandQueue() {
 
 	while( !commandList.isEmpty() ) {
+		//Serial1.print( "gList cmd Size:" );
+		//Serial1.println( commandList.Size() );
+
 		gCommandObject *cmd = (gCommandObject *)commandList.PopFirst();
 		bool monitorMe = true;
 		for( int *pi=devicesNOTtoMonitor; *pi>=0; pi++ )
@@ -102,19 +116,17 @@ void gCommandRouter::ExecuteCommandQueue() {
 				gMonitor.BroadcastCommand( cmd, 1 );
 #endif
 			}
-			if( cmd->cmdSrc == 0 ) {
-				gMonitor.BroadcastCommand( cmd, 1 );
-			}
-			if( cmd->cmdSrc == 1 ) {
-				gMonitor.BroadcastCommand( cmd, 0 );
-			}
+			gMonitor.BroadcastCommand( cmd, cmd->cmdSrc );
 		}
 		if( !cmd->isReply )
-			delete cmd;
+			gCommandObject::gCommandObjectRelease( cmd );
 	}
 }
 void gCommandRouter::HandleCommandResponses() {
 	while( !commandResponseList.isEmpty() ) {
+		//Serial1.print( "gList resp Size:" );
+		//Serial1.println( commandResponseList.Size() );
+
 		gCommandObject *resp = (gCommandObject *)commandResponseList.PopFirst();
 		bool monitorMe = true;
 		for( int *pi=devicesNOTtoMonitor; *pi>=0; pi++ )
@@ -133,10 +145,9 @@ void gCommandRouter::HandleCommandResponses() {
 			pHandler->thisHandler( pHandler->objRef, resp );
 		} else {
 			// broadcast over network for remote target
-			//gMonitor.BroadcastCommand( commandResponses, 0 );
-			gMonitor.BroadcastCommand( resp, 1 );
+			gMonitor.BroadcastCommand( resp, resp->cmdSrc );
 		}
-		delete resp;
+		gCommandObject::gCommandObjectRelease( resp );
 	}
 }
 
@@ -160,26 +171,29 @@ gRouteTableEntry *gCommandRouter::FindRouteTable( gCommandObject *commandObj ) {
 	return defEntry;
 }
 
-void gCommandRouter::HandleTimedCommands() {
-	long now = millis();
-	for( gListNode *curNode=handlerList.First(); curNode != 0; curNode=handlerList.Next(curNode) ) {
-		gRouteTableEntry *curEntry = (gRouteTableEntry *)curNode->GetObject();
-		if( curEntry->reTriggerInMills > 0 && curEntry->nextTrigger <= now ) {
-			// add timed command to the list for execution
-			commandList.Add( new gCommandObject(-1, DEFAULT_DEVICE_ID, DEFAULT_INSTANCE_ID, curEntry->deviceID, curEntry->instanceID, curEntry->cmdID, now,0,0) );
-			curEntry->nextTrigger += curEntry->reTriggerInMills;
-		}
-	}
-}
-
-
 //void gCommandRouter::RouteCommand( int _deviceID, int _instanceID, int cmdID, long cmdParameter ) {
 void gCommandRouter::RouteCommand( gCommandObject *objData ) {
-	commandList.Add( objData );
+	if( objData != 0 )
+		commandList.Add( objData );
+#ifndef WIN32
+	else
+	{
+		Serial1.print('X');
+		Serial1.print(commandList.Size());
+	}
+#endif
 }
 void gCommandRouter::RouteReply( gCommandObject *objData, unsigned char status, unsigned int rtnDataSize, void *rtnData ) {
 	gCommandObject *respData = objData->InitReply( status, rtnDataSize, rtnData );
-	commandResponseList.Add( respData );
+	if( respData != 0 )
+		commandResponseList.Add( respData );
+#ifndef WIN32
+	else
+	{
+		Serial1.print('Y');
+		Serial1.print(commandResponseList.Size());
+	}
+#endif
 }
 
 void gCommandRouter::DumpHandlerTree() {

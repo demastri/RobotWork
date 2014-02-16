@@ -54,8 +54,8 @@ private:
 	double rightInstantaneousSpeed;
 	static bool encoderTargetsSet;
 	static bool encoderTargetsMet;
-	gCommandObject *leftTargetCmd;
-	gCommandObject *rightTargetCmd;
+	static int leftTargetRequest;
+	static int rightTargetRequest;
 	static long leftTarget;
 	static long rightTarget;
 	static volatile long leftAggregateClicks;

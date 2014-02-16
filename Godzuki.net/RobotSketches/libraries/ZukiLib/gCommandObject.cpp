@@ -1,3 +1,7 @@
+#ifndef WIN32
+#include <Arduino.h>
+#endif
+
 #include "gCommandObject.h"
 #include "gComms.h"
 
@@ -6,8 +10,51 @@ using namespace Godzuki;
 #endif
 gComms gMonitor;
 
+#define USE_STATIC_GCMD_STORAGE
+
 extern unsigned long millis();
 
+gCommandObject gCommandObject::cmdStorage[LOCAL_STORAGE_SIZE] = {
+//	new gCommandObject(),new gCommandObject(),new gCommandObject(),new gCommandObject(),new gCommandObject(),
+//	new gCommandObject(),new gCommandObject(),new gCommandObject(),new gCommandObject(),new gCommandObject()
+	new gCommandObject(), new gCommandObject(),new gCommandObject()
+};
+int gCommandObject::curCmdStorage = 0;
+
+gCommandObject *gCommandObject::NextObj() {
+#ifdef USE_STATIC_GCMD_STORAGE
+	int nextIndex = curCmdStorage++ % LOCAL_STORAGE_SIZE;
+#ifndef WIN32
+	Serial1.print(nextIndex); 
+#endif
+	gCommandObject *outObj = &(cmdStorage[ nextIndex ]);
+#else
+	gCommandObject *outObj = new gCommandObject();
+#endif
+	return outObj;
+}
+gCommandObject *gCommandObject::gCommandObjectFactory() {
+	gCommandObject *outObj = NextObj();
+	outObj->Init();
+	return outObj;
+}
+gCommandObject *gCommandObject::gCommandObjectFactory( gCommandObject *rhs ) {
+	gCommandObject *outObj = NextObj();
+	outObj->Init( rhs );
+	return outObj;
+}
+gCommandObject *gCommandObject::gCommandObjectFactory( int src, int srcdev, int srcinst, int dev, int inst, int cmd, int param, long paySize, void *payData ) {
+	gCommandObject *outObj = NextObj();
+	outObj->Init( src, srcdev, srcinst, dev, inst, cmd, param, paySize, payData );
+	return outObj;
+}
+void gCommandObject::gCommandObjectRelease( gCommandObject *rhs ) {
+#ifdef USE_STATIC_GCMD_STORAGE
+#else
+	delete rhs;
+#endif
+}
+	
 gCommandObject::gCommandObject( int src, int srcdev, int srcinst, int dev, int inst, int cmd, int param, long paySize, void *payData ) {
 	Init( src, srcdev, srcinst, dev, inst, cmd, param, paySize, payData );
 }
@@ -25,6 +72,10 @@ gCommandObject::gCommandObject( int src, int dev, int inst, int cmd ) {
 }
 
 gCommandObject::gCommandObject() {
+	Init();
+}
+
+void gCommandObject::Init() {
 	Init( 0, -1, -1, -1, -1, -1, -1, 0, 0 );
 }
 
@@ -40,7 +91,8 @@ void gCommandObject::Init( int src, int srcdev, int srcinst, int dev, int inst, 
 	isReply = false;
 	cmdSrc = src;
 }
-gCommandObject::gCommandObject( gCommandObject *rhs ) {
+
+void gCommandObject::Init( gCommandObject *rhs ) {
 	sourceDeviceID = rhs->sourceDeviceID;
 	sourceInstanceID = rhs->sourceInstanceID;
 	targetDeviceID = rhs->targetDeviceID;
@@ -51,6 +103,10 @@ gCommandObject::gCommandObject( gCommandObject *rhs ) {
 	payloadData = rhs->payloadData;
 	isReply = rhs->isReply;
 	cmdSrc = rhs->cmdSrc;
+}
+
+gCommandObject::gCommandObject( gCommandObject *rhs ) {
+	Init( rhs );
 }
 gCommandObject *gCommandObject::InitReply( unsigned char status, long paySize, void *payData ) { 
 	rtnStatus = status; 
@@ -65,6 +121,7 @@ uint8_t cmdStrBfr[OUT_BFR_SIZE];
 int currentStartPointer = 0;
 uint8_t *gCommandObject::ToCommandString( size_t *t ) {
 	int startPoint=currentStartPointer;
+	startPoint = currentStartPointer = 0;
 	//   !ssiimmxxyyzzzzzz#  - look in the evernote blog, but it's pretty self evident...
 	if( !isReply ) {
 		if( currentStartPointer + 20 >=  OUT_BFR_SIZE )

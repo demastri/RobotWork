@@ -10,6 +10,7 @@ public:
 	gInputs();
 	void setup(int thisID, gCommandRouter *router );
 	int ReadCommand( int &param );
+	int showKeyStateOnLED;
 private:
 	gCommandRouter *pRouter;
 	int instanceID;
@@ -20,7 +21,6 @@ private:
 	int NUM_KEYS;
 	int key;
 	int oldkey;
-	int showKeyStateOnLED;
 	int returnKey;
 
 	int get_key(unsigned int input);

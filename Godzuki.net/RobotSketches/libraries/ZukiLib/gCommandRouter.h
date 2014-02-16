@@ -18,7 +18,7 @@
 
 #define CMD_METHOD_DEREGISTER_ALL()			pRouter->RemoveAllCommandHandlers( DEVICE_ID, instanceID )
 
-#define ROUTE_COMMAND(X,Y,Z,A)				pRouter->RouteCommand( new gCommandObject(-1, DEVICE_ID, instanceID, X, Y, Z, A, 0, 0 ) )
+#define ROUTE_COMMAND(X,Y,Z,A)				pRouter->RouteCommand( gCommandObject::gCommandObjectFactory(-1, DEVICE_ID, instanceID, X, Y, Z, A, 0, 0 ) )
 #define ROUTE_REPLY(X,S,P)					pRouter->RouteReply( cmdObj, X, S, P )
 
 static const int ROUTER_NO_COMMAND       = 999;
@@ -42,8 +42,8 @@ public:
 	void PrintRouteList(gRouteTableEntry *l);
 
 private:
-	void HandleTimedCommands();
-	void ExecuteCommandQueue();
+	void GenerateTimedCommands();
+	void HandleCommandQueue();
 	void HandleCommandResponses();
 
 	gRouteTableEntry *FindRouteTable( gCommandObject *commandObj );

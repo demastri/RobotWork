@@ -32,6 +32,8 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.sessionLog = new System.Windows.Forms.TextBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.CalibIndex = new System.Windows.Forms.ComboBox();
+            this.CalibLR = new System.Windows.Forms.ComboBox();
             this.CheckCalibrationButton = new System.Windows.Forms.Button();
             this.IgnoreStepFails = new System.Windows.Forms.CheckBox();
             this.UseGoalDefaults = new System.Windows.Forms.CheckBox();
@@ -85,8 +87,7 @@
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.MessageLoopTimer = new System.Windows.Forms.Timer(this.components);
             this.ClearCmdLogButton = new System.Windows.Forms.Button();
-            this.CalibLR = new System.Windows.Forms.ComboBox();
-            this.CalibIndex = new System.Windows.Forms.ComboBox();
+            this.isUSB = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.MotorSelectGroup.SuspendLayout();
@@ -126,6 +127,7 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.isUSB);
             this.groupBox2.Controls.Add(this.CalibIndex);
             this.groupBox2.Controls.Add(this.CalibLR);
             this.groupBox2.Controls.Add(this.CheckCalibrationButton);
@@ -147,6 +149,36 @@
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Connection";
+            // 
+            // CalibIndex
+            // 
+            this.CalibIndex.FormattingEnabled = true;
+            this.CalibIndex.Items.AddRange(new object[] {
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7"});
+            this.CalibIndex.Location = new System.Drawing.Point(49, 140);
+            this.CalibIndex.Name = "CalibIndex";
+            this.CalibIndex.Size = new System.Drawing.Size(34, 21);
+            this.CalibIndex.TabIndex = 21;
+            this.CalibIndex.Text = "0";
+            // 
+            // CalibLR
+            // 
+            this.CalibLR.FormattingEnabled = true;
+            this.CalibLR.Items.AddRange(new object[] {
+            "0",
+            "1"});
+            this.CalibLR.Location = new System.Drawing.Point(8, 140);
+            this.CalibLR.Name = "CalibLR";
+            this.CalibLR.Size = new System.Drawing.Size(35, 21);
+            this.CalibLR.TabIndex = 20;
+            this.CalibLR.Text = "0";
             // 
             // CheckCalibrationButton
             // 
@@ -226,7 +258,7 @@
             // 
             // ExecuteGoalButton
             // 
-            this.ExecuteGoalButton.Location = new System.Drawing.Point(239, 44);
+            this.ExecuteGoalButton.Location = new System.Drawing.Point(264, 44);
             this.ExecuteGoalButton.Name = "ExecuteGoalButton";
             this.ExecuteGoalButton.Size = new System.Drawing.Size(62, 23);
             this.ExecuteGoalButton.TabIndex = 12;
@@ -253,7 +285,7 @@
             // 
             // ConnectToRobotButton
             // 
-            this.ConnectToRobotButton.Location = new System.Drawing.Point(239, 17);
+            this.ConnectToRobotButton.Location = new System.Drawing.Point(264, 17);
             this.ConnectToRobotButton.Name = "ConnectToRobotButton";
             this.ConnectToRobotButton.Size = new System.Drawing.Size(62, 23);
             this.ConnectToRobotButton.TabIndex = 8;
@@ -717,35 +749,15 @@
             this.ClearCmdLogButton.UseVisualStyleBackColor = true;
             this.ClearCmdLogButton.Click += new System.EventHandler(this.ClearCmdLogButton_Click);
             // 
-            // CalibLR
+            // isUSB
             // 
-            this.CalibLR.FormattingEnabled = true;
-            this.CalibLR.Items.AddRange(new object[] {
-            "0",
-            "1"});
-            this.CalibLR.Location = new System.Drawing.Point(8, 140);
-            this.CalibLR.Name = "CalibLR";
-            this.CalibLR.Size = new System.Drawing.Size(35, 21);
-            this.CalibLR.TabIndex = 20;
-            this.CalibLR.Text = "0";
-            // 
-            // CalibIndex
-            // 
-            this.CalibIndex.FormattingEnabled = true;
-            this.CalibIndex.Items.AddRange(new object[] {
-            "0",
-            "1",
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7"});
-            this.CalibIndex.Location = new System.Drawing.Point(49, 140);
-            this.CalibIndex.Name = "CalibIndex";
-            this.CalibIndex.Size = new System.Drawing.Size(34, 21);
-            this.CalibIndex.TabIndex = 21;
-            this.CalibIndex.Text = "0";
+            this.isUSB.AutoSize = true;
+            this.isUSB.Location = new System.Drawing.Point(202, 20);
+            this.isUSB.Name = "isUSB";
+            this.isUSB.Size = new System.Drawing.Size(48, 17);
+            this.isUSB.TabIndex = 22;
+            this.isUSB.Text = "USB";
+            this.isUSB.UseVisualStyleBackColor = true;
             // 
             // MainCnCForm
             // 
@@ -842,6 +854,7 @@
         private System.Windows.Forms.Button CheckCalibrationButton;
         private System.Windows.Forms.ComboBox CalibIndex;
         private System.Windows.Forms.ComboBox CalibLR;
+        private System.Windows.Forms.CheckBox isUSB;
     }
 }
 

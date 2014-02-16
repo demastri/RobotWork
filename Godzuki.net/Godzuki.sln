@@ -51,7 +51,7 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "ZukiWeb", "CnCApps\MainCnC\
 		Release.AspNetCompiler.ForceOverwrite = "true"
 		Release.AspNetCompiler.FixedNames = "false"
 		Release.AspNetCompiler.Debug = "False"
-		VWDPort = "51785"
+		VWDPort = "58500"
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "godzuki", "RobotSketches\MainApplications\godzuki\godzuki.vcxproj", "{B0E25949-EF2D-421B-A620-AECDE30EA4EE}"
@@ -100,16 +100,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Header Files", "Header File
 		RobotSketches\libraries\ZukiLib\gCommandRouter.h = RobotSketches\libraries\ZukiLib\gCommandRouter.h
 		RobotSketches\libraries\ZukiLib\gComms.h = RobotSketches\libraries\ZukiLib\gComms.h
 		RobotSketches\libraries\ZukiLib\gCommsCommands.h = RobotSketches\libraries\ZukiLib\gCommsCommands.h
-		RobotSketches\libraries\ZukiLib\gDistanceSensor.h = RobotSketches\libraries\ZukiLib\gDistanceSensor.h
-		RobotSketches\libraries\ZukiLib\gDistanceSensorCommands.h = RobotSketches\libraries\ZukiLib\gDistanceSensorCommands.h
 		RobotSketches\libraries\ZukiLib\gHBStatus.h = RobotSketches\libraries\ZukiLib\gHBStatus.h
 		RobotSketches\libraries\ZukiLib\gHBStatusCommands.h = RobotSketches\libraries\ZukiLib\gHBStatusCommands.h
 		RobotSketches\libraries\ZukiLib\gInputs.h = RobotSketches\libraries\ZukiLib\gInputs.h
 		RobotSketches\libraries\ZukiLib\gListNode.h = RobotSketches\libraries\ZukiLib\gListNode.h
 		RobotSketches\libraries\ZukiLib\gRouteTableEntry.h = RobotSketches\libraries\ZukiLib\gRouteTableEntry.h
 		RobotSketches\libraries\ZukiLib\gRoutingDeviceIDs.h = RobotSketches\libraries\ZukiLib\gRoutingDeviceIDs.h
-		RobotSketches\libraries\ZukiLib\gServo.h = RobotSketches\libraries\ZukiLib\gServo.h
-		RobotSketches\libraries\ZukiLib\gServoCommands.h = RobotSketches\libraries\ZukiLib\gServoCommands.h
 		RobotSketches\libraries\ZukiLib\ZukiLib.h = RobotSketches\libraries\ZukiLib\ZukiLib.h
 	EndProjectSection
 EndProject
@@ -118,11 +114,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Source Files", "Source File
 		RobotSketches\libraries\ZukiLib\gCommandObject.cpp = RobotSketches\libraries\ZukiLib\gCommandObject.cpp
 		RobotSketches\libraries\ZukiLib\gCommandRouter.cpp = RobotSketches\libraries\ZukiLib\gCommandRouter.cpp
 		RobotSketches\libraries\ZukiLib\gComms.cpp = RobotSketches\libraries\ZukiLib\gComms.cpp
-		RobotSketches\libraries\ZukiLib\gDistanceSensor.cpp = RobotSketches\libraries\ZukiLib\gDistanceSensor.cpp
 		RobotSketches\libraries\ZukiLib\gHBStatus.cpp = RobotSketches\libraries\ZukiLib\gHBStatus.cpp
 		RobotSketches\libraries\ZukiLib\gInputs.cpp = RobotSketches\libraries\ZukiLib\gInputs.cpp
 		RobotSketches\libraries\ZukiLib\gListNode.cpp = RobotSketches\libraries\ZukiLib\gListNode.cpp
-		RobotSketches\libraries\ZukiLib\gServo.cpp = RobotSketches\libraries\ZukiLib\gServo.cpp
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Goals", "Goals", "{8E0915CD-705D-455F-835D-0F226B0F7AAB}"
@@ -172,6 +166,18 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Source Files", "Source File
 	ProjectSection(SolutionItems) = preProject
 		RobotSketches\libraries\ZukiMotors\gMotor.cpp = RobotSketches\libraries\ZukiMotors\gMotor.cpp
 		RobotSketches\libraries\ZukiMotors\gMotorControl.cpp = RobotSketches\libraries\ZukiMotors\gMotorControl.cpp
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gListTest", "RobotSketches\TestingAndHardware\gListTest\gListTest.vcxproj", "{4716033D-E3D7-4A17-A431-C5764348D2BC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ZukiServo", "ZukiServo", "{0B29D1AC-C71E-4250-88A9-359A0C9F3FD4}"
+	ProjectSection(SolutionItems) = preProject
+		RobotSketches\libraries\ZukiServo\gDistanceSensor.cpp = RobotSketches\libraries\ZukiServo\gDistanceSensor.cpp
+		RobotSketches\libraries\ZukiServo\gDistanceSensor.h = RobotSketches\libraries\ZukiServo\gDistanceSensor.h
+		RobotSketches\libraries\ZukiServo\gDistanceSensorCommands.h = RobotSketches\libraries\ZukiServo\gDistanceSensorCommands.h
+		RobotSketches\libraries\ZukiServo\gServo.cpp = RobotSketches\libraries\ZukiServo\gServo.cpp
+		RobotSketches\libraries\ZukiServo\gServo.h = RobotSketches\libraries\ZukiServo\gServo.h
+		RobotSketches\libraries\ZukiServo\gServoCommands.h = RobotSketches\libraries\ZukiServo\gServoCommands.h
 	EndProjectSection
 EndProject
 Global
@@ -512,6 +518,20 @@ Global
 		{69518B0A-5FF4-43C7-8B4C-5362F4E42504}.Release|Win32.Build.0 = Release|Win32
 		{69518B0A-5FF4-43C7-8B4C-5362F4E42504}.Release|x86.ActiveCfg = Release|Win32
 		{69518B0A-5FF4-43C7-8B4C-5362F4E42504}.Release|x86.Build.0 = Release|Win32
+		{4716033D-E3D7-4A17-A431-C5764348D2BC}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{4716033D-E3D7-4A17-A431-C5764348D2BC}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{4716033D-E3D7-4A17-A431-C5764348D2BC}.Debug|Mixed Platforms.Build.0 = Debug|Win32
+		{4716033D-E3D7-4A17-A431-C5764348D2BC}.Debug|Win32.ActiveCfg = Debug|Win32
+		{4716033D-E3D7-4A17-A431-C5764348D2BC}.Debug|Win32.Build.0 = Debug|Win32
+		{4716033D-E3D7-4A17-A431-C5764348D2BC}.Debug|x86.ActiveCfg = Debug|Win32
+		{4716033D-E3D7-4A17-A431-C5764348D2BC}.Debug|x86.Build.0 = Debug|Win32
+		{4716033D-E3D7-4A17-A431-C5764348D2BC}.Release|Any CPU.ActiveCfg = Release|Win32
+		{4716033D-E3D7-4A17-A431-C5764348D2BC}.Release|Mixed Platforms.ActiveCfg = Release|Win32
+		{4716033D-E3D7-4A17-A431-C5764348D2BC}.Release|Mixed Platforms.Build.0 = Release|Win32
+		{4716033D-E3D7-4A17-A431-C5764348D2BC}.Release|Win32.ActiveCfg = Release|Win32
+		{4716033D-E3D7-4A17-A431-C5764348D2BC}.Release|Win32.Build.0 = Release|Win32
+		{4716033D-E3D7-4A17-A431-C5764348D2BC}.Release|x86.ActiveCfg = Release|Win32
+		{4716033D-E3D7-4A17-A431-C5764348D2BC}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -535,6 +555,7 @@ Global
 		{5BE70941-3A61-4AFB-881D-83036F0AD2BB} = {641335E6-5FB9-4262-84BD-856D7498214F}
 		{9C08D161-E649-407F-B8B4-1E25B0BD8ABF} = {641335E6-5FB9-4262-84BD-856D7498214F}
 		{DA305132-0E50-4699-9F0E-BF1218C22E1A} = {641335E6-5FB9-4262-84BD-856D7498214F}
+		{4716033D-E3D7-4A17-A431-C5764348D2BC} = {641335E6-5FB9-4262-84BD-856D7498214F}
 		{B0E25949-EF2D-421B-A620-AECDE30EA4EE} = {9D85AA06-B3CF-4F54-92AA-3AC4025A8F41}
 		{69518B0A-5FF4-43C7-8B4C-5362F4E42504} = {9D85AA06-B3CF-4F54-92AA-3AC4025A8F41}
 		{9A665BCB-B2ED-41AD-B95F-8AE4F3641997} = {A5C8264C-34A8-4318-8C37-9BBF3788BBA6}
@@ -554,6 +575,7 @@ Global
 		{A9E5E57E-C0DE-4994-B368-71A19C76F6BF} = {83AD712B-4FD8-41B5-883A-A8A0F3B355C6}
 		{1897E05C-2E38-4D44-9CCD-D2EEFD5AE1EB} = {83AD712B-4FD8-41B5-883A-A8A0F3B355C6}
 		{156A4ADD-6DE6-4124-B485-DAEB2FF606F1} = {83AD712B-4FD8-41B5-883A-A8A0F3B355C6}
+		{0B29D1AC-C71E-4250-88A9-359A0C9F3FD4} = {83AD712B-4FD8-41B5-883A-A8A0F3B355C6}
 		{58E6A118-293E-4DC5-B592-72D216BA4A2F} = {A9E5E57E-C0DE-4994-B368-71A19C76F6BF}
 		{20CC6DA1-00B2-47A9-B7AC-6ECEFF1A3F8D} = {A9E5E57E-C0DE-4994-B368-71A19C76F6BF}
 		{7B3E249F-345F-45E7-9985-47557157E290} = {8E0915CD-705D-455F-835D-0F226B0F7AAB}
