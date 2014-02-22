@@ -24,6 +24,8 @@ namespace Godzuki
         // global command status values
         public const int GLOBAL_COMMAND_STATUS_OK            = 00;
         public const int GLOBAL_COMMAND_STATUS_FAIL          = 01;
+        public const int GLOBAL_COMMAND_STATUS_RESEND        = 02;
+
         // global command values - 90+ reserved for global
         public const int COMMAND_ID_GLOBAL_NONE              = 97;
         public const int COMMAND_ID_GLOBAL_REQUEST_STATUS    = 98;

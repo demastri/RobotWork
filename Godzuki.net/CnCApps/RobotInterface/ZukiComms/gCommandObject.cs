@@ -46,7 +46,7 @@ namespace Godzuki
             commandID = cmd;
             parameter = param;
             payloadSize = paySize;
-            payloadData = payData;
+            payloadData = (char [])(payData == null ? null : payData.Clone());
             isReply = false;
             isLocal = true;
 
@@ -125,7 +125,7 @@ namespace Godzuki
                 commandID.ToString("D2") +
                 rtnStatus.ToString("D2") +
                 payloadSize.ToString("D4") +
-                payloadData +
+                (payloadData == null ? "" : new string( payloadData )) +
                 "#";
         }
 

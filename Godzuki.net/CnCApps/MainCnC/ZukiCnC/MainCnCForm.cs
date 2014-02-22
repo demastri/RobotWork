@@ -42,9 +42,11 @@ namespace ZukiCnC
         Dictionary<DateTime, Godzuki.gCommandObject> openCommands;
 
         bool isConnected;
+        bool isConnected2;
 
         bool isExecutingGoal;
         Godzuki.ZukiComms gz = new Godzuki.ZukiComms();
+        Godzuki.ZukiComms gz2 = new Godzuki.ZukiComms();
         System.Xml.XmlDocument goalDoc = null;
         System.Xml.XmlNodeList allGoalNodes = null;
         System.Xml.XmlNode currentGoalNode = null;
@@ -63,6 +65,7 @@ namespace ZukiCnC
         int openSpeedUpdates = 0;
         long msForCalibration = 5000;
         int connectedInstance = 1;
+        int connectedInstance2 = 2;
 
         double wheelDiamMM = 65.0;
         int clicksPerRev = 20;
@@ -256,6 +259,8 @@ namespace ZukiCnC
                 gz.curData.RemoveAt(0);
             }
             // in any event, if there are commands that have timed out, message them here...
+            // now that we have retries in the comms object, we should never be here waiting for an ack
+            // as long as the retry fail is honored in the curdata message handler...
             List<DateTime> deadKeys = new List<DateTime>();
             foreach (DateTime dt in openCommands.Keys)
                 if (DateTime.Now > dt)
@@ -343,6 +348,49 @@ namespace ZukiCnC
                     currentGoalStepMet = true;
             }
         }
+
+        private void ConnectToRobot2Button_Click(object sender, EventArgs e)
+        {
+            if (!isConnected2)
+            {
+                if (isUSB2.Checked)
+                    gz2.SelectPort((string)availablePorts2.SelectedItem, 115200, System.IO.Ports.Parity.None, System.IO.Ports.StopBits.One, 8, System.IO.Ports.Handshake.None, true);
+                else
+                    gz2.SelectPort((string)availablePorts2.SelectedItem, 9600, System.IO.Ports.Parity.None, System.IO.Ports.StopBits.One, 8, System.IO.Ports.Handshake.None, false);
+
+                if (gz.isConnected)
+                {
+                    connectedInstance2 = Convert.ToInt32((string)availableInstances2.SelectedItem);
+                    ConnectToRobot2Button.Text = "Connecting";
+                    Godzuki.gCommandObject cmdObj = new Godzuki.gCommandObject(
+                        Godzuki.ZukiCommands.CNC_APP_DEVICE_ID, 1,
+                        Godzuki.ZukiCommands.GODZUKI_SENSOR_PLATFORM_DEVICE_ID, connectedInstance,
+                        Godzuki.ZukiCommands.COMMAND_ID_GLOBAL_REQUEST_STATUS);
+                    gz2.PostCommand(cmdObj);
+                    // somehow we need to set a timer that expires and revokes the connectedness if we haven't gotten a reply
+                    openCommands.Add(DateTime.Now.Add(new TimeSpan(0, 0, 0, 0, 600)), cmdObj);
+                }
+                else
+                {
+                    MessageLoopTimer.Stop();
+
+                    gz2.curData.Add("Couldn't open port, please check connections...");
+                    MessageBox.Show("Couldn't open port, please check connections...");
+
+                    MessageLoopTimer.Start();
+                }
+            }
+            else
+            {
+                ConnectToRobot2Button.Text = "Connect";
+                gz2.ShutDown();
+                isConnected2 = false;
+                if (currentGoalCommand == "Platform/Disconnect")
+                    currentGoalStepMet = true;
+            }
+        }
+
+        
         #endregion
 
         #region servo control
@@ -889,18 +937,33 @@ namespace ZukiCnC
         {
             string[] ports = Godzuki.ZukiComms.GetPortNames();
             string refText = availablePorts.SelectedText;
+            string refText2 = availablePorts2.SelectedText;
             availablePorts.Items.Clear();
+            availablePorts2.Items.Clear();
             if (ports.Length == 0)
+            {
                 availablePorts.Items.Add("None");
+                availablePorts2.Items.Add("None");
+            }
             else
                 foreach (string s in ports)
+                {
                     availablePorts.Items.Add(s);
+                    availablePorts2.Items.Add(s);
+                }
             if (refText != "" && ports.Contains(refText))
                 availablePorts.SelectedText = refText;
             else
                 availablePorts.SelectedIndex = 0;
             if (availableInstances.SelectedIndex < 0)
                 availableInstances.SelectedIndex = 0;
+
+            if (refText2 != "" && ports.Contains(refText))
+                availablePorts2.SelectedText = refText;
+            else
+                availablePorts2.SelectedIndex = 0;
+            if (availableInstances2.SelectedIndex < 0)
+                availableInstances2.SelectedIndex = 1;
 
             InitializeGoals();
         }

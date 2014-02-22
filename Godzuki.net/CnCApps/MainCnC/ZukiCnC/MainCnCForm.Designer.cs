@@ -32,6 +32,7 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.sessionLog = new System.Windows.Forms.TextBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.isUSB = new System.Windows.Forms.CheckBox();
             this.CalibIndex = new System.Windows.Forms.ComboBox();
             this.CalibLR = new System.Windows.Forms.ComboBox();
             this.CheckCalibrationButton = new System.Windows.Forms.Button();
@@ -87,7 +88,11 @@
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.MessageLoopTimer = new System.Windows.Forms.Timer(this.components);
             this.ClearCmdLogButton = new System.Windows.Forms.Button();
-            this.isUSB = new System.Windows.Forms.CheckBox();
+            this.isUSB2 = new System.Windows.Forms.CheckBox();
+            this.availableInstances2 = new System.Windows.Forms.ComboBox();
+            this.ConnectToRobot2Button = new System.Windows.Forms.Button();
+            this.availablePorts2 = new System.Windows.Forms.ComboBox();
+            this.label6 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.MotorSelectGroup.SuspendLayout();
@@ -127,6 +132,11 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.isUSB2);
+            this.groupBox2.Controls.Add(this.availableInstances2);
+            this.groupBox2.Controls.Add(this.ConnectToRobot2Button);
+            this.groupBox2.Controls.Add(this.availablePorts2);
+            this.groupBox2.Controls.Add(this.label6);
             this.groupBox2.Controls.Add(this.isUSB);
             this.groupBox2.Controls.Add(this.CalibIndex);
             this.groupBox2.Controls.Add(this.CalibLR);
@@ -143,12 +153,22 @@
             this.groupBox2.Controls.Add(this.ConnectToRobotButton);
             this.groupBox2.Controls.Add(this.availablePorts);
             this.groupBox2.Controls.Add(this.label2);
-            this.groupBox2.Location = new System.Drawing.Point(288, 362);
+            this.groupBox2.Location = new System.Drawing.Point(288, 336);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(353, 196);
+            this.groupBox2.Size = new System.Drawing.Size(353, 222);
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Connection";
+            // 
+            // isUSB
+            // 
+            this.isUSB.AutoSize = true;
+            this.isUSB.Location = new System.Drawing.Point(202, 20);
+            this.isUSB.Name = "isUSB";
+            this.isUSB.Size = new System.Drawing.Size(48, 17);
+            this.isUSB.TabIndex = 22;
+            this.isUSB.Text = "USB";
+            this.isUSB.UseVisualStyleBackColor = true;
             // 
             // CalibIndex
             // 
@@ -162,7 +182,7 @@
             "5",
             "6",
             "7"});
-            this.CalibIndex.Location = new System.Drawing.Point(49, 140);
+            this.CalibIndex.Location = new System.Drawing.Point(49, 165);
             this.CalibIndex.Name = "CalibIndex";
             this.CalibIndex.Size = new System.Drawing.Size(34, 21);
             this.CalibIndex.TabIndex = 21;
@@ -174,7 +194,7 @@
             this.CalibLR.Items.AddRange(new object[] {
             "0",
             "1"});
-            this.CalibLR.Location = new System.Drawing.Point(8, 140);
+            this.CalibLR.Location = new System.Drawing.Point(8, 165);
             this.CalibLR.Name = "CalibLR";
             this.CalibLR.Size = new System.Drawing.Size(35, 21);
             this.CalibLR.TabIndex = 20;
@@ -182,7 +202,7 @@
             // 
             // CheckCalibrationButton
             // 
-            this.CheckCalibrationButton.Location = new System.Drawing.Point(6, 167);
+            this.CheckCalibrationButton.Location = new System.Drawing.Point(6, 192);
             this.CheckCalibrationButton.Name = "CheckCalibrationButton";
             this.CheckCalibrationButton.Size = new System.Drawing.Size(64, 23);
             this.CheckCalibrationButton.TabIndex = 19;
@@ -193,7 +213,7 @@
             // IgnoreStepFails
             // 
             this.IgnoreStepFails.AutoSize = true;
-            this.IgnoreStepFails.Location = new System.Drawing.Point(139, 74);
+            this.IgnoreStepFails.Location = new System.Drawing.Point(139, 99);
             this.IgnoreStepFails.Name = "IgnoreStepFails";
             this.IgnoreStepFails.Size = new System.Drawing.Size(75, 17);
             this.IgnoreStepFails.TabIndex = 18;
@@ -203,7 +223,7 @@
             // UseGoalDefaults
             // 
             this.UseGoalDefaults.AutoSize = true;
-            this.UseGoalDefaults.Location = new System.Drawing.Point(239, 74);
+            this.UseGoalDefaults.Location = new System.Drawing.Point(239, 99);
             this.UseGoalDefaults.Name = "UseGoalDefaults";
             this.UseGoalDefaults.Size = new System.Drawing.Size(87, 17);
             this.UseGoalDefaults.TabIndex = 17;
@@ -212,7 +232,7 @@
             // 
             // GoalCurrentStep
             // 
-            this.GoalCurrentStep.Location = new System.Drawing.Point(89, 100);
+            this.GoalCurrentStep.Location = new System.Drawing.Point(89, 125);
             this.GoalCurrentStep.Name = "GoalCurrentStep";
             this.GoalCurrentStep.ReadOnly = true;
             this.GoalCurrentStep.Size = new System.Drawing.Size(258, 20);
@@ -221,7 +241,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(14, 103);
+            this.label5.Location = new System.Drawing.Point(14, 128);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(69, 13);
             this.label5.TabIndex = 15;
@@ -248,7 +268,7 @@
             // 
             // RefreshPortData
             // 
-            this.RefreshPortData.Location = new System.Drawing.Point(202, 167);
+            this.RefreshPortData.Location = new System.Drawing.Point(202, 192);
             this.RefreshPortData.Name = "RefreshPortData";
             this.RefreshPortData.Size = new System.Drawing.Size(64, 23);
             this.RefreshPortData.TabIndex = 13;
@@ -258,7 +278,7 @@
             // 
             // ExecuteGoalButton
             // 
-            this.ExecuteGoalButton.Location = new System.Drawing.Point(264, 44);
+            this.ExecuteGoalButton.Location = new System.Drawing.Point(264, 69);
             this.ExecuteGoalButton.Name = "ExecuteGoalButton";
             this.ExecuteGoalButton.Size = new System.Drawing.Size(62, 23);
             this.ExecuteGoalButton.TabIndex = 12;
@@ -269,7 +289,7 @@
             // goalList
             // 
             this.goalList.FormattingEnabled = true;
-            this.goalList.Location = new System.Drawing.Point(89, 46);
+            this.goalList.Location = new System.Drawing.Point(89, 71);
             this.goalList.Name = "goalList";
             this.goalList.Size = new System.Drawing.Size(144, 21);
             this.goalList.TabIndex = 11;
@@ -277,7 +297,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(14, 49);
+            this.label3.Location = new System.Drawing.Point(14, 74);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(69, 13);
             this.label3.TabIndex = 10;
@@ -306,9 +326,9 @@
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(14, 22);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(80, 13);
+            this.label2.Size = new System.Drawing.Size(47, 13);
             this.label2.TabIndex = 8;
-            this.label2.Text = "COM/Instance:";
+            this.label2.Text = "GodzuKi";
             // 
             // MotorSelectGroup
             // 
@@ -749,15 +769,61 @@
             this.ClearCmdLogButton.UseVisualStyleBackColor = true;
             this.ClearCmdLogButton.Click += new System.EventHandler(this.ClearCmdLogButton_Click);
             // 
-            // isUSB
+            // isUSB2
             // 
-            this.isUSB.AutoSize = true;
-            this.isUSB.Location = new System.Drawing.Point(202, 20);
-            this.isUSB.Name = "isUSB";
-            this.isUSB.Size = new System.Drawing.Size(48, 17);
-            this.isUSB.TabIndex = 22;
-            this.isUSB.Text = "USB";
-            this.isUSB.UseVisualStyleBackColor = true;
+            this.isUSB2.AutoSize = true;
+            this.isUSB2.Location = new System.Drawing.Point(202, 44);
+            this.isUSB2.Name = "isUSB2";
+            this.isUSB2.Size = new System.Drawing.Size(48, 17);
+            this.isUSB2.TabIndex = 27;
+            this.isUSB2.Text = "USB";
+            this.isUSB2.UseVisualStyleBackColor = true;
+            // 
+            // availableInstances2
+            // 
+            this.availableInstances2.FormattingEnabled = true;
+            this.availableInstances2.Items.AddRange(new object[] {
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10"});
+            this.availableInstances2.Location = new System.Drawing.Point(159, 43);
+            this.availableInstances2.Name = "availableInstances2";
+            this.availableInstances2.Size = new System.Drawing.Size(37, 21);
+            this.availableInstances2.TabIndex = 26;
+            // 
+            // ConnectToRobot2Button
+            // 
+            this.ConnectToRobot2Button.Location = new System.Drawing.Point(264, 41);
+            this.ConnectToRobot2Button.Name = "ConnectToRobot2Button";
+            this.ConnectToRobot2Button.Size = new System.Drawing.Size(62, 23);
+            this.ConnectToRobot2Button.TabIndex = 23;
+            this.ConnectToRobot2Button.Text = "Connect";
+            this.ConnectToRobot2Button.UseVisualStyleBackColor = true;
+            this.ConnectToRobot2Button.Click += new System.EventHandler(this.ConnectToRobot2Button_Click);
+            // 
+            // availablePorts2
+            // 
+            this.availablePorts2.FormattingEnabled = true;
+            this.availablePorts2.Location = new System.Drawing.Point(89, 43);
+            this.availablePorts2.Name = "availablePorts2";
+            this.availablePorts2.Size = new System.Drawing.Size(64, 21);
+            this.availablePorts2.TabIndex = 25;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(14, 46);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(64, 13);
+            this.label6.TabIndex = 24;
+            this.label6.Text = "GodzukEYe";
             // 
             // MainCnCForm
             // 
@@ -855,6 +921,11 @@
         private System.Windows.Forms.ComboBox CalibIndex;
         private System.Windows.Forms.ComboBox CalibLR;
         private System.Windows.Forms.CheckBox isUSB;
+        private System.Windows.Forms.CheckBox isUSB2;
+        private System.Windows.Forms.ComboBox availableInstances2;
+        private System.Windows.Forms.Button ConnectToRobot2Button;
+        private System.Windows.Forms.ComboBox availablePorts2;
+        private System.Windows.Forms.Label label6;
     }
 }
 
