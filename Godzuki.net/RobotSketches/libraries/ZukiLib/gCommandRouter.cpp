@@ -39,7 +39,7 @@ void gCommandRouter::AddCommandHandler( int deviceID, int instanceID, void *objR
 	handlerList.Add( nextID );
 }
 
-void gCommandRouter::RemoveAllCommandHandlers( int deviceID, int instanceID ) 
+void gCommandRouter::RemoveAllCommandHandlers() 
 {
 	while( !handlerList.isEmpty() ) {
 		delete (gRouteTableEntry *)handlerList.PopFirst();
@@ -52,13 +52,20 @@ void gCommandRouter::RemoveCommandHandler( int deviceID, int instanceID )
 }
 
 void gCommandRouter::RemoveCommandHandler( int deviceID, int instanceID, int cmdID, long timer ) {
-	for( gListNode *curNode=handlerList.First(); curNode != 0; curNode=handlerList.Next(curNode) ) {
-		gRouteTableEntry *curEntry = (gRouteTableEntry *)curNode->GetObject();
-		if( deviceID == curEntry->deviceID && instanceID == curEntry->instanceID && 
-			(cmdID == -1 || cmdID == curEntry->cmdID) && (timer == -1 || timer == curEntry->reTriggerInMills) ) {
-			handlerList.RemoveNode(curNode);
-			delete curEntry;
-			return;
+	bool done = false;
+
+	while( !done ) { 
+		done = true;
+		for( gListNode *curNode=handlerList.First(); curNode != 0; curNode=handlerList.Next(curNode) ) {
+			gRouteTableEntry *curEntry = (gRouteTableEntry *)curNode->GetObject();
+			if( deviceID == curEntry->deviceID && instanceID == curEntry->instanceID && 
+				(cmdID == -1 || cmdID == curEntry->cmdID) && 
+				(timer == -1 || timer == curEntry->reTriggerInMills) ) {
+					handlerList.RemoveNode(curNode);
+					delete curEntry;
+					done = false;
+					break;
+			}
 		}
 	}
 }

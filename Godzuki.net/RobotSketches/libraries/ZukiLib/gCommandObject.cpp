@@ -121,7 +121,7 @@ uint8_t cmdStrBfr[OUT_BFR_SIZE];
 int currentStartPointer = 0;
 uint8_t *gCommandObject::ToCommandString( size_t *t ) {
 	int startPoint=currentStartPointer;
-	startPoint = currentStartPointer = 0;
+	//startPoint = currentStartPointer = 0;
 	//   !ssiimmxxyyzzzzzz#  - look in the evernote blog, but it's pretty self evident...
 	if( !isReply ) {
 		if( currentStartPointer + 20 >=  OUT_BFR_SIZE )

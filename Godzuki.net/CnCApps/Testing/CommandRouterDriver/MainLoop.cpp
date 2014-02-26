@@ -25,7 +25,10 @@ extern int DEFAULT_DEVICE_ID;
 extern int DEFAULT_INSTANCE_ID;
 
 void receiveCommands( void *objRef, gCommandObject *cmdObj ) {
-	printf( "\nReceived a command response...\nexpecting a string got\n status <%d>\n size <%d>\n data <%s>\n", (int)cmdObj->rtnStatus, (int)cmdObj->payloadSize, (char *)cmdObj->payloadData);
+	if( cmdObj->isReply )
+		printf( "\nReceived a reply!\n status <%d>\n data <%.*s>\n", (int)cmdObj->rtnStatus, (char *)cmdObj->payloadSize, (char *)cmdObj->payloadData);
+	else
+		printf( "\nReceived a command response...\nexpecting a string got\n status <%d>\n size <%d>\n data <%.*s>\n", (int)cmdObj->rtnStatus, (int)cmdObj->payloadSize, (int)cmdObj->payloadSize, (char *)cmdObj->payloadData);
 }
 
 void setup() {
@@ -87,7 +90,7 @@ int loop() {
 			pMyObject->teardownTimer( &myRouter );
 			break;
 		case'X':
-			printf( "Teardown all handlers\n" );
+			printf( "Teardown object\n" );
 			delete pMyObject;
 			pMyObject = 0;
 			break;
