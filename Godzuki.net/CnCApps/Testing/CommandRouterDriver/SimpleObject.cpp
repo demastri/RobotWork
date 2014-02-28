@@ -37,22 +37,22 @@ void SimpleObject::teardownCommandListener( gCommandRouter &router ) {
 }
 
 CMD_METHOD_IMPLEMENT(SimpleObject,processCommand) {
-	char *s = "I did something by default...";
+	char *s = "I did something bad by default...";
 	int size = strlen( s );
-	ROUTE_REPLY( COMMAND_REPLY_OK, size, s );
+	ROUTE_REPLY( GLOBAL_COMMAND_STATUS_FAIL, size, s );
 }
 
 CMD_METHOD_IMPLEMENT(SimpleObject,doSomething) {
 	// put the doSomething code here - the method to register and route to the correct object is done automagically...
 	char *s = "I did something ...";
 	int size = strlen( s );
-	ROUTE_REPLY( COMMAND_REPLY_OK, size, s );
+	ROUTE_REPLY( GLOBAL_COMMAND_STATUS_OK, size, s );
 }
 
 CMD_METHOD_IMPLEMENT(SimpleObject,doSomethingElse) {
 	// put the doSomethingElse code here - the method to register and route to the correct object is done automagically...
 	char *s = "I did something...else";
 	int size = strlen( s );
-	ROUTE_REPLY( COMMAND_REPLY_OK, size, s );
+	ROUTE_REPLY( GLOBAL_COMMAND_STATUS_OK, size, s );
 }
 

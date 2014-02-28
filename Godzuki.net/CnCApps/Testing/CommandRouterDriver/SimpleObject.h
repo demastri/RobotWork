@@ -11,9 +11,6 @@ public:
 	static const unsigned char COMMAND_ID_DO_SOMETHING		= 0x01;
 	static const unsigned char COMMAND_ID_DO_SOMETHING_ELSE	= 0x02;
 
-	static const unsigned char COMMAND_REPLY_OK				= 0x01;
-	static const unsigned char COMMAND_REPLY_FAIL			= 0xFF;
-
 	SimpleObject();
 	~SimpleObject() {
 		CMD_METHOD_DEREGISTER_ALL();
