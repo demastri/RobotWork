@@ -16,7 +16,8 @@
 #define CMD_METHOD_DEREGISTER_TIMER(X,T)    router.RemoveCommandHandler( DEVICE_ID, instanceID, X, T )
 #define CMD_METHOD_DEREGISTER_DEFAULT()     router.RemoveCommandHandler( DEVICE_ID, instanceID )
 
-#define CMD_METHOD_DEREGISTER_ALL()			pRouter->RemoveAllCommandHandlers( DEVICE_ID, instanceID )
+// client apps should never be in a position to reallty remove ALL handlers as RemoveAll...() allows
+#define CMD_METHOD_DEREGISTER_ALL()			pRouter->RemoveCommandHandler( DEVICE_ID, instanceID )
 
 #define ROUTE_COMMAND(X,Y,Z,A)				pRouter->RouteCommand( gCommandObject::gCommandObjectFactory(-1, DEVICE_ID, instanceID, X, Y, Z, A, 0, 0 ) )
 #define ROUTE_REPLY(X,S,P)					pRouter->RouteReply( cmdObj, X, S, P )
@@ -26,11 +27,12 @@ static const int ROUTER_NO_COMMAND       = 999;
 class gCommandRouter {
 public:
 	gCommandRouter();
+	~gCommandRouter() { RemoveAllCommandHandlers(); };
+
 	void setup();
 	void AddCommandHandler( int deviceID, int instanceID, void *objRef, cmdHandler thisHandler );  // default backstop
 	void AddCommandHandler( int deviceID, int instanceID, void *objRef, int cmdID, cmdHandler thisHandler, long timer );
 
-	void RemoveAllCommandHandlers( int deviceID, int instanceID );  // catchall backstop
 	void RemoveCommandHandler( int deviceID, int instanceID );  // default backstop
 	void RemoveCommandHandler( int deviceID, int instanceID, int cmdID, long timer );
 
@@ -42,6 +44,7 @@ public:
 	void PrintRouteList(gRouteTableEntry *l);
 
 private:
+	void RemoveAllCommandHandlers();  // catchall backstop
 	void GenerateTimedCommands();
 	void HandleCommandQueue();
 	void HandleCommandResponses();
