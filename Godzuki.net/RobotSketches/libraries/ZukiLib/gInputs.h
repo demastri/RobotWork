@@ -15,6 +15,8 @@ private:
 	gCommandRouter *pRouter;
 	int instanceID;
 	void setupCommandListener( gCommandRouter &router );
+	void BuildSerialCommand( int portID );
+
 	CMD_METHOD_DEFINE(processCommand);
 
 	int adc_key_in;

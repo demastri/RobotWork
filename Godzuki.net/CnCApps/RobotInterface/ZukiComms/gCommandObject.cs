@@ -46,7 +46,7 @@ namespace Godzuki
             commandID = cmd;
             parameter = param;
             payloadSize = paySize;
-            payloadData = (char [])(payData == null ? null : payData.Clone());
+            payloadData = (char[])(payData == null ? null : payData.Clone());
             isReply = false;
             isLocal = true;
 
@@ -56,31 +56,39 @@ namespace Godzuki
         {
             if (s.Length == 20 && s[0] == '!' && s[19] == '#')
             {
-                gCommandObject possCmd = new gCommandObject();
-                possCmd.sourceDeviceID      = Convert.ToInt16( s.Substring(1,2) );
-                possCmd.sourceInstanceID    = Convert.ToInt16( s.Substring(3,2) );
-                possCmd.targetDeviceID      = Convert.ToInt16( s.Substring(5,2) );
-                possCmd.targetInstanceID    = Convert.ToInt16( s.Substring(7,2) );
-                possCmd.commandID           = Convert.ToInt16( s.Substring(9,2) );
-                possCmd.rtnStatus = 0;
-                possCmd.parameter = Convert.ToInt64(s.Substring(11, 8));
-                possCmd.payloadSize = 0;
-                possCmd.payloadData = null;
-                possCmd.isReply = false;
-                possCmd.isLocal = false;
+                try
+                {
+                    gCommandObject possCmd = new gCommandObject();
+                    possCmd.sourceDeviceID = Convert.ToInt16(s.Substring(1, 2));
+                    possCmd.sourceInstanceID = Convert.ToInt16(s.Substring(3, 2));
+                    possCmd.targetDeviceID = Convert.ToInt16(s.Substring(5, 2));
+                    possCmd.targetInstanceID = Convert.ToInt16(s.Substring(7, 2));
+                    possCmd.commandID = Convert.ToInt16(s.Substring(9, 2));
+                    possCmd.rtnStatus = 0;
+                    possCmd.parameter = Convert.ToInt64(s.Substring(11, 8));
+                    possCmd.payloadSize = 0;
+                    possCmd.payloadData = null;
+                    possCmd.isReply = false;
+                    possCmd.isLocal = false;
+                    return possCmd;
+                }
+                catch (FormatException)
+                {
+                    return null;
+                }
             }
-            if (s.Length > 10 && s[0] == '&' )
+            if (s.Length > 10 && s[0] == '&')
             {
                 gCommandObject possCmd = new gCommandObject();
-                possCmd.sourceDeviceID      = Convert.ToInt16(s.Substring(1, 2));
-                possCmd.sourceInstanceID    = Convert.ToInt16(s.Substring(3, 2));
-                possCmd.targetDeviceID      = Convert.ToInt16(s.Substring(5, 2));
-                possCmd.targetInstanceID    = Convert.ToInt16(s.Substring(7, 2));
-                possCmd.commandID           = Convert.ToInt16(s.Substring(9, 2));
+                possCmd.sourceDeviceID = Convert.ToInt16(s.Substring(1, 2));
+                possCmd.sourceInstanceID = Convert.ToInt16(s.Substring(3, 2));
+                possCmd.targetDeviceID = Convert.ToInt16(s.Substring(5, 2));
+                possCmd.targetInstanceID = Convert.ToInt16(s.Substring(7, 2));
+                possCmd.commandID = Convert.ToInt16(s.Substring(9, 2));
                 possCmd.parameter = -1;
-                possCmd.rtnStatus           = Convert.ToUInt16(s.Substring(11, 2));
-                possCmd.payloadSize         = Convert.ToInt16(s.Substring(13, 4));
-                possCmd.payloadData         = s.Substring(17, (int)possCmd.payloadSize).ToCharArray();
+                possCmd.rtnStatus = Convert.ToUInt16(s.Substring(11, 2));
+                possCmd.payloadSize = Convert.ToInt16(s.Substring(13, 4));
+                possCmd.payloadData = s.Substring(17, (int)possCmd.payloadSize).ToCharArray();
                 possCmd.isReply = true;
                 possCmd.isLocal = false;
                 if (s.Substring(17 + (int)possCmd.payloadSize, 1) == "#")
@@ -100,22 +108,22 @@ namespace Godzuki
         public bool isLocal;
 
         //gCommandObject *InitReply( unsigned char status, long paySize, void *payData );
-        public void print() { Console.WriteLine( ToString() ); }
+        public void print() { Console.WriteLine(ToString()); }
 
         public uint rtnStatus;
         public long payloadSize;
         public char[] payloadData;
 
-        public string ToString()
+        override public string ToString()
         {
-            if( !isReply )
+            if (!isReply)
                 return "!" +
                     sourceDeviceID.ToString("D2") +
                     sourceInstanceID.ToString("D2") +
                     targetDeviceID.ToString("D2") +
                     targetInstanceID.ToString("D2") +
                     commandID.ToString("D2") +
-                    parameter.ToString(parameter < 0 ? "D7" :"D8") +
+                    parameter.ToString(parameter < 0 ? "D7" : "D8") +
                     "#";
             return "&" +
                 sourceDeviceID.ToString("D2") +
@@ -125,7 +133,7 @@ namespace Godzuki
                 commandID.ToString("D2") +
                 rtnStatus.ToString("D2") +
                 payloadSize.ToString("D4") +
-                (payloadData == null ? "" : new string( payloadData )) +
+                (payloadData == null ? "" : new string(payloadData)) +
                 "#";
         }
 

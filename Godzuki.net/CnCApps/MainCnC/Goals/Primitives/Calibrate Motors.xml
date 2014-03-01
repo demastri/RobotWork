@@ -1,6 +1,7 @@
 <Goal Name="move a meter" Parameters="" DefaultValues="">
   <Step Name="Connect to Robot" Device="Platform" Instance="2" Command="Connect" Timeout="2000">
-    <Parameter Name="COMPORT" Value="COM2"/>
+    <Parameter Name="ZukiPort" Value="COM2"/>
+    <Parameter Name="ZukEYEPort" Value="COM7"/>
   </Step>
 
   <Step Name="Clear Speed Vector" Device="Motors" Instance="1" Command="ClearSpeedVector" Timeout="2000"/>

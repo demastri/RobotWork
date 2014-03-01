@@ -9,10 +9,9 @@ namespace Godzuki
 {
     public class ZukiComms
     {
-        public static List<ZukiComms> portMaps = new List<ZukiComms>();
         public static string[] GetPortNames() { return SerialPort.GetPortNames(); }
         static DateTime lastSendTime;
-        static System.Threading.Timer tmrThreadingTimer = null;
+        System.Threading.Timer tmrThreadingTimer = null;
 
         SerialPort serial;
 
@@ -32,17 +31,17 @@ namespace Godzuki
             serial = null;
             localBfr = "";
             curData.Add("ZukiBot local object alive and well\n");
-            if (tmrThreadingTimer == null)
-            {
-                //Initialize the timer to not start automatically... 
-                tmrThreadingTimer = new System.Threading.Timer(new System.Threading.TimerCallback(MonitorCommands), null, System.Threading.Timeout.Infinite, 100);
-                //Manually start the timer... 
-                tmrThreadingTimer.Change(0, 100);
-                //Manually stop the timer... 
-                //tmrThreadingTimer.Change(Timeout.Infinite, Timeout.Infinite);
-            }
+            tmrThreadingTimer = new System.Threading.Timer(new System.Threading.TimerCallback(MonitorLocalCommands), this, System.Threading.Timeout.Infinite, 100);
+            tmrThreadingTimer.Change(0, 100);
         }
-        public bool isConnected { get { return serial.IsOpen; } }
+        ~ZukiComms()
+        {
+            tmrThreadingTimer.Change(System.Threading.Timeout.Infinite, System.Threading.Timeout.Infinite);
+            tmrThreadingTimer.Dispose();
+            tmrThreadingTimer = null;
+        }
+        
+        public bool isConnected { get { return serial != null && serial.IsOpen; } }
         public bool SelectPort(string portName)
         {
             return SelectPort(portName, 9600, Parity.None, StopBits.One, 8, Handshake.None, false);
@@ -67,9 +66,7 @@ namespace Godzuki
             try
             {
                 serial.DataReceived += new SerialDataReceivedEventHandler(DataReceivedHandler);
-
                 serial.Open();
-                portMaps.Add(this);
                 return serial.IsOpen;
             }
             catch
@@ -83,16 +80,6 @@ namespace Godzuki
             if (serial != null && serial.IsOpen)
             {
                 curData.Add("ZukiBot - shutting down serial port\n");
-                if (portMaps.Contains(this))
-                {
-                    portMaps.Remove(this);
-                    if (portMaps.Count == 0)
-                    {
-                        tmrThreadingTimer.Change(System.Threading.Timeout.Infinite, System.Threading.Timeout.Infinite);
-                        tmrThreadingTimer.Dispose();
-                        tmrThreadingTimer = null;
-                    }
-                }
                 serial.Close();
                 serial = null;
             }
@@ -109,23 +96,17 @@ namespace Godzuki
         }
 
         // do this every 100 millis or so...
-        static public void MonitorCommands(object state)
-        {
-            foreach (ZukiComms gz in portMaps)
-            {
-                gz.MonitorLocalCommands();
-            }
-        }
-
-        public void MonitorLocalCommands()
+        public void MonitorLocalCommands(object state)
         {
             bool retry = false;
             while (replyData.Count > 0) // see if i have an ack to an existing command
             {
+                // remove a command if I've got it, and pass back the result...
+                // otherwise just pass it back for handling...
                 string s = replyData[0];
                 Godzuki.gCommandObject cmdObj = Godzuki.gCommandObject.FromString(s);
                 replyData.RemoveAt(0);
-                if (cmdObj != null) // not a command object
+                if (cmdObj == null) // not a command object
                 {
                     curData.Add(s);
                 }
@@ -150,6 +131,10 @@ namespace Godzuki
                                 retry = true; // mark it to be sent again
                             }
                         }
+                    }
+                    else
+                    {
+                        curData.Add(s);
                     }
                 }
             }
@@ -186,13 +171,14 @@ namespace Godzuki
                         curData.Add("Overflow Here!!");
                     serial.Write(openCommands[0]);
                     lastSendTime = DateTime.Now;
-                    curRetry++;
                     retry = false;
                     return;
                 }
                 else
                 {
                     curData.Add("ZukiBot - could not post data - no port\n");
+                    curRetry = -1;
+                    openCommands.RemoveAt(0);
                     return;
                 }
             }
@@ -204,7 +190,7 @@ namespace Godzuki
         ///  whoever's listening is responsible for clearing this buffer...
         /// </summary>
 
-        private static void DataReceivedHandler(
+        private void DataReceivedHandler(
                     object sender,
                     SerialDataReceivedEventArgs e)
         {
@@ -214,49 +200,39 @@ namespace Godzuki
             SerialPort sp = (SerialPort)sender;
             string indata = sp.ReadExisting();
 
-            ZukiComms r = null;
-            foreach (ZukiComms z in portMaps)
-                if (z.serial == sp)
-                {
-                    r = z;
-                    break;
-                }
-            if (r != null)
-            {
-                r.localBfr += indata;
+            localBfr += indata;
 
-                bool done = false;
-                while (!done)
+            bool done = false;
+            while (!done)
+            {
+                done = true;
+                // if some part of this signifies the end of the command, parse out everything else and add to list
+                int cmdStart = localBfr.IndexOfAny(new char[] { '!', '&' });
+                int cmdEnd = localBfr.IndexOfAny(new char[] { '#', '\n' }, (cmdStart < 0 ? 0 : cmdStart));
+                if (cmdEnd >= 0)
                 {
-                    done = true;
-                    // if some part of this signifies the end of the command, parse out everything else and add to list
-                    int cmdStart = r.localBfr.IndexOfAny(new char[] { '!', '&' });
-                    int cmdEnd = r.localBfr.IndexOfAny(new char[] { '#', '\n' }, (cmdStart < 0 ? 0 : cmdStart));
-                    if (cmdEnd >= 0)
+                    done = false;
+                    //displayOnlyCommandObjects             f = display anything that comes through, t = display only valid command objects !& -> #\n
+                    //displayOnlyResponseStrings            if above is f, doesn't matter, if t, then only display response objects  & -> #
+                    if (!displayOnlyCommandObjects)
                     {
-                        done = false;
-                        //displayOnlyCommandObjects             f = display anything that comes through, t = display only valid command objects !& -> #\n
-                        //displayOnlyResponseStrings            if above is f, doesn't matter, if t, then only display response objects  & -> #
-                        if (!displayOnlyCommandObjects)
+                        if (cmdStart >= 0)
                         {
-                            if (cmdStart >= 0)
-                            {
-                                if (cmdStart > 0)
-                                    r.curData.Add(r.localBfr.Substring(0, cmdStart));
-                                r.curData.Add(r.localBfr.Substring(cmdStart, (cmdEnd - cmdStart) + 1));
-                            }
-                            else
-                                r.curData.Add(r.localBfr);
+                            if (cmdStart > 0)
+                                replyData.Add(localBfr.Substring(0, cmdStart));
+                            replyData.Add(localBfr.Substring(cmdStart, (cmdEnd - cmdStart) + 1));
                         }
                         else
-                            if (cmdStart >= 0 && (!displayOnlyResponseStrings || r.localBfr[cmdStart] == '&'))
-                                r.curData.Add(r.localBfr.Substring(cmdStart, (cmdEnd - cmdStart) + 1));
-
-                        if (cmdEnd + 1 == r.localBfr.Length)
-                            r.localBfr = "";
-                        else
-                            r.localBfr = r.localBfr.Substring(cmdEnd + 1);
+                            replyData.Add(localBfr);
                     }
+                    else
+                        if (cmdStart >= 0 && (!displayOnlyResponseStrings || localBfr[cmdStart] == '&'))
+                            replyData.Add(localBfr.Substring(cmdStart, (cmdEnd - cmdStart) + 1));
+
+                    if (cmdEnd + 1 == localBfr.Length)
+                        localBfr = "";
+                    else
+                        localBfr = localBfr.Substring(cmdEnd + 1);
                 }
             }
         }

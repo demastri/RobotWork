@@ -64,64 +64,71 @@ CMD_METHOD_IMPLEMENT(gInputs,processCommand) {
 			ROUTE_REPLY( GLOBAL_COMMAND_STATUS_OK, 2, (void *)"-1" );
 		}
 #else
-		for( int i=0; i<1; i++ ) {
-			Serial1.print("-");
-			Serial1.print(i);
-			Serial1.print("-");
-			gCommandObject *newObj = gCommandObject::gCommandObjectFactory( cmdObj );
-			ROUTE_REPLY( GLOBAL_COMMAND_STATUS_OK, 0, 0);
-			cmdObj = newObj;
-		}
+		//Serial1.print("-");
+		//Serial1.print(i);
+		//Serial1.print("-");
+		//gCommandObject *newObj = gCommandObject::gCommandObjectFactory( cmdObj );
+		ROUTE_REPLY( GLOBAL_COMMAND_STATUS_OK, 0, 0);
+		//cmdObj = newObj;
 #endif
 		break;
 	}
 }
 
-char serialCmd[30];
-int cmdSize = -1;
-char ser1Cmd[30];
-int ser1cmdPtr = -1;
+char serialCmd[2][30];
+int cmdSize[2] = { -1, -1 };
 
-int gInputs::ReadCommand(int &param) {
-	while( cmdSize >= 0 && Serial.available()) {
-		int kbdKey = Serial.read();
-		serialCmd[cmdSize++] = (char)kbdKey;
+
+void gInputs::BuildSerialCommand( int portID ) {
+	while( cmdSize[portID] >= 0 && (portID==0 ? Serial.available() : Serial1.available())) {
+		int kbdKey = (portID==0 ? Serial.read() : Serial1.read());
+		serialCmd[portID][cmdSize[portID]++] = (char)kbdKey;
 
 		if( kbdKey == '#' ) {
-			if( cmdSize == 20 ) {
+			gCommandObject *outObj;
+			if( cmdSize[portID] == 20 ) {
 				// done with command
-				gMonitor.writeToRadio = 0;   // 1 = radio, 0 = usb
+				gMonitor.writeToRadio = portID;   // 1 = radio, 0 = usb
 
-				gCommandObject *outObj = gComms::UnpackCommandString(serialCmd, 1);
-				serialCmd[cmdSize++] = '\0';
+				outObj = gComms::UnpackCommandString(&(serialCmd[portID][0]), portID);
+				serialCmd[portID][cmdSize[portID]++] = '\0';
 
-				Serial.print( "RCS" );
+				(portID==0 ? Serial.print( "RCS" ) : Serial1.print( "RCS" ));
+				(portID==0 ? Serial.println( &(serialCmd[portID][0]) ) : Serial1.print( &(serialCmd[portID][0]) ));
+				pRouter->RouteCommand( outObj );
 			} else {
 				// ask for a resend here
-				gCommandObject *newObj = gCommandObject::gCommandObjectFactory( 
-					0, DEVICE_ID, instanceID, CNC_APP_DEVICE_ID, 1, COMMAND_ID_GLOBAL_NONE, 0,0,0 );
-				pRouter->RouteReply( newObj, GLOBAL_COMMAND_STATUS_RESEND, 0, 0 );
+				outObj = gCommandObject::gCommandObjectFactory( 
+					portID, DEVICE_ID, instanceID, CNC_APP_DEVICE_ID, 1, COMMAND_ID_GLOBAL_NONE, 0,0,0 );
+				//pRouter->RouteReply( outObj, GLOBAL_COMMAND_STATUS_RESEND, 0, 0 );
 
-				Serial.print( "BAD CMD" );
+				(portID==0 ? Serial.print( "BAD CMD " ) : Serial1.print( "BAD CMD " ));
+				(portID==0 ? Serial.print( cmdSize[portID] ) : Serial1.print( cmdSize[portID] ));
+				(portID==0 ? Serial.println( &(serialCmd[portID][0]) ) : Serial1.print( &(serialCmd[portID][0]) ));
 			}
-			Serial.println(ser1Cmd);
-			cmdSize = -1;
-
-			pRouter->RouteCommand( outObj );
+			cmdSize[portID] = -1;
 		}
-		if( cmdSize > 30 ) {
-			Serial.print( "Unk" );
-			Serial.println( serialCmd );
-			cmdSize = -1;
+		if( cmdSize[portID] > 30 ) {
+			(portID==0 ? Serial.print( "Unk" ) : Serial1.print( "Unk" ));
+			(portID==0 ? Serial.println(serialCmd[portID]) : Serial1.println(serialCmd[portID]));
+			cmdSize[portID] = -1;
 		}
 	}
+}
+
+
+int gInputs::ReadCommand(int &param) {
+
+	BuildSerialCommand( 0 );
+	BuildSerialCommand( 1 );
+
 	if (Serial.available()) {
 		int kbdKey = Serial.read();
 		switch (kbdKey) {
 		case '!':
-			if( cmdSize < 0 ) {
-				cmdSize = 0;
-				serialCmd[cmdSize++] = (char)kbdKey;
+			if( cmdSize[0] < 0 ) {
+				cmdSize[0] = 0;
+				serialCmd[0][cmdSize[0]++] = (char)kbdKey;
 			}
 			break;
 #ifdef USB_MONITOR_CMDS
@@ -201,44 +208,13 @@ int gInputs::ReadCommand(int &param) {
 		}
 	}
 
-	while( ser1cmdPtr >= 0 && Serial1.available()) {
-		int kbdKey = Serial1.read();
-		ser1Cmd[ser1cmdPtr++] = (char)kbdKey;
-
-		if( kbdKey == '#' ) {
-			if( cmdSize == 20 ) {
-				// done with command
-				gMonitor.writeToRadio = 1;   // 1 = radio, 0 = usb
-
-				gCommandObject *outObj = gComms::UnpackCommandString(ser1Cmd, 1);
-				ser1Cmd[ser1cmdPtr++] = '\0';
-
-				Serial1.print( "RCS" );
-			} else {
-				// ask for a resend here
-				gCommandObject *newObj = gCommandObject::gCommandObjectFactory( 
-					1, DEVICE_ID, instanceID, CNC_APP_DEVICE_ID, 1, COMMAND_ID_GLOBAL_NONE, 0,0,0 );
-				pRouter->RouteReply( newObj, GLOBAL_COMMAND_STATUS_RESEND, 0, 0 );
-				Serial1.print( "BAD CMD" );
-			}
-			Serial1.println(ser1Cmd);
-			ser1cmdPtr = -1;
-
-			pRouter->RouteCommand( outObj );
-		}
-		if( cmdSize > 30 ) {
-			Serial1.print( "Unk" );
-			Serial1.println( ser1Cmd );
-			ser1cmdPtr = -1;
-		}
-	}
 	if (Serial1.available()) {
 		int kbdKey = Serial1.read();
 		switch (kbdKey) {
 		case '!':
-			if( ser1cmdPtr < 0 ) {
-				ser1cmdPtr = 0;
-				ser1Cmd[ser1cmdPtr++] = (char)kbdKey;
+			if( cmdSize[1] < 0 ) {
+				cmdSize[1] = 0;
+				serialCmd[1][cmdSize[1]++] = (char)kbdKey;
 			}
 			break;
 #ifdef RADIO_MONITOR_CMDS

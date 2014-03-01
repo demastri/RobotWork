@@ -32,6 +32,12 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.sessionLog = new System.Windows.Forms.TextBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.BadCmdButton = new System.Windows.Forms.Button();
+            this.isUSB2 = new System.Windows.Forms.CheckBox();
+            this.availableInstances2 = new System.Windows.Forms.ComboBox();
+            this.ConnectToRobot2Button = new System.Windows.Forms.Button();
+            this.availablePorts2 = new System.Windows.Forms.ComboBox();
+            this.label6 = new System.Windows.Forms.Label();
             this.isUSB = new System.Windows.Forms.CheckBox();
             this.CalibIndex = new System.Windows.Forms.ComboBox();
             this.CalibLR = new System.Windows.Forms.ComboBox();
@@ -88,11 +94,6 @@
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.MessageLoopTimer = new System.Windows.Forms.Timer(this.components);
             this.ClearCmdLogButton = new System.Windows.Forms.Button();
-            this.isUSB2 = new System.Windows.Forms.CheckBox();
-            this.availableInstances2 = new System.Windows.Forms.ComboBox();
-            this.ConnectToRobot2Button = new System.Windows.Forms.Button();
-            this.availablePorts2 = new System.Windows.Forms.ComboBox();
-            this.label6 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.MotorSelectGroup.SuspendLayout();
@@ -132,6 +133,7 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.BadCmdButton);
             this.groupBox2.Controls.Add(this.isUSB2);
             this.groupBox2.Controls.Add(this.availableInstances2);
             this.groupBox2.Controls.Add(this.ConnectToRobot2Button);
@@ -159,6 +161,73 @@
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Connection";
+            // 
+            // BadCmdButton
+            // 
+            this.BadCmdButton.Location = new System.Drawing.Point(289, 151);
+            this.BadCmdButton.Name = "BadCmdButton";
+            this.BadCmdButton.Size = new System.Drawing.Size(64, 23);
+            this.BadCmdButton.TabIndex = 28;
+            this.BadCmdButton.Text = "Bad Cmd";
+            this.BadCmdButton.UseVisualStyleBackColor = true;
+            this.BadCmdButton.Click += new System.EventHandler(this.BadCmdButton_Click);
+            // 
+            // isUSB2
+            // 
+            this.isUSB2.AutoSize = true;
+            this.isUSB2.Location = new System.Drawing.Point(202, 44);
+            this.isUSB2.Name = "isUSB2";
+            this.isUSB2.Size = new System.Drawing.Size(48, 17);
+            this.isUSB2.TabIndex = 27;
+            this.isUSB2.Text = "USB";
+            this.isUSB2.UseVisualStyleBackColor = true;
+            // 
+            // availableInstances2
+            // 
+            this.availableInstances2.Enabled = false;
+            this.availableInstances2.FormattingEnabled = true;
+            this.availableInstances2.Items.AddRange(new object[] {
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10"});
+            this.availableInstances2.Location = new System.Drawing.Point(159, 43);
+            this.availableInstances2.Name = "availableInstances2";
+            this.availableInstances2.Size = new System.Drawing.Size(37, 21);
+            this.availableInstances2.TabIndex = 26;
+            // 
+            // ConnectToRobot2Button
+            // 
+            this.ConnectToRobot2Button.Location = new System.Drawing.Point(264, 41);
+            this.ConnectToRobot2Button.Name = "ConnectToRobot2Button";
+            this.ConnectToRobot2Button.Size = new System.Drawing.Size(62, 23);
+            this.ConnectToRobot2Button.TabIndex = 23;
+            this.ConnectToRobot2Button.Text = "Connect";
+            this.ConnectToRobot2Button.UseVisualStyleBackColor = true;
+            this.ConnectToRobot2Button.Click += new System.EventHandler(this.ConnectToRobot2Button_Click);
+            // 
+            // availablePorts2
+            // 
+            this.availablePorts2.FormattingEnabled = true;
+            this.availablePorts2.Location = new System.Drawing.Point(89, 43);
+            this.availablePorts2.Name = "availablePorts2";
+            this.availablePorts2.Size = new System.Drawing.Size(64, 21);
+            this.availablePorts2.TabIndex = 25;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(14, 46);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(64, 13);
+            this.label6.TabIndex = 24;
+            this.label6.Text = "GodzukEYe";
             // 
             // isUSB
             // 
@@ -249,6 +318,7 @@
             // 
             // availableInstances
             // 
+            this.availableInstances.Enabled = false;
             this.availableInstances.FormattingEnabled = true;
             this.availableInstances.Items.AddRange(new object[] {
             "1",
@@ -769,62 +839,6 @@
             this.ClearCmdLogButton.UseVisualStyleBackColor = true;
             this.ClearCmdLogButton.Click += new System.EventHandler(this.ClearCmdLogButton_Click);
             // 
-            // isUSB2
-            // 
-            this.isUSB2.AutoSize = true;
-            this.isUSB2.Location = new System.Drawing.Point(202, 44);
-            this.isUSB2.Name = "isUSB2";
-            this.isUSB2.Size = new System.Drawing.Size(48, 17);
-            this.isUSB2.TabIndex = 27;
-            this.isUSB2.Text = "USB";
-            this.isUSB2.UseVisualStyleBackColor = true;
-            // 
-            // availableInstances2
-            // 
-            this.availableInstances2.FormattingEnabled = true;
-            this.availableInstances2.Items.AddRange(new object[] {
-            "1",
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7",
-            "8",
-            "9",
-            "10"});
-            this.availableInstances2.Location = new System.Drawing.Point(159, 43);
-            this.availableInstances2.Name = "availableInstances2";
-            this.availableInstances2.Size = new System.Drawing.Size(37, 21);
-            this.availableInstances2.TabIndex = 26;
-            // 
-            // ConnectToRobot2Button
-            // 
-            this.ConnectToRobot2Button.Location = new System.Drawing.Point(264, 41);
-            this.ConnectToRobot2Button.Name = "ConnectToRobot2Button";
-            this.ConnectToRobot2Button.Size = new System.Drawing.Size(62, 23);
-            this.ConnectToRobot2Button.TabIndex = 23;
-            this.ConnectToRobot2Button.Text = "Connect";
-            this.ConnectToRobot2Button.UseVisualStyleBackColor = true;
-            this.ConnectToRobot2Button.Click += new System.EventHandler(this.ConnectToRobot2Button_Click);
-            // 
-            // availablePorts2
-            // 
-            this.availablePorts2.FormattingEnabled = true;
-            this.availablePorts2.Location = new System.Drawing.Point(89, 43);
-            this.availablePorts2.Name = "availablePorts2";
-            this.availablePorts2.Size = new System.Drawing.Size(64, 21);
-            this.availablePorts2.TabIndex = 25;
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(14, 46);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(64, 13);
-            this.label6.TabIndex = 24;
-            this.label6.Text = "GodzukEYe";
-            // 
             // MainCnCForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -926,6 +940,7 @@
         private System.Windows.Forms.Button ConnectToRobot2Button;
         private System.Windows.Forms.ComboBox availablePorts2;
         private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Button BadCmdButton;
     }
 }
 
