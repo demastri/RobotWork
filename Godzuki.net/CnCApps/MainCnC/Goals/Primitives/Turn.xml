@@ -1,0 +1,22 @@
+<Goal Name="Move Straight" Parameters="" DefaultValues="">
+  <Step Name="Connect to Robot" Device="Platform" Instance="2" Command="Connect" Timeout="2000">
+    <Parameter Name="COMPORT" Value="COM2"/>
+  </Step>
+
+  <Step Name="Read Tick Count" Device="Motors" Instance="1" Command="GetTicks" Timeout="2000"/>
+  <Step Name="Turn Left 90 deg" Device="Motors" Instance="1" Command="MoveTo" Timeout="20000">
+    <Parameter Name="Direction" Value="Left"/>
+    <Parameter Name="TargetDeg" Value="90"/>
+    <Parameter Name="Speed" Value="50"/>
+    <Parameter Name="Reference" Value="Relative"/>
+  </Step>
+
+  <Step Name="Read Tick Count" Device="Motors" Instance="1" Command="GetTicks" Timeout="2000"/>
+  <Step Name="Turn Left 90 deg" Device="Motors" Instance="1" Command="MoveTo" Timeout="20000">
+    <Parameter Name="Direction" Value="Right"/>
+    <Parameter Name="TargetDeg" Value="90"/>
+    <Parameter Name="Speed" Value="50"/>
+    <Parameter Name="Reference" Value="Absolute"/>
+  </Step>
+
+</Goal>

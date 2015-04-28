@@ -1,0 +1,177 @@
+<Goal Name="move a meter" Parameters="" DefaultValues="">
+  <Step Name="Connect to Robot" Device="Platform" Instance="2" Command="Connect" Timeout="2000">
+    <Parameter Name="ZukiPort" Value="COM2"/>
+    <Parameter Name="ZukEYEPort" Value="COM7"/>
+  </Step>
+
+  <Step Name="Clear Speed Vector" Device="Motors" Instance="1" Command="ClearSpeedVector" Timeout="2000"/>
+
+  <Step Name="Read Tick Count" Device="Motors" Instance="1" Command="GetTicks" Timeout="2000"/>
+  <Step Name="Mark Speed Vector" Device="Platform" Instance="1" Command="MarkSpeedVector" Timeout="2000">
+    <Parameter Name="Direction" Value="Forward"/>
+    <Parameter Name="Speed" Value="30"/>
+  </Step>
+  <Step Name="Move Ahead" Device="Motors" Instance="1" Command="Go" Timeout="2000">
+    <Parameter Name="Direction" Value="Forward"/>
+    <Parameter Name="Speed" Value="30"/>
+  </Step>
+  <Step Name="fwd 30" Device="Platform" Instance="1" Command="Delay" Timeout="5000">
+    <Parameter Name="StepTime" Value="5000"/>
+  </Step>
+  <Step Name="Stop" Device="Motors" Instance="1" Command="Stop" Timeout="2000"/>
+  <Step Name="Wait" Device="Platform" Instance="1" Command="Delay" Timeout="5000">
+    <Parameter Name="StepTime" Value="500"/>
+  </Step>
+  <Step Name="Read Tick Count" Device="Motors" Instance="1" Command="GetTicks" Timeout="2000"/>
+  <Step Name="Update Speed Vector" Device="Motors" Instance="1" Command="UpdateSpeedVector" Timeout="2000">
+    <Parameter Name="Direction" Value="Forward"/>
+    <Parameter Name="Speed" Value="30"/>
+  </Step>
+  <Step Name="Mark Speed Vector" Device="Platform" Instance="1" Command="MarkSpeedVector" Timeout="2000">
+    <Parameter Name="Direction" Value="Backward"/>
+    <Parameter Name="Speed" Value="30"/>
+  </Step>
+  <Step Name="Move Back" Device="Motors" Instance="1" Command="Go" Timeout="2000">
+    <Parameter Name="Direction" Value="Backward"/>
+    <Parameter Name="Speed" Value="30"/>
+  </Step>
+  <Step Name="back 30" Device="Platform" Instance="1" Command="Delay" Timeout="5000">
+    <Parameter Name="StepTime" Value="5000"/>
+  </Step>
+  <Step Name="Stop" Device="Motors" Instance="1" Command="Stop" Timeout="2000"/>
+  <Step Name="Wait" Device="Platform" Instance="1" Command="Delay" Timeout="5000">
+    <Parameter Name="StepTime" Value="500"/>
+  </Step>
+  <Step Name="Read Tick Count" Device="Motors" Instance="1" Command="GetTicks" Timeout="2000"/>
+  <Step Name="Update Speed Vector" Device="Motors" Instance="1" Command="UpdateSpeedVector" Timeout="2000">
+    <Parameter Name="Direction" Value="Backward"/>
+    <Parameter Name="Speed" Value="30"/>
+  </Step>
+
+  <Step Name="Read Tick Count" Device="Motors" Instance="1" Command="GetTicks" Timeout="2000"/>
+  <Step Name="Mark Speed Vector" Device="Platform" Instance="1" Command="MarkSpeedVector" Timeout="2000">
+    <Parameter Name="Direction" Value="Forward"/>
+    <Parameter Name="Speed" Value="50"/>
+  </Step>
+  <Step Name="Move Ahead" Device="Motors" Instance="1" Command="Go" Timeout="2000">
+    <Parameter Name="Direction" Value="Forward"/>
+    <Parameter Name="Speed" Value="50"/>
+  </Step>
+  <Step Name="fwd 50" Device="Platform" Instance="1" Command="Delay" Timeout="5000">
+    <Parameter Name="StepTime" Value="5000"/>
+  </Step>
+  <Step Name="Stop" Device="Motors" Instance="1" Command="Stop" Timeout="2000"/>
+  <Step Name="Wait" Device="Platform" Instance="1" Command="Delay" Timeout="5000">
+    <Parameter Name="StepTime" Value="500"/>
+  </Step>
+  <Step Name="Read Tick Count" Device="Motors" Instance="1" Command="GetTicks" Timeout="2000"/>
+  <Step Name="Update Speed Vector" Device="Motors" Instance="1" Command="UpdateSpeedVector" Timeout="2000">
+    <Parameter Name="Direction" Value="Forward"/>
+    <Parameter Name="Speed" Value="50"/>
+  </Step>
+  <Step Name="Mark Speed Vector" Device="Platform" Instance="1" Command="MarkSpeedVector" Timeout="2000">
+    <Parameter Name="Direction" Value="Backward"/>
+    <Parameter Name="Speed" Value="50"/>
+  </Step>
+  <Step Name="Move Back" Device="Motors" Instance="1" Command="Go" Timeout="2000">
+    <Parameter Name="Direction" Value="Backward"/>
+    <Parameter Name="Speed" Value="50"/>
+  </Step>
+  <Step Name="back 50" Device="Platform" Instance="1" Command="Delay" Timeout="5000">
+    <Parameter Name="StepTime" Value="5000"/>
+  </Step>
+  <Step Name="Stop" Device="Motors" Instance="1" Command="Stop" Timeout="2000"/>
+  <Step Name="Wait" Device="Platform" Instance="1" Command="Delay" Timeout="5000">
+    <Parameter Name="StepTime" Value="500"/>
+  </Step>
+  <Step Name="Read Tick Count" Device="Motors" Instance="1" Command="GetTicks" Timeout="2000"/>
+  <Step Name="Update Speed Vector" Device="Motors" Instance="1" Command="UpdateSpeedVector" Timeout="2000">
+    <Parameter Name="Direction" Value="Backward"/>
+    <Parameter Name="Speed" Value="50"/>
+  </Step>
+
+  <Step Name="Read Tick Count" Device="Motors" Instance="1" Command="GetTicks" Timeout="2000"/>
+  <Step Name="Mark Speed Vector" Device="Platform" Instance="1" Command="MarkSpeedVector" Timeout="2000">
+    <Parameter Name="Direction" Value="Forward"/>
+    <Parameter Name="Speed" Value="70"/>
+  </Step>
+  <Step Name="Move Ahead" Device="Motors" Instance="1" Command="Go" Timeout="2000">
+    <Parameter Name="Direction" Value="Forward"/>
+    <Parameter Name="Speed" Value="70"/>
+  </Step>
+  <Step Name="fwd 70" Device="Platform" Instance="1" Command="Delay" Timeout="5000">
+    <Parameter Name="StepTime" Value="5000"/>
+  </Step>
+  <Step Name="Stop" Device="Motors" Instance="1" Command="Stop" Timeout="2000"/>
+  <Step Name="Wait" Device="Platform" Instance="1" Command="Delay" Timeout="5000">
+    <Parameter Name="StepTime" Value="500"/>
+  </Step>
+  <Step Name="Read Tick Count" Device="Motors" Instance="1" Command="GetTicks" Timeout="2000"/>
+  <Step Name="Update Speed Vector" Device="Motors" Instance="1" Command="UpdateSpeedVector" Timeout="2000">
+    <Parameter Name="Direction" Value="Forward"/>
+    <Parameter Name="Speed" Value="70"/>
+  </Step>
+  <Step Name="Mark Speed Vector" Device="Platform" Instance="1" Command="MarkSpeedVector" Timeout="2000">
+    <Parameter Name="Direction" Value="Backward"/>
+    <Parameter Name="Speed" Value="70"/>
+  </Step>
+  <Step Name="Move Back" Device="Motors" Instance="1" Command="Go" Timeout="2000">
+    <Parameter Name="Direction" Value="Backward"/>
+    <Parameter Name="Speed" Value="70"/>
+  </Step>
+  <Step Name="back 70" Device="Platform" Instance="1" Command="Delay" Timeout="5000">
+    <Parameter Name="StepTime" Value="5000"/>
+  </Step>
+  <Step Name="Stop" Device="Motors" Instance="1" Command="Stop" Timeout="2000"/>
+  <Step Name="Wait" Device="Platform" Instance="1" Command="Delay" Timeout="5000">
+    <Parameter Name="StepTime" Value="500"/>
+  </Step>
+  <Step Name="Read Tick Count" Device="Motors" Instance="1" Command="GetTicks" Timeout="2000"/>
+  <Step Name="Update Speed Vector" Device="Motors" Instance="1" Command="UpdateSpeedVector" Timeout="2000">
+    <Parameter Name="Direction" Value="Backward"/>
+    <Parameter Name="Speed" Value="70"/>
+  </Step>
+
+  <Step Name="Read Tick Count" Device="Motors" Instance="1" Command="GetTicks" Timeout="2000"/>
+  <Step Name="Mark Speed Vector" Device="Platform" Instance="1" Command="MarkSpeedVector" Timeout="2000">
+    <Parameter Name="Direction" Value="Forward"/>
+    <Parameter Name="Speed" Value="90"/>
+  </Step>
+  <Step Name="Move Ahead" Device="Motors" Instance="1" Command="Go" Timeout="2000">
+    <Parameter Name="Direction" Value="Forward"/>
+    <Parameter Name="Speed" Value="90"/>
+  </Step>
+  <Step Name="fwd 90" Device="Platform" Instance="1" Command="Delay" Timeout="5000">
+    <Parameter Name="StepTime" Value="5000"/>
+  </Step>
+  <Step Name="Stop" Device="Motors" Instance="1" Command="Stop" Timeout="2000"/>
+  <Step Name="Wait" Device="Platform" Instance="1" Command="Delay" Timeout="5000">
+    <Parameter Name="StepTime" Value="500"/>
+  </Step>
+  <Step Name="Read Tick Count" Device="Motors" Instance="1" Command="GetTicks" Timeout="2000"/>
+  <Step Name="Update Speed Vector" Device="Motors" Instance="1" Command="UpdateSpeedVector" Timeout="2000">
+    <Parameter Name="Direction" Value="Forward"/>
+    <Parameter Name="Speed" Value="90"/>
+  </Step>
+  <Step Name="Mark Speed Vector" Device="Platform" Instance="1" Command="MarkSpeedVector" Timeout="2000">
+    <Parameter Name="Direction" Value="Backward"/>
+    <Parameter Name="Speed" Value="90"/>
+  </Step>
+  <Step Name="Move Back" Device="Motors" Instance="1" Command="Go" Timeout="2000">
+    <Parameter Name="Direction" Value="Backward"/>
+    <Parameter Name="Speed" Value="90"/>
+  </Step>
+  <Step Name="back 90" Device="Platform" Instance="1" Command="Delay" Timeout="5000">
+    <Parameter Name="StepTime" Value="5000"/>
+  </Step>
+  <Step Name="Stop" Device="Motors" Instance="1" Command="Stop" Timeout="2000"/>
+  <Step Name="Wait" Device="Platform" Instance="1" Command="Delay" Timeout="5000">
+    <Parameter Name="StepTime" Value="500"/>
+  </Step>
+  <Step Name="Read Tick Count" Device="Motors" Instance="1" Command="GetTicks" Timeout="2000"/>
+  <Step Name="Update Speed Vector" Device="Motors" Instance="1" Command="UpdateSpeedVector" Timeout="2000">
+    <Parameter Name="Direction" Value="Backward"/>
+    <Parameter Name="Speed" Value="90"/>
+  </Step>
+
+</Goal>

@@ -1,0 +1,9 @@
+#ifndef G_HBSTATUS_COMMANDS_H
+#define G_HBSTATUS_COMMANDS_H
+
+static const int COMMAND_ID_HBSTATUS_LOOP_INIT			= 0x01;
+static const int COMMAND_ID_HBSTATUS_LOOP_FINALLY		= 0x02;
+static const int COMMAND_ID_HBSTATUS_SET_STATUS			= 0x03;
+static const int COMMAND_ID_HBSTATUS_CLEAR_STATUS		= 0x04;
+
+#endif

@@ -1,0 +1,10 @@
+<Goal Name="Read Ranger" Parameters="COMPORT, ChildGoal, MidWaitTime" DefaultValues="COM2, 0, 2000">
+  <Step Name="Connect to Robot" Device="Platform" Instance="2" Command="Connect" Timeout="2000">
+    <Parameter Name="COMPORT"/>
+  </Step>
+  <Step Name="Get Distance Reading" Device="Ranger" Instance="1" Command="Read" Timeout="2000"/>
+  <Step Name="Update Map" Device="Platform" Instance="1" Command="UpdateMap" Timeout="2000"/>
+  <Step Name="Disconnect From Robot" Device="Platform" Instance="2" Command="Disconnect" Timeout="2000">
+    <Parameter Name="ChildGoal"/>
+  </Step>
+</Goal>
